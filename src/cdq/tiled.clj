@@ -7,9 +7,6 @@
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell)))
 
-(defprotocol HasMapProperties
-  (map-properties [_]))
-
 (defprotocol TMap
   (get-layer [tiled-map layer-name]
              "Returns the layer with name (string).")
@@ -32,10 +29,6 @@
                   If the property value is undefined returns `:undefined`."))
 
 (extend-type TiledMapTileLayer
-  HasMapProperties
-  (map-properties [layer]
-    (properties/->clj (layer/properties layer)))
-
   TMapLayer
   (set-visible! [layer boolean]
     (layer/set-visible! layer boolean))
@@ -100,10 +93,6 @@
   nil)
 
 (extend-type TiledMap
-  HasMapProperties
-  (map-properties [this]
-    (properties/->clj (tiled-map/properties this)))
-
   TMap
   (get-layer [this layer-name]
     (.get (tiled-map/layers this) ^String layer-name))
