@@ -1,5 +1,6 @@
 (ns cdq.tiled
   (:require [clojure.gdx.maps.map-properties :as properties]
+            [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.maps.tiled.tiles :as tiles])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
@@ -98,7 +99,7 @@
            visible?
            properties
            tiles]}]
-  (let [props (.getProperties tiled-map)
+  (let [props (tiled-map/properties tiled-map)
         layer (create-layer {:width      (.get props "width")
                              :height     (.get props "height")
                              :tilewidth  (.get props "tilewidth")
@@ -107,39 +108,39 @@
                              :visible? visible?
                              :map-properties (properties/create properties)
                              :tiles tiles})]
-    (.add (.getLayers tiled-map) layer))
+    (.add (tiled-map/layers tiled-map) layer))
   nil)
 
 (defn- reify-tiled-map [^TiledMap this]
   (reify
     Disposable
     (dispose [_]
-      (.dispose this))
+      (tiled-map/dispose! this))
 
     clojure.lang.ILookup
     (valAt [_ key]
       (case key
         :tiled-map/java-object this
-        :tiled-map/width  (.get (.getProperties this) "width")
-        :tiled-map/height (.get (.getProperties this) "height")))
+        :tiled-map/width  (.get (tiled-map/properties this) "width")
+        :tiled-map/height (.get (tiled-map/properties this) "height")))
 
     HasMapProperties
     (get-property [_ k]
-      (.get (.getProperties this) key))
+      (.get (tiled-map/properties this) key))
     (map-properties [_]
-      (properties/->clj (.getProperties this)))
+      (properties/->clj (tiled-map/properties this)))
 
     TMap
     (layers [_]
-      (.getLayers this))
+      (tiled-map/layers this))
 
     (layer-index [_ layer]
-      (let [idx (.getIndex (.getLayers this) ^String (layer-name layer))]
+      (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
         (when-not (= idx -1)
           idx)))
 
     (get-layer [_ layer-name]
-      (.get (.getLayers this) ^String layer-name))
+      (.get (tiled-map/layers this) ^String layer-name))
 
     (add-layer! [_ layer-declaration]
       (tm-add-layer! this layer-declaration))))
@@ -154,8 +155,8 @@
 
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
-  (let [tiled-map (TiledMap.)]
-    (properties/add! (.getProperties tiled-map) properties)
+  (let [tiled-map (tiled-map/create)]
+    (properties/add! (tiled-map/properties tiled-map) properties)
     (doseq [layer layers]
       (tm-add-layer! tiled-map layer))
     (reify-tiled-map tiled-map)))
