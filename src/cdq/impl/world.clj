@@ -8,7 +8,7 @@
             [cdq.world.grid.cell :as cell]
             [cdq.world.tick-entities :as tick-entities]
             [cdq.world.update-potential-fields :as update-potential-fields]
-            [cdq.tiled :as tiled]
+            [cdq.world.tiled :as tiled]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.grid2d :as g2d]
             [clojure.utils :as utils]))
