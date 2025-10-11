@@ -3,7 +3,6 @@
             [cdq.db :as db]
             [cdq.files :as files-utils]
             [cdq.graphics.tm-renderer :as tm-renderer]
-            [cdq.tiled :as tiled]
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]
             [clojure.edn :as edn]
@@ -18,6 +17,8 @@
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.maps.tiled :as tiled-map]
+            [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.screen :as screen-utils]
@@ -40,13 +41,13 @@
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
   (camera/set-position! camera
-                        [(/ (tiled/get-property tiled-map "width") 2)
-                         (/ (tiled/get-property tiled-map "height") 2)])
+                        [(/ (.get (tiled-map/properties tiled-map) "width") 2)
+                         (/ (.get (tiled-map/properties tiled-map) "height") 2)])
   (camera/set-zoom! camera
                     (camera/calculate-zoom camera
                                            :left [0 0]
-                                           :top [0 (tiled/get-property tiled-map "height")]
-                                           :right [(tiled/get-property tiled-map "width") 0]
+                                           :top [0 (.get (tiled-map/properties tiled-map) "height")]
+                                           :right [(.get (tiled-map/properties tiled-map) "width") 0]
                                            :bottom [0 0])))
 
 (def tile-size 48)
@@ -74,7 +75,7 @@
                         :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
-    (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
+    (layer/set-visible! (.get (tiled-map/layers tiled-map) "creatures") true)
     (show-whole-map! ctx)
     ctx))
 

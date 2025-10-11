@@ -1,5 +1,5 @@
 (ns cdq.world-fns.modules.place-modules
-  (:require [cdq.tiled :as tiled]
+  (:require [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.grid2d :as g2d]
             [clojure.grid2d.utils :as helper]))
 
@@ -65,9 +65,9 @@
    unscaled-floor-positions
    unscaled-transition-positions]
   (let [[modules-width modules-height] modules-scale
-        _ (assert (and (= (tiled/get-property modules-tiled-map "width")
+        _ (assert (and (= (.get (tiled-map/properties modules-tiled-map) "width")
                           (* number-modules-x (+ modules-width module-offset-tiles)))
-                       (= (tiled/get-property modules-tiled-map "height")
+                       (= (.get (tiled-map/properties modules-tiled-map) "height")
                           (* number-modules-y (+ modules-height module-offset-tiles)))))
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
                               (place-module* modules-scale

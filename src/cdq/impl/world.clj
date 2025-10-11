@@ -9,6 +9,7 @@
             [cdq.world.tick-entities :as tick-entities]
             [cdq.world.update-potential-fields :as update-potential-fields]
             [cdq.tiled :as tiled]
+            [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.grid2d :as g2d]
             [clojure.utils :as utils]))
 
@@ -96,8 +97,8 @@
 
 (defn- assoc-state [world {:keys [tiled-map
                                   start-position]}]
-  (let [width  (tiled/get-property tiled-map "width")
-        height (tiled/get-property tiled-map "height")
+  (let [width  (.get (tiled-map/properties tiled-map) "width")
+        height (.get (tiled-map/properties tiled-map) "height")
         grid (create-world-grid width height
                                 #(case (tiled/movement-property tiled-map %)
                                    "none" :none

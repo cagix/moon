@@ -8,7 +8,6 @@
                                         TiledMapTileLayer$Cell)))
 
 (defprotocol HasMapProperties
-  (get-property [_ k])
   (map-properties [_]))
 
 (defprotocol TMap
@@ -34,9 +33,6 @@
 
 (extend-type TiledMapTileLayer
   HasMapProperties
-  (get-property [layer k]
-    (.get (layer/properties layer) k))
-
   (map-properties [layer]
     (properties/->clj (layer/properties layer)))
 
@@ -105,9 +101,6 @@
 
 (extend-type TiledMap
   HasMapProperties
-  (get-property [this k]
-    (.get (tiled-map/properties this) k))
-
   (map-properties [this]
     (properties/->clj (tiled-map/properties this)))
 
@@ -132,8 +125,8 @@
 (defn map-positions
   "Returns a sequence of all `[x y]` positions in the `tiled-map`."
   [tiled-map]
-  (for [x (range (get-property tiled-map "width"))
-        y (range (get-property tiled-map "height"))]
+  (for [x (range (.get (tiled-map/properties tiled-map) "width"))
+        y (range (.get (tiled-map/properties tiled-map) "height"))]
     [x y]))
 
 (defn positions-with-property
@@ -153,7 +146,7 @@
     (assert (not= value :undefined)
             (str "Value for :movement at position "
                  position  " / mapeditor inverted position: " [(position 0)
-                                                               (- (dec (get-property tiled-map "height"))
+                                                               (- (dec (.get (tiled-map/properties tiled-map) "height"))
                                                                   (position 1))]
                  " and layer " (layer-name layer) " is undefined."))
     (when-not (= :no-cell value)
@@ -163,7 +156,7 @@
   (->> tiled-map
        tiled-map/layers
        reverse
-       (filter #(get-property % "movement-properties"))))
+       (filter #(.get (layer/properties %) "movement-properties"))))
 
 (defn movement-properties [tiled-map position]
   (for [layer (movement-property-layers tiled-map)]
