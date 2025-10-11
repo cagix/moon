@@ -67,8 +67,8 @@
     (when show-grid-lines
       (graphics/grid 0
                0
-               (:tiled-map/width  tiled-map)
-               (:tiled-map/height tiled-map) 1 1 [1 1 1 0.5]))))
+               (tiled/get-property tiled-map "width")
+               (tiled/get-property tiled-map "height") 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 

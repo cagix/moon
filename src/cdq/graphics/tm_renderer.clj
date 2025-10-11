@@ -21,6 +21,4 @@
 
 (defn create [world-unit-scale batch]
   (memoize (fn [tiled-map]
-             (TiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                (float world-unit-scale)
-                                batch))))
+             (TiledMapRenderer. tiled-map (float world-unit-scale) batch))))

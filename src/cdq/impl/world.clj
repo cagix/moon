@@ -96,8 +96,8 @@
 
 (defn- assoc-state [world {:keys [tiled-map
                                   start-position]}]
-  (let [width  (:tiled-map/width  tiled-map)
-        height (:tiled-map/height tiled-map)
+  (let [width  (tiled/get-property tiled-map "width")
+        height (tiled/get-property tiled-map "height")
         grid (create-world-grid width height
                                 #(case (tiled/movement-property tiled-map %)
                                    "none" :none

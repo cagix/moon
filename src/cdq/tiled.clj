@@ -111,47 +111,34 @@
     (.add (tiled-map/layers tiled-map) layer))
   nil)
 
-(defn- reify-tiled-map [^TiledMap this]
-  (reify
-    Disposable
-    (dispose [_]
-      (tiled-map/dispose! this))
+(extend-type TiledMap
+  HasMapProperties
+  (get-property [this k]
+    (.get (tiled-map/properties this) k))
 
-    clojure.lang.ILookup
-    (valAt [_ key]
-      (case key
-        :tiled-map/java-object this
-        :tiled-map/width  (.get (tiled-map/properties this) "width")
-        :tiled-map/height (.get (tiled-map/properties this) "height")))
+  (map-properties [this]
+    (properties/->clj (tiled-map/properties this)))
 
-    HasMapProperties
-    (get-property [_ k]
-      (.get (tiled-map/properties this) key))
-    (map-properties [_]
-      (properties/->clj (tiled-map/properties this)))
+  TMap
+  (layers [this]
+    (tiled-map/layers this))
 
-    TMap
-    (layers [_]
-      (tiled-map/layers this))
+  (layer-index [this layer]
+    (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
+      (when-not (= idx -1)
+        idx)))
 
-    (layer-index [_ layer]
-      (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
-        (when-not (= idx -1)
-          idx)))
+  (get-layer [this layer-name]
+    (.get (tiled-map/layers this) ^String layer-name))
 
-    (get-layer [_ layer-name]
-      (.get (tiled-map/layers this) ^String layer-name))
-
-    (add-layer! [_ layer-declaration]
-      (tm-add-layer! this layer-declaration))))
+  (add-layer! [this layer-declaration]
+    (tm-add-layer! this layer-declaration)))
 
 (defn tmx-tiled-map
   "Has to be disposed because it loads textures.
   Loads through internal file handle."
   [file-name]
-  (->> file-name
-       (.load (TmxMapLoader.))
-       reify-tiled-map))
+  (.load (TmxMapLoader.) file-name))
 
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
@@ -159,7 +146,7 @@
     (properties/add! (tiled-map/properties tiled-map) properties)
     (doseq [layer layers]
       (tm-add-layer! tiled-map layer))
-    (reify-tiled-map tiled-map)))
+    tiled-map))
 
 (def copy-tile (memoize tiles/copy))
 (def static-tiled-map-tile tiles/static-tiled-map-tile)
@@ -167,8 +154,8 @@
 (defn map-positions
   "Returns a sequence of all `[x y]` positions in the `tiled-map`."
   [tiled-map]
-  (for [x (range (:tiled-map/width  tiled-map))
-        y (range (:tiled-map/height tiled-map))]
+  (for [x (range (get-property tiled-map "width"))
+        y (range (get-property tiled-map "height"))]
     [x y]))
 
 (defn positions-with-property
@@ -188,7 +175,7 @@
     (assert (not= value :undefined)
             (str "Value for :movement at position "
                  position  " / mapeditor inverted position: " [(position 0)
-                                                               (- (dec (:tiled-map/height tiled-map))
+                                                               (- (dec (get-property tiled-map "height"))
                                                                   (position 1))]
                  " and layer " (layer-name layer) " is undefined."))
     (when-not (= :no-cell value)

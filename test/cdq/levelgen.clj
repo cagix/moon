@@ -40,13 +40,13 @@
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
   (camera/set-position! camera
-                        [(/ (:tiled-map/width  tiled-map) 2)
-                         (/ (:tiled-map/height tiled-map) 2)])
+                        [(/ (tiled/get-property tiled-map "width") 2)
+                         (/ (tiled/get-property tiled-map "height") 2)])
   (camera/set-zoom! camera
                     (camera/calculate-zoom camera
                                            :left [0 0]
-                                           :top [0 (:tiled-map/height tiled-map)]
-                                           :right [(:tiled-map/width tiled-map) 0]
+                                           :top [0 (tiled/get-property tiled-map "height")]
+                                           :right [(tiled/get-property tiled-map "width") 0]
                                            :bottom [0 0])))
 
 (def tile-size 48)
