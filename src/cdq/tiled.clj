@@ -8,9 +8,6 @@
                                         TiledMapTileLayer$Cell)))
 
 (defprotocol TMap
-  (get-layer [tiled-map layer-name]
-             "Returns the layer with name (string).")
-
   (add-layer! [tiled-map {:keys [name
                                  visible?
                                  properties
@@ -94,9 +91,6 @@
 
 (extend-type TiledMap
   TMap
-  (get-layer [this layer-name]
-    (.get (tiled-map/layers this) ^String layer-name))
-
   (add-layer! [this layer-declaration]
     (tm-add-layer! this layer-declaration)))
 
@@ -124,7 +118,7 @@
   {:pre [tiled-map
          (string? layer-name)
          (string? property-key)]}
-  (let [layer (get-layer tiled-map layer-name)]
+  (let [layer (.get (tiled-map/layers tiled-map) layer-name)]
     (for [position (map-positions tiled-map)
           :let [value (property-value layer position property-key)]
           :when (not (#{:undefined :no-cell} value))]
