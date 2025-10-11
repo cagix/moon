@@ -1,4 +1,4 @@
-(ns cdq.tiled ; == cdq.world.tiled-map ?
+(ns cdq.tiled
   (:require [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
@@ -64,25 +64,6 @@
 
 (def copy-tile (memoize tiles/copy))
 (def static-tiled-map-tile tiles/static-tiled-map-tile)
-
-; only used @ spawn positions
-(defn positions-with-property
-  "Returns a sequence of `[[x y] value]` for all tiles who have `property-key`."
-  [tiled-map layer-name property-key]
-  {:pre [tiled-map
-         (string? layer-name)
-         (string? property-key)]}
-  (let [layer (.get (tiled-map/layers tiled-map) layer-name)]
-    ; Can I pass only layer?
-    ; layer width height ?
-    (for [x (range (.get (tiled-map/properties tiled-map) "width"))
-          y (range (.get (tiled-map/properties tiled-map) "height"))
-          :let [position [x y]
-                cell (layer/cell layer position)]
-          :when cell
-          :let [value (.get (.getProperties (.getTile cell)) property-key)]
-          :when value]
-      [position value])))
 
 (defn- tile-movement-property [tiled-map layer position]
   (let [value (property-value layer position "movement")]

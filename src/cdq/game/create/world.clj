@@ -4,7 +4,7 @@
             cdq.impl.world
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [cdq.tiled :as tiled]
+            [cdq.world.tiled-map :as tiled-map]
             [clojure.java.io :as io]
             [clojure.txs :as txs]))
 
@@ -28,10 +28,7 @@
     :as ctx}]
   (txs/handle!
    ctx
-   (for [[position creature-id] (tiled/positions-with-property
-                                 (:world/tiled-map world)
-                                 "creatures"
-                                 "id")]
+   (for [[position creature-id] (tiled-map/spawn-positions (:world/tiled-map world))]
      [:tx/spawn-creature {:position (mapv (partial + 0.5) position)
                           :creature-property (db/build db (keyword creature-id))
                           :components (:world/enemy-components world)}]))
