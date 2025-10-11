@@ -9,7 +9,6 @@
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
-            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.maps.tiled :as tiled]
