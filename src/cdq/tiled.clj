@@ -3,24 +3,18 @@
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.maps.tiled.tiles :as tiles])
-  (:import (com.badlogic.gdx.maps.tiled TiledMap
-                                        TiledMapTileLayer
-                                        TiledMapTileLayer$Cell)))
+  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer$Cell)))
 
-(defprotocol TMapLayer
-  (property-value [layer [x y] property-key]
-                  "Returns the property value of the tile at the cell in layer.
-                  If there is no cell at this position in the layer returns `:no-cell`.
-                  If the property value is undefined returns `:undefined`."))
-
-(extend-type TiledMapTileLayer
-  TMapLayer
-  (property-value [layer position property-key]
-    (if-let [cell (layer/cell layer position)]
-      (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
-        value
-        :undefined)
-      :no-cell)))
+(defn property-value
+  "Returns the property value of the tile at the cell in layer.
+  If there is no cell at this position in the layer returns `:no-cell`.
+  If the property value is undefined returns `:undefined`."
+  [layer [x y] property-key]
+  (if-let [cell (layer/cell layer position)]
+    (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
+      value
+      :undefined)
+    :no-cell))
 
 (defn- create-layer
   [{:keys [width
