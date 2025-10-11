@@ -1,9 +1,15 @@
 (ns cdq.graphics.tm-renderer
   (:require [clojure.color :as color]
-            [cdq.tiled :as tiled]
+            [clojure.gdx.maps.tiled :as tiled-map]
+            [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.utils.viewport :as viewport])
   (:import (cdq.graphics ColorSetter
                          TiledMapRenderer)))
+
+(defn- layer-index [tiled-map layer]
+  (let [idx (.getIndex (tiled-map/layers tiled-map) ^String (layer/name layer))]
+    (when-not (= idx -1)
+      idx)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]
   (let [^TiledMapRenderer renderer (tiled-map-renderer tiled-map)
@@ -13,9 +19,9 @@
                                   (color/float-bits (color-setter color x y)))))
     (.setView renderer camera)
     (->> tiled-map
-         tiled/layers
-         (filter tiled/visible?)
-         (map (partial tiled/layer-index tiled-map))
+         tiled-map/layers
+         (filter layer/visible?)
+         (map (partial layer-index tiled-map))
          int-array
          (.render renderer))))
 

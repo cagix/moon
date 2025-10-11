@@ -1,5 +1,6 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
   (:require [cdq.tiled :as tiled]
+            [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.grid2d :as g2d]))
 
 (defn- grid->tiled-map
@@ -10,7 +11,7 @@
    {:properties (merge (tiled/map-properties schema-tiled-map)
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})
-    :layers (for [layer (tiled/layers schema-tiled-map)]
+    :layers (for [layer (tiled-map/layers schema-tiled-map)]
               {:name (tiled/layer-name layer)
                :visible? (tiled/visible? layer)
                :properties (tiled/map-properties layer)

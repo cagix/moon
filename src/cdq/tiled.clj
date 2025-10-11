@@ -13,12 +13,6 @@
   (map-properties [_]))
 
 (defprotocol TMap
-  (layers [tiled-map]
-          "Returns the layers of the tiled-map (instance of [[TMapLayer]]).")
-
-  (layer-index [tiled-map layer]
-               "Returns nil or the integer index of the layer.")
-
   (get-layer [tiled-map layer-name]
              "Returns the layer with name (string).")
 
@@ -119,14 +113,6 @@
     (properties/->clj (tiled-map/properties this)))
 
   TMap
-  (layers [this]
-    (tiled-map/layers this))
-
-  (layer-index [this layer]
-    (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
-      (when-not (= idx -1)
-        idx)))
-
   (get-layer [this layer-name]
     (.get (tiled-map/layers this) ^String layer-name))
 
@@ -182,7 +168,7 @@
 
 (defn- movement-property-layers [tiled-map]
   (->> tiled-map
-       layers
+       tiled-map/layers
        reverse
        (filter #(get-property % "movement-properties"))))
 
