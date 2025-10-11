@@ -2,14 +2,10 @@
   (:require [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
-            [clojure.gdx.maps.tiled.tiles :as tiles])
-  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer$Cell)))
+            [clojure.gdx.maps.tiled.layer.cell :as cell]
+            [clojure.gdx.maps.tiled.tiles :as tiles]))
 
-(defn property-value
-  "Returns the property value of the tile at the cell in layer.
-  If there is no cell at this position in the layer returns `:no-cell`.
-  If the property value is undefined returns `:undefined`."
-  [layer [x y] property-key]
+(defn property-value [layer [x y] property-key]
   (if-let [cell (layer/cell layer position)]
     (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
       value
@@ -35,8 +31,7 @@
             :when tiled-map-tile]
       (layer/set-cell! layer
                        position
-                       (doto (TiledMapTileLayer$Cell.)
-                         (.setTile tiled-map-tile))))
+                       (cell/create tiled-map-tile)))
     layer))
 
 (defn add-layer!
