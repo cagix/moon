@@ -3,14 +3,13 @@
             [cdq.graphics]
             [cdq.graphics.textures]
             [cdq.graphics.tiled-map-renderer]
+            [cdq.graphics.tm-renderer :as tm-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.orthographic-camera :as camera]
-            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.shape-drawer :as sd])
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
@@ -51,6 +50,7 @@
         (let [[x y w h] bounds]
           (TextureRegion. texture (int x) (int y) (int w) (int h)))
         (TextureRegion. texture))))
+
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
   (draw!
     [{:keys [graphics/tiled-map-renderer

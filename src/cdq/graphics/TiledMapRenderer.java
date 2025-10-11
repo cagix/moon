@@ -1,4 +1,4 @@
-package com.badlogic.gdx.maps.tiled.renderers;
+package cdq.graphics;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.C1;
 import static com.badlogic.gdx.graphics.g2d.Batch.C2;
@@ -31,13 +31,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 
-import com.badlogic.gdx.maps.tiled.renderers.orthogonal.ColorSetter;
+import cdq.graphics.ColorSetter;
 
-public class Orthogonal extends BatchTiledMapRenderer {
+public class TiledMapRenderer extends BatchTiledMapRenderer {
 
   private ColorSetter colorSetter;
 
-	public Orthogonal (TiledMap map, float unitScale, Batch batch) {
+	public TiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
 		super(map, unitScale, batch);
 	}
 

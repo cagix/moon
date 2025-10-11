@@ -1,12 +1,12 @@
-(ns clojure.gdx.maps.tiled.renderers.orthogonal
+(ns cdq.graphics.tm-renderer
   (:require [clojure.color :as color]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.viewport :as viewport])
-  (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)
-           (com.badlogic.gdx.maps.tiled.renderers.orthogonal ColorSetter)))
+  (:import (cdq.graphics ColorSetter
+                         TiledMapRenderer)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]
-  (let [^Orthogonal renderer (tiled-map-renderer tiled-map)
+  (let [^TiledMapRenderer renderer (tiled-map-renderer tiled-map)
         camera (viewport/camera world-viewport)]
     (.setColorSetter renderer (reify ColorSetter
                                 (apply [_ color x y]
@@ -21,6 +21,6 @@
 
 (defn create [world-unit-scale batch]
   (memoize (fn [tiled-map]
-             (Orthogonal. (:tiled-map/java-object tiled-map)
-                          (float world-unit-scale)
-                          batch))))
+             (TiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                (float world-unit-scale)
+                                batch))))
