@@ -15,7 +15,7 @@
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})
     :layers (for [layer (tiled-map/layers schema-tiled-map)]
-              {:name (tiled/layer-name layer)
+              {:name (layer/name layer)
                :visible? (tiled/visible? layer)
                :properties (properties/->clj (layer/properties layer))
                :tiles (for [position (g2d/posis grid)

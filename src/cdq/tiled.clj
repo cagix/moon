@@ -8,7 +8,6 @@
                                         TiledMapTileLayer$Cell)))
 
 (defprotocol TMapLayer
-  (layer-name [layer])
   (set-visible! [layer boolean])
   (visible? [layer])
   (property-value [layer [x y] property-key]
@@ -23,9 +22,6 @@
 
   (visible? [layer]
     (layer/visible? layer))
-
-  (layer-name [layer]
-    (layer/name layer))
 
   (property-value [layer position property-key]
     (if-let [cell (layer/cell layer position)]
@@ -113,7 +109,7 @@
                  position  " / mapeditor inverted position: " [(position 0)
                                                                (- (dec (.get (tiled-map/properties tiled-map) "height"))
                                                                   (position 1))]
-                 " and layer " (layer-name layer) " is undefined."))
+                 " and layer " (layer/name layer) " is undefined."))
     (when-not (= :no-cell value)
       value)))
 
@@ -125,7 +121,7 @@
 
 (defn movement-properties [tiled-map position]
   (for [layer (movement-property-layers tiled-map)]
-    [(layer-name layer)
+    [(layer/name layer)
      (tile-movement-property tiled-map layer position)]))
 
 (defn movement-property [tiled-map position]
