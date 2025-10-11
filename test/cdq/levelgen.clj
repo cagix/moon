@@ -22,6 +22,7 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.utils.disposable :as disposable]
+            [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
@@ -114,7 +115,6 @@
                                                 (orthographic-camera/set-to-ortho! false world-width world-height))))
         ctx (assoc ctx
                    :ctx/input input
-                   :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
                    :ctx/textures (into {} (for [path (files-utils/search files
@@ -167,13 +167,12 @@
   (when (input/key-pressed? input input.keys/equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
-  [{:keys [ctx/graphics
-           ctx/stage]
+  [{:keys [ctx/stage]
     :as ctx}]
   (let [ctx (if-let [new-ctx (.ctx stage)]
               new-ctx
               ctx)]
-    (graphics/clear! graphics color/black)
+    (screen-utils/clear! color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)

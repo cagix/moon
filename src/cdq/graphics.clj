@@ -2,10 +2,11 @@
   (:require [clojure.gdx.graphics :as graphics]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.utils.disposable :as disposable]))
+            [clojure.gdx.utils.disposable :as disposable]
+            [clojure.gdx.utils.screen :as screen-utils]))
 
-(defn clear-screen! [{:keys [graphics/core]} color]
-  (graphics/clear! core color))
+(defn clear-screen! [_ color]
+  (screen-utils/clear! color))
 
 (defn set-cursor! [{:keys [graphics/core
                            graphics/cursors]}
