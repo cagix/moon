@@ -6,8 +6,7 @@
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell
-                                        TmxMapLoader)
-           (com.badlogic.gdx.utils Disposable)))
+                                        TmxMapLoader)))
 
 (defprotocol HasMapProperties
   (get-property [_ k])
