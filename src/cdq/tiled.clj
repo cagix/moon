@@ -5,7 +5,7 @@
             [clojure.gdx.maps.tiled.layer.cell :as cell]
             [clojure.gdx.maps.tiled.tiles :as tiles]))
 
-(defn property-value [layer [x y] property-key]
+(defn property-value [layer position property-key]
   (if-let [cell (layer/cell layer position)]
     (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
       value
@@ -79,8 +79,10 @@
          (string? property-key)]}
   (let [layer (.get (tiled-map/layers tiled-map) layer-name)]
     (for [position (map-positions tiled-map)
-          :let [value (property-value layer position property-key)]
-          :when (not (#{:undefined :no-cell} value))]
+          :let [cell (layer/cell layer position)]
+          :when cell
+          :let [value (.get (.getProperties (.getTile cell)) property-key)]
+          :when value]
       [position value])))
 
 (defn- tile-movement-property [tiled-map layer position]
