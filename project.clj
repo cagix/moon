@@ -5,7 +5,7 @@
                  [com.badlogicgames.gdx/gdx "1.13.5"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "482fadc0f9"]
                  [com.github.damn/clojure.gdx.graphics.g2d.freetype "1bc8c46339"]
-                 [space.earlygrey/shapedrawer "2.5.0"]
+                 [com.github.damn/clojure.gdx.graphics.g2d.shape-drawer "bd69dc5369"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
                  [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
