@@ -20,7 +20,7 @@
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
-            [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
+            [clojure.gdx.graphics.g2d.freetype.generator.parameter :as parameter]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.math.vector2 :as vector2]
@@ -123,12 +123,13 @@
                                          quality-scaling
                                          enable-markup?
                                          use-integer-positions?]}]
-  (let [font (generator/create-font
-              file-handle
-              (parameter/create
-               {:size (* size quality-scaling)
-                :min-filter texture.filter/linear
-                :mag-filter texture.filter/linear}))]
+  (let [generator (generator/create file-handle)
+        font (generator/font generator
+                             (parameter/create
+                              {:size (* size quality-scaling)
+                               :min-filter texture.filter/linear
+                               :mag-filter texture.filter/linear}))]
+    (generator/dispose! generator)
     (data/set-scale! (fnt/data font) (/ quality-scaling))
     (data/set-enable-markup! (fnt/data font) enable-markup?)
     (fnt/use-integer-positions! font use-integer-positions?)
