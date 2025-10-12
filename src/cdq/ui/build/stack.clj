@@ -1,7 +1,7 @@
 (ns cdq.ui.build.stack
-  (:require [clojure.scene2d.widget-group :as widget-group])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Stack)))
+  (:require [clojure.gdx.scene2d.ui.stack :as stack]
+            [clojure.scene2d.widget-group :as widget-group]))
 
 (defn create [opts]
-  (doto (Stack.)
+  (doto (stack/create)
     (widget-group/set-opts! opts)))
