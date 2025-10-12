@@ -2,6 +2,7 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
+                 [com.badlogicgames.gdx/gdx "1.13.5"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "482fadc0f9"]
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
