@@ -14,4 +14,4 @@
   (.setColor pixmap color))
 
 (defn draw-pixel! [pixmap x y]
-  (.drawPixel pixmap 0 0))
+  (.drawPixel pixmap x y))
