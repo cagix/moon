@@ -6,6 +6,7 @@
             [cdq.graphics.tm-renderer :as tm-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -13,6 +14,8 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.g2d.bitmap-font :as fnt]
+            [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
@@ -112,7 +115,7 @@
 
 (defn create-cursor [files graphics path [hotspot-x hotspot-y]]
   (let [pixmap (pixmap/create (.internal files path))
-        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
     (pixmap/dispose! pixmap)
     cursor))
 
@@ -126,9 +129,9 @@
                {:size (* size quality-scaling)
                 :min-filter texture.filter/linear
                 :mag-filter texture.filter/linear}))]
-    (.setScale (.getData font) (/ quality-scaling))
-    (set! (.markupEnabled (.getData font)) enable-markup?)
-    (.setUseIntegerPositions font use-integer-positions?)
+    (data/set-scale! (fnt/data font) (/ quality-scaling))
+    (data/set-enable-markup! (fnt/data font) enable-markup?)
+    (fnt/use-integer-positions! font use-integer-positions?)
     font))
 
 (defn create!
