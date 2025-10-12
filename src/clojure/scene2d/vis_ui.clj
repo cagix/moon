@@ -10,8 +10,8 @@
   (vis-ui/load! skin-scale)
   (-> (vis-ui/skin)
       (.getFont "default-font") ; FIXME SKIN !
-      .getData
-      .markupEnabled
+      .getData ; bitmap font
+      .markupEnabled ; bitmap font data !
       (set! true))
   (tooltip/set-default-appear-delay-time! 0))
 
