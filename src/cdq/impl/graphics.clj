@@ -1,6 +1,7 @@
 (ns cdq.impl.graphics
   (:require [cdq.files :as files-utils]
             [cdq.graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.graphics.textures]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.tm-renderer :as tm-renderer]
@@ -22,7 +23,6 @@
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
             [clojure.gdx.graphics.g2d.freetype.generator.parameter :as parameter]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport]))
 

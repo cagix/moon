@@ -1,6 +1,6 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.orthographic-camera :as camera]
+            [cdq.graphics.camera :as camera]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport :as viewport]))
