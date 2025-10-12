@@ -2,8 +2,8 @@
   (:require [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.scene2d.build.horizontal-group :as horiz-group]
-            [clojure.scene2d.build.table :as table]
+            [cdq.ui.build.horizontal-group :as horiz-group]
+            [cdq.ui.build.table :as table]
             [clojure.scene2d.vis-ui.image-button :as image-button]))
 
 ; An UI widget has a initial constructor (create)

@@ -11,7 +11,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.scene2d.vis-ui.menu :as menu]
-            [clojure.scene2d.build.table :as table]
+            [cdq.ui.build.table :as table]
             [clojure.utils :as utils]))
 
 (defn create [{:keys [ctx/db

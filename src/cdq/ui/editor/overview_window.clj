@@ -3,7 +3,7 @@
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
             [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.scene2d.build.stack :as stack]
+            [cdq.ui.build.stack :as stack]
             [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]))

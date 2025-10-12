@@ -1,5 +1,5 @@
-(ns clojure.scene2d.build.horizontal-group
-  (:require [clojure.scene2d.build.group :as group])
+(ns cdq.ui.build.horizontal-group
+  (:require [cdq.ui.build.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup)))
 
 (defn create [{:keys [space pad] :as opts}]

@@ -10,8 +10,8 @@
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.utils.click-listener :as click-listener]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
-            [clojure.scene2d.build.stack :as stack]
-            [clojure.scene2d.build.table :as table]
+            [cdq.ui.build.stack :as stack]
+            [cdq.ui.build.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2]))

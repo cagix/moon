@@ -1,5 +1,5 @@
 (ns cdq.ctx.create.ui.windows
-  (:require [clojure.scene2d.build.group :as group]))
+  (:require [cdq.ui.build.group :as group]))
 
 (defn create [ctx actor-fns]
   (group/create

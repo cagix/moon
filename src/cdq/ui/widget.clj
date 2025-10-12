@@ -1,7 +1,7 @@
 (ns cdq.ui.widget
   (:require [clojure.scene2d.vis-ui.window :as window]
-            [clojure.scene2d.build.scroll-pane :as scroll-pane]
-            [clojure.scene2d.build.table :as table]
+            [cdq.ui.build.scroll-pane :as scroll-pane]
+            [cdq.ui.build.table :as table]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.vis-ui.label :as label]))

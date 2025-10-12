@@ -1,4 +1,4 @@
-(ns clojure.scene2d.build.actor
+(ns cdq.ui.build.actor
   (:require [clojure.gdx.scene2d.actor :as actor]))
 
 (def opts-fn-map

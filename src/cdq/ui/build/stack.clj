@@ -1,4 +1,4 @@
-(ns clojure.scene2d.build.stack
+(ns cdq.ui.build.stack
   (:require [clojure.scene2d.widget-group :as widget-group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Stack)))
 

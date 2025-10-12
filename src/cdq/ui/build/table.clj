@@ -1,4 +1,4 @@
-(ns clojure.scene2d.build.table
+(ns cdq.ui.build.table
   (:require [clojure.scene2d.widget-group :as widget-group]
             [clojure.scene2d.ui.table :as table]
             [clojure.vis-ui.table :as vis-table])

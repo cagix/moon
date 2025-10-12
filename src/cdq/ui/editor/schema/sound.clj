@@ -2,7 +2,7 @@
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.scene2d.build.table :as build-table]
+            [cdq.ui.build.table :as build-table]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window]))

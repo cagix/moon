@@ -14,8 +14,8 @@
        (filter java.io.File/.isFile)))
 
 (comment
- (let [from "clojure.scene2d"
-       to   "com.badlogic.gdx.scenes.scene2d"
+ (let [from "clojure.scene2d.build"
+       to   "cdq.ui.build"
        files (matching-files ["src" "resources" "test"])]
    (doseq [f files]
      (replace-in-file! f from to)))

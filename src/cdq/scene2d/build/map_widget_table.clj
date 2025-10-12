@@ -10,7 +10,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.build.table :as btable]
+            [cdq.ui.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]
             [clojure.vis-ui.separator :as separator]))

@@ -1,4 +1,4 @@
-(ns clojure.scene2d.build.scroll-pane
+(ns cdq.ui.build.scroll-pane
   (:require [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.gdx.scene2d.actor :as actor]))
 

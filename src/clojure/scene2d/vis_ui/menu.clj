@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.menu
   (:require [clojure.gdx.scene2d.actor :as actor]
-            [clojure.scene2d.build.table :as btable]
+            [cdq.ui.build.table :as btable]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.vis-ui.menu :as menu]

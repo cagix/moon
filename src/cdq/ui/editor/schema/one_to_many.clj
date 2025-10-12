@@ -8,7 +8,7 @@
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.build.table :as build-table]
+            [cdq.ui.build.table :as build-table]
             [cdq.ui.window :as window]))
 
 (defn- add-one-to-many-rows
