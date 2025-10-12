@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.windows.entity-info
+(ns cdq.ui.create.windows.entity-info
   (:require [cdq.ui :as ui]
             [cdq.ui.stage :as stage]
             [cdq.world.info :as info]

@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.message
+(ns cdq.ui.create.message
   (:require [cdq.ui.message :as message]))
 
 (def duration-seconds 0.5)

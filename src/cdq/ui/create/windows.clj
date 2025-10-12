@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.windows
+(ns cdq.ui.create.windows
   (:require [cdq.ui.build.group :as group]))
 
 (defn create [ctx actor-fns]

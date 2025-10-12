@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.player-state-draw.player-item-on-cursor
+(ns cdq.ui.create.player-state-draw.player-item-on-cursor
   (:require [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.graphics.textures :as textures]
             [cdq.input :as input]

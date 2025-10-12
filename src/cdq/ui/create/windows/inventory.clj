@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.windows.inventory
+(ns cdq.ui.create.windows.inventory
   (:require [clojure.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]

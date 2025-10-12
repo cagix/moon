@@ -1,9 +1,9 @@
-(ns cdq.ctx.create.ui.player-state-draw
+(ns cdq.ui.create.player-state-draw
   (:require [cdq.graphics :as graphics]
             [clojure.gdx.scene2d.actor :as actor]))
 
 (def state->draw-ui-view
-  (update-vals {:player-item-on-cursor 'cdq.ctx.create.ui.player-state-draw.player-item-on-cursor/draws}
+  (update-vals {:player-item-on-cursor 'cdq.ui.create.player-state-draw.player-item-on-cursor/draws}
                requiring-resolve))
 
 (defn- handle-draws

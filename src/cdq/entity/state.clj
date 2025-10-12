@@ -7,7 +7,7 @@
   (enter        [_ eid])
   (exit         [_ eid ctx])
   (clicked-inventory-cell [_ eid cell])
-  ; cdq.ctx.create.ui.player-state-draw/state->draw-ui-view
+  ; cdq.ui.create.player-state-draw/state->draw-ui-view
   ; cdq.ctx.render.assoc-paused/state->pause-game?
   )
 

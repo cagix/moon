@@ -1,4 +1,4 @@
-(ns cdq.ctx.create.ui.dev-menu
+(ns cdq.ui.create.dev-menu
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
