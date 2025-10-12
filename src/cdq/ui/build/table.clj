@@ -1,5 +1,5 @@
 (ns cdq.ui.build.table
-  (:require [clojure.scene2d.widget-group :as widget-group]
+  (:require [cdq.ui.build.widget-group :as widget-group]
             [clojure.gdx.scene2d.ui.cell :as cell]
             [clojure.gdx.scene2d.ui.table :as gdx-table]
             [clojure.scene2d.ui.table :as table]
