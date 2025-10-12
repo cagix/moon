@@ -3,9 +3,7 @@
             [clojure.gdx.scene2d.ui.cell :as cell]
             [clojure.gdx.scene2d.ui.table :as gdx-table]
             [clojure.scene2d.ui.table :as table]
-            [clojure.vis-ui.table :as vis-table])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+            [clojure.vis-ui.table :as vis-table]))
 
 (extend-type Table
   table/Table
