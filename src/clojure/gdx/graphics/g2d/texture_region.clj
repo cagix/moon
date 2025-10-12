@@ -5,4 +5,10 @@
   ([texture]
    (TextureRegion. texture))
   ([texture [x y w h]]
+   (TextureRegion. texture (int x) (int y) (int w) (int h)))
+  ([texture x y w h]
    (TextureRegion. texture x y w h)))
+
+(defn dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])

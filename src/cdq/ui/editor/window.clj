@@ -7,10 +7,10 @@
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.input.keys :as input.keys]
             [clojure.scene2d.vis-ui.window :as vis-window]
             [clojure.scene2d.vis-ui.text-button :as text-button]
-            [cdq.ui.window :as window])
-  (:import (com.badlogic.gdx Input$Keys)))
+            [cdq.ui.window :as window]))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]
@@ -44,7 +44,7 @@
                          (when-let [stage (actor/stage this)]
                            (let [{:keys [ctx/input]
                                   :as ctx} (.ctx stage)]
-                             (when (input/key-just-pressed? input Input$Keys/ENTER)
+                             (when (input/key-just-pressed? input input.keys/enter)
                                (clicked-save-fn this ctx)))))
                   :draw (fn [this batch parent-alpha])})]
         save-button (text-button/create

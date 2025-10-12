@@ -1,8 +1,8 @@
 (ns cdq.ui.tooltip
   (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.utils.align :as align]
             [clojure.vis-ui.label :as label]
-            [clojure.vis-ui.tooltip :as tooltip])
-  (:import (com.badlogic.gdx.utils Align)))
+            [clojure.vis-ui.tooltip :as tooltip]))
 
 (defn add! [actor tooltip-text]
   (tooltip/create {:update-fn (fn [tooltip]
@@ -14,7 +14,7 @@
                                       (tooltip/set-text! tooltip (tooltip-text ctx))))))
                    :target actor
                    :content (doto (label/create (if (string? tooltip-text) tooltip-text ""))
-                              (.setAlignment Align/center))})
+                              (.setAlignment align/center))})
   actor)
 
 (defn remove! [actor]

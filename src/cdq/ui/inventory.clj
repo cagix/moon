@@ -1,30 +1,30 @@
 (ns cdq.ui.inventory
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.gdx.scene2d.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Image)
-           (com.badlogic.gdx.scenes.scene2d.utils TextureRegionDrawable)))
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui.image :as image]
+            [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]))
 
 (defn- find-cell [group cell]
   (first (filter #(= (actor/user-object % ) cell)
-                 (Group/.getChildren group))))
+                 (group/children group))))
 
 (defn- window->cell [inventory-window cell]
   (-> inventory-window
-      (Group/.findActor "inventory-cell-table")
+      (group/find-actor "inventory-cell-table")
       (find-cell cell)))
 
 (defn set-item! [inventory-window cell {:keys [texture-region tooltip-text]}]
   (let [cell-widget (window->cell inventory-window cell)
-        image-widget (Group/.findActor cell-widget "image-widget")
+        image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
-        drawable (doto (TextureRegionDrawable. texture-region)
+        drawable (doto (texture-region-drawable/create texture-region)
                    (.setMinSize (float cell-size) (float cell-size)))]
-    (Image/.setDrawable image-widget drawable)
+    (image/set-drawable! image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (window->cell inventory-window cell)
-        image-widget (Group/.findActor cell-widget "image-widget")]
-    (Image/.setDrawable image-widget (:background-drawable (actor/user-object image-widget)))
+        image-widget (group/find-actor cell-widget "image-widget")]
+    (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))

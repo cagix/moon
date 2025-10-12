@@ -8,13 +8,13 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.widget :as widget]
+            [clojure.gdx.scene2d.utils.click-listener :as click-listener]
+            [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
             [clojure.scene2d.build.stack :as stack]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
-            [clojure.gdx.math.vector2 :as vector2])
-  (:import (com.badlogic.gdx.scenes.scene2d.utils ClickListener
-                                                  TextureRegionDrawable)))
+            [clojure.gdx.math.vector2 :as vector2]))
 
 (defn- draw-cell-rect-actor [draw-cell-rect]
   (widget/create
@@ -41,7 +41,7 @@
            slot->texture-region]}]
   (let [cell-size 48
         slot->drawable (fn [slot]
-                         (doto (TextureRegionDrawable. (slot->texture-region slot))
+                         (doto (texture-region-drawable/create (slot->texture-region slot))
                            (.setMinSize (float cell-size) (float cell-size))
                            (.tint (color/create 1 1 1 0.4))))
         droppable-color   [0   0.6 0 0.8 1]
@@ -128,14 +128,14 @@
       :position [(ui/viewport-width  stage)
                  (ui/viewport-height stage)]
       :clicked-cell-listener (fn [cell]
-                               (proxy [ClickListener] []
-                                 (clicked [event x y]
-                                   (let [{:keys [ctx/world] :as ctx} (.ctx (.getStage event))
-                                         eid (:world/player-eid world)
-                                         entity @eid
-                                         state-k (:state (:entity/fsm entity))
-                                         txs (state/clicked-inventory-cell [state-k (state-k entity)]
-                                                                           eid
-                                                                           cell)]
-                                     (txs/handle! ctx txs)))))
+                               (click-listener/create
+                                (fn [event x y]
+                                  (let [{:keys [ctx/world] :as ctx} (.ctx (.getStage event))
+                                        eid (:world/player-eid world)
+                                        entity @eid
+                                        state-k (:state (:entity/fsm entity))
+                                        txs (state/clicked-inventory-cell [state-k (state-k entity)]
+                                                                          eid
+                                                                          cell)]
+                                    (txs/handle! ctx txs)))))
       :slot->texture-region slot->texture-region})))

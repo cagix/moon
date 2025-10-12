@@ -1,26 +1,30 @@
 (ns cdq.input
-  (:require [clojure.string :as str]
-            [clojure.math.vector2 :as v])
-  (:import (com.badlogic.gdx Input$Buttons
-                             Input$Keys)))
+  (:require [clojure.gdx.input :as input]
+            [clojure.gdx.input.buttons :as input.buttons]
+            [clojure.gdx.input.keys :as input.keys]
+            [clojure.string :as str]
+            [clojure.math.vector2 :as v]))
 
-(defprotocol Input
-  (set-processor! [_ input-processor])
-  (key-pressed? [_ key])
-  (key-just-pressed? [_ key])
-  (button-just-pressed? [_ button])
-  (mouse-position [_]))
+
+(def set-processor!       input/set-processor!)
+(def key-pressed?         input/key-pressed?)
+(def key-just-pressed?    input/key-just-pressed?)
+(def button-just-pressed? input/button-just-pressed?)
+
+(defn mouse-position [input]
+  [(input/x input)
+   (input/y input)])
 
 (def controls
   {
-   :zoom-in Input$Keys/MINUS
-   :zoom-out Input$Keys/EQUALS
-   :unpause-once Input$Keys/P
-   :unpause-continously Input$Keys/SPACE
-   :close-windows-key Input$Keys/ESCAPE
-   :toggle-inventory  Input$Keys/I
-   :toggle-entity-info Input$Keys/E
-   :open-debug-button Input$Buttons/RIGHT
+   :zoom-in input.keys/minus
+   :zoom-out input.keys/equals
+   :unpause-once input.keys/p
+   :unpause-continously input.keys/space
+   :close-windows-key input.keys/escape
+   :toggle-inventory  input.keys/i
+   :toggle-entity-info input.keys/e
+   :open-debug-button input.buttons/right
    }
   )
 
@@ -36,10 +40,10 @@
              "Leftmouse click - use skill/drop item on cursor"]))
 
 (defn- WASD-movement-vector [input]
-  (let [r (when (key-pressed? input Input$Keys/D) [1  0])
-        l (when (key-pressed? input Input$Keys/A) [-1 0])
-        u (when (key-pressed? input Input$Keys/W) [0  1])
-        d (when (key-pressed? input Input$Keys/S) [0 -1])]
+  (let [r (when (key-pressed? input input.keys/d) [1  0])
+        l (when (key-pressed? input input.keys/a) [-1 0])
+        u (when (key-pressed? input input.keys/w) [0  1])
+        d (when (key-pressed? input input.keys/s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))

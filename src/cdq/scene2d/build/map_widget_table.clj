@@ -8,12 +8,12 @@
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]
-            [clojure.vis-ui.separator :as separator])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)))
+            [clojure.vis-ui.separator :as separator]))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -21,11 +21,11 @@
     :as ctx}]
   (let [window (-> stage
                    .getRoot
-                   (Group/.findActor "cdq.ui.editor.window"))
+                   (group/find-actor "cdq.ui.editor.window"))
         map-widget-table (-> window
-                             (Group/.findActor "cdq.ui.widget.scroll-pane-table")
-                             (Group/.findActor "scroll-pane-table")
-                             (Group/.findActor "cdq.db.schema.map.ui.widget"))
+                             (group/find-actor "cdq.ui.widget.scroll-pane-table")
+                             (group/find-actor "scroll-pane-table")
+                             (group/find-actor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
     (.addActor stage
@@ -52,7 +52,7 @@
                                                (actor/remove! (first (filter (fn [actor]
                                                                                (and (actor/user-object actor)
                                                                                     (= k ((actor/user-object actor) 0))))
-                                                                             (Group/.getChildren table))))
+                                                                             (group/children table))))
                                                (rebuild! ctx))}))
                       :left? true}
                      {:actor (label/create label-text)}]]})

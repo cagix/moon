@@ -1,6 +1,7 @@
 (ns cdq.ui
   (:require cdq.ui.widget
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
@@ -10,8 +11,7 @@
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui.label :as label])
-  (:import (cdq.ui Stage)
-           (com.badlogic.gdx.scenes.scene2d Group)))
+  (:import (cdq.ui Stage)))
 
 (defn- add-actors! [^Stage stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -72,13 +72,13 @@
 (defn inventory-window-visible? [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      (Group/.findActor "cdq.ui.windows.inventory")
+      (group/find-actor "cdq.ui.windows.inventory")
       actor/visible?))
 
 (defn toggle-inventory-visible! [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      (Group/.findActor "cdq.ui.windows.inventory")
+      (group/find-actor "cdq.ui.windows.inventory")
       toggle-visible!))
 
 ; no window movable type cursor appears here like in player idle
@@ -88,7 +88,7 @@
 (defn show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}]
   (assert (not (-> stage
                    .getRoot
-                   (Group/.findActor "cdq.ui.modal-window"))))
+                   (group/find-actor "cdq.ui.modal-window"))))
   (.addActor stage
              (window/create
               {:title title
@@ -109,42 +109,42 @@
 (defn set-item! [stage cell item-properties]
   (-> stage
       (stage-find "cdq.ui.windows")
-      (Group/.findActor "cdq.ui.windows.inventory")
+      (group/find-actor "cdq.ui.windows.inventory")
       (inventory-window/set-item! cell item-properties)))
 
 (defn remove-item! [stage inventory-cell]
   (-> stage
       (stage-find "cdq.ui.windows")
-      (Group/.findActor "cdq.ui.windows.inventory")
+      (group/find-actor "cdq.ui.windows.inventory")
       (inventory-window/remove-item! inventory-cell)))
 
 (defn add-skill! [stage skill-properties]
   (-> stage
       .getRoot
-      (Group/.findActor "cdq.ui.action-bar")
+      (group/find-actor "cdq.ui.action-bar")
       (action-bar/add-skill! skill-properties)))
 
 (defn remove-skill! [stage skill-id]
   (-> stage
       .getRoot
-      (Group/.findActor "cdq.ui.action-bar")
+      (group/find-actor "cdq.ui.action-bar")
       (action-bar/remove-skill! skill-id)))
 
 (defn show-text-message! [stage message]
   (-> stage
       .getRoot
-      (Group/.findActor "player-message")
+      (group/find-actor "player-message")
       (message/show! message)))
 
 (defn toggle-entity-info-window! [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      (Group/.findActor "cdq.ui.windows.entity-info")
+      (group/find-actor "cdq.ui.windows.entity-info")
       toggle-visible!))
 
 (defn close-all-windows! [stage]
   (->> (stage-find stage "cdq.ui.windows")
-       Group/.getChildren
+       group/children
        (run! #(actor/set-visible! % false))))
 
 (defprotocol ActorInformation

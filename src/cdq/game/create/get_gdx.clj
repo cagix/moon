@@ -1,10 +1,8 @@
 (ns cdq.game.create.get-gdx
   (:require [cdq.audio]
-            [cdq.input]
             [cdq.impl.graphics]
-            [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx Input)
-           (com.badlogic.gdx.audio Sound)))
+            [clojure.gdx :as gdx]
+            [clojure.gdx.audio.sound :as sound]))
 
 (defn- create-audio
   [sounds]
@@ -14,10 +12,10 @@
 
     (play! [_ sound-name]
       (assert (contains? sounds sound-name) (str sound-name))
-      (Sound/.play (get sounds sound-name)))
+      (sound/play! (get sounds sound-name)))
 
     (dispose! [_]
-      (run! Sound/.dispose (vals sounds)))))
+      (run! sound/dispose! (vals sounds)))))
 
 (defn do! [ctx config]
   (let [{:keys [audio
@@ -39,21 +37,3 @@
            :ctx/audio (create-audio sounds)
            :ctx/graphics (cdq.impl.graphics/create! graphics files (:graphics config))
            :ctx/input input)))
-
-(extend-type Input
-  cdq.input/Input
-  (set-processor! [this input-processor]
-    (.setInputProcessor this input-processor))
-
-  (key-pressed? [this key]
-    (.isKeyPressed this key))
-
-  (key-just-pressed? [this key]
-    (.isKeyJustPressed this key))
-
-  (button-just-pressed? [this button]
-    (.isButtonJustPressed this button))
-
-  (mouse-position [this]
-    [(.getX this)
-     (.getY this)]))

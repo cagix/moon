@@ -1,5 +1,11 @@
 (ns clojure.gdx.graphics.texture
-  (:import (com.badlogic.gdx.graphics Texture)))
+  (:import (com.badlogic.gdx.graphics Pixmap
+                                      Texture)))
 
-(defn create [path]
+(defmulti create type)
+
+(defmethod create String [path]
   (Texture. path))
+
+(defmethod create Pixmap [pixmap]
+  (Texture. pixmap))

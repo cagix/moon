@@ -6,3 +6,6 @@
 
 (defn add-actor! [group actor]
   (.addActor group actor))
+
+(defn children [group]
+  (Group/.getChildren group))

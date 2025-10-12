@@ -8,20 +8,19 @@
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.pixmap.format :as pixmap.format]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.texture.filter :as texture.filter]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.graphics.g2d.freetype.generator :as generator]
+            [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics Color
-                                      Pixmap
-                                      Pixmap$Format
-                                      Texture
-                                      Texture$TextureFilter
-                                      OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
+  (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- unproject [viewport [x y]]
@@ -51,11 +50,10 @@
                    {:keys [image/file image/bounds]}]
     (assert file)
     (assert (contains? textures file))
-    (let [^Texture texture (get textures file)]
+    (let [texture (get textures file)]
       (if bounds
-        (let [[x y w h] bounds]
-          (TextureRegion. texture (int x) (int y) (int w) (int h)))
-        (TextureRegion. texture))))
+        (texture-region/create texture bounds)
+        (texture-region/create texture))))
 
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
   (draw!
@@ -103,7 +101,7 @@
           f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (.setColor batch Color/WHITE)
+    (.setColor batch color/white)
     (.setProjectionMatrix batch (camera/combined (viewport/camera world-viewport)))
     (.begin batch)
     (sd/with-line-width shape-drawer world-unit-scale
@@ -113,22 +111,21 @@
     (.end batch)))
 
 (defn create-cursor [files graphics path [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal files path))
+  (let [pixmap (pixmap/create (.internal files path))
         cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
+    (pixmap/dispose! pixmap)
     cursor))
 
 (defn generate-font [file-handle {:keys [size
                                          quality-scaling
                                          enable-markup?
                                          use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator
-                            (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-                              (set! (.size params) (* size quality-scaling))
-                              (set! (.minFilter params) Texture$TextureFilter/Linear)
-                              (set! (.magFilter params) Texture$TextureFilter/Linear)
-                              params))]
+  (let [font (generator/create-font
+              file-handle
+              (parameter/create
+               {:size (* size quality-scaling)
+                :min-filter texture.filter/linear
+                :mag-filter texture.filter/linear}))]
     (.setScale (.getData font) (/ quality-scaling))
     (set! (.markupEnabled (.getData font)) enable-markup?)
     (.setUseIntegerPositions font use-integer-positions?)
@@ -146,12 +143,12 @@
            world-viewport]}]
   (doseq [[name rgba] colors]
     (colors/put! name (color/create rgba)))
-  (let [batch (SpriteBatch.)
-        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                            (.setColor Color/WHITE)
-                                            (.drawPixel 0 0))
-                                   texture (Texture. pixmap)]
-                               (.dispose pixmap)
+  (let [batch (sprite-batch/create)
+        shape-drawer-texture (let [pixmap (doto (pixmap/create 1 1 pixmap.format/rgba8888)
+                                            (pixmap/set-color! color/white)
+                                            (pixmap/draw-pixel! 0 0))
+                                   texture (texture/create pixmap)]
+                               (pixmap/dispose! pixmap)
                                texture)
         world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
@@ -166,14 +163,9 @@
                                                      (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
-        (assoc :graphics/shape-drawer (sd/create batch
-                                                 (TextureRegion. shape-drawer-texture
-                                                                 1
-                                                                 0
-                                                                 1
-                                                                 1)))
+        (assoc :graphics/shape-drawer (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1)))
         (assoc :graphics/textures (into {} (for [path (files-utils/search files texture-folder)]
-                                             [path (Texture. (.internal files path))])))
+                                             [path (texture/create path)])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
