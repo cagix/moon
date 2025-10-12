@@ -12,16 +12,16 @@
             [clojure.gdx.graphics.pixmap.format :as pixmap.format]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
             [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.math.vector2 :as vector2]
-            [clojure.gdx.utils.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+            [clojure.gdx.utils.viewport :as viewport]))
 
 (defn- unproject [viewport [x y]]
   (-> viewport
@@ -169,12 +169,12 @@
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
-        (assoc :graphics/ui-viewport (FitViewport. (:width  ui-viewport)
-                                                   (:height ui-viewport)
-                                                   (OrthographicCamera.)))
+        (assoc :graphics/ui-viewport (fit-viewport/create (:width  ui-viewport)
+                                                          (:height ui-viewport)
+                                                          (orthographic-camera/create)))
         (assoc :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                               world-height (* (:height world-viewport) world-unit-scale)]
-                                          (FitViewport. world-width
-                                                        world-height
-                                                        (doto (OrthographicCamera.)
-                                                          (.setToOrtho false world-width world-height))))))))
+                                          (fit-viewport/create world-width
+                                                               world-height
+                                                               (doto (orthographic-camera/create)
+                                                                 (orthographic-camera/set-to-ortho! false world-width world-height))))))))
