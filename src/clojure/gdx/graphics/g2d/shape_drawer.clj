@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.shape-drawer
+(ns clojure.gdx.graphics.g2d.shape-drawer
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]

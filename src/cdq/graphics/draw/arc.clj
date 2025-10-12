@@ -1,6 +1,6 @@
 (ns cdq.graphics.draw.arc
   (:require [clojure.color :as color]
-            [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.g2d.shape-drawer :as sd]
             [clojure.math :as math]))
 
 (defn do!

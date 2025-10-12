@@ -14,7 +14,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.g2d.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as fnt]
             [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]

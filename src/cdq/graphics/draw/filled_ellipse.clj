@@ -1,6 +1,6 @@
 (ns cdq.graphics.draw.filled-ellipse
   (:require [clojure.color :as color]
-            [clojure.gdx.graphics.shape-drawer :as sd]))
+            [clojure.gdx.graphics.g2d.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}
