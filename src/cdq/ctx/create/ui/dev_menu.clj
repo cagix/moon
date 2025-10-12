@@ -3,16 +3,16 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            [cdq.ui.build.table :as table]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.editor.window :as editor-window]
-            [clojure.string :as str]
-            [clojure.vis-ui.label :as label]
             [cdq.world :as world]
+            [clojure.string :as str]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.scene2d.vis-ui.menu :as menu]
-            [cdq.ui.build.table :as table]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [clojure.vis-ui.label :as label]))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics]}

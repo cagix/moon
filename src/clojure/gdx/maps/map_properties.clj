@@ -17,3 +17,6 @@
 (defn ->clj [^MapProperties map-properties]
   (zipmap (.getKeys   map-properties)
           (.getValues map-properties)))
+
+(defn put-all! [^MapProperties map-properties other-properties]
+  (.putAll map-properties other-properties))

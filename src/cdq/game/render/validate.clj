@@ -2,6 +2,9 @@
   (:require [malli.core :as m]
             [malli.utils :as mu]))
 
+; cdq depends on 'cdq.application' (libgdx stuff)
+; cdq/audio , cdq.graphics, cdq.input, cdq.ui, cdq.world ?
+
 (def ^:private schema
   (m/schema
    [:map {:closed true}

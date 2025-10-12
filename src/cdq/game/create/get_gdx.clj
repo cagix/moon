@@ -2,6 +2,7 @@
   (:require [cdq.audio]
             [cdq.impl.graphics]
             [clojure.gdx :as gdx]
+            [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]))
 
 (defn- create-audio
@@ -31,7 +32,7 @@
         sounds (into {}
                      (for [[sound-name file-handle] sound-name->file-handle]
                        [sound-name
-                        (.newSound audio file-handle)]))
+                        (audio/sound audio file-handle)]))
         ]
     (assoc ctx
            :ctx/audio (create-audio sounds)

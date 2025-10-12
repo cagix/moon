@@ -12,3 +12,6 @@
 
 (defn children [group]
   (Group/.getChildren group))
+
+(defn clear-children! [group]
+  (Group/.clearChildren group))

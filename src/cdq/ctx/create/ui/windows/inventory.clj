@@ -5,10 +5,12 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.utils.click-listener :as click-listener]
+            [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
             [cdq.ui.build.stack :as stack]
             [cdq.ui.build.table :as table]
@@ -21,7 +23,7 @@
     (fn [this _batch _parent-alpha]
       (when-let [stage (actor/stage this)]
         (let [{:keys [ctx/graphics
-                      ctx/world]} (.ctx stage)]
+                      ctx/world]} (stage/ctx stage)]
           (graphics/draw! graphics
                           (let [ui-mouse (:graphics/ui-mouse-position graphics)]
                             (draw-cell-rect @(:world/player-eid world)
@@ -42,8 +44,8 @@
   (let [cell-size 48
         slot->drawable (fn [slot]
                          (doto (texture-region-drawable/create (slot->texture-region slot))
-                           (.setMinSize (float cell-size) (float cell-size))
-                           (.tint (color/create 1 1 1 0.4))))
+                           (drawable/set-min-size! cell-size cell-size)
+                           (texture-region-drawable/tint (color/create 1 1 1 0.4))))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
@@ -130,7 +132,7 @@
       :clicked-cell-listener (fn [cell]
                                (click-listener/create
                                 (fn [event x y]
-                                  (let [{:keys [ctx/world] :as ctx} (.ctx (.getStage event))
+                                  (let [{:keys [ctx/world] :as ctx} (stage/ctx (.getStage event))
                                         eid (:world/player-eid world)
                                         entity @eid
                                         state-k (:state (:entity/fsm entity))

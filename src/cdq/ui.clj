@@ -2,6 +2,7 @@
   (:require cdq.ui.widget
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.stage :as stage]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
@@ -49,14 +50,14 @@
                     :width 500
                     :height 500})))
 
-(defn viewport-width  [stage] (viewport/world-width  (.getViewport stage)))
-(defn viewport-height [stage] (viewport/world-height (.getViewport stage)))
+(defn viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
+(defn viewport-height [stage] (viewport/world-height (stage/viewport stage)))
 
 (defn get-ctx [this]
   (.ctx this))
 
 (defn mouseover-actor [this position]
-  (let [[x y] (vector2/->clj (viewport/unproject (.getViewport this) (vector2/->java position)))]
+  (let [[x y] (vector2/->clj (viewport/unproject (stage/viewport this) (vector2/->java position)))]
     (.hit this x y true)))
 
 (defn action-bar-selected-skill [this]

@@ -9,6 +9,8 @@
             [cdq.ui.editor.window :as editor-window]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.scene2d.ui.widget-group :as widget-group]
             [cdq.ui.table :as table]
             [cdq.ui.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
@@ -20,7 +22,7 @@
            ctx/stage]
     :as ctx}]
   (let [window (-> stage
-                   .getRoot
+                   stage/root
                    (group/find-actor "cdq.ui.editor.window"))
         map-widget-table (-> window
                              (group/find-actor "cdq.ui.widget.scroll-pane-table")
@@ -28,10 +30,9 @@
                              (group/find-actor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
-    (.addActor stage
-               (editor-window/create
-                {:ctx ctx
-                 :property property}))))
+    (stage/add-actor! stage (editor-window/create
+                             {:ctx ctx
+                              :property property}))))
 
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -97,7 +98,7 @@
                                                                                   (mu/optional? k (malli/form schema schemas))
                                                                                   map-widget-table)])
                                 (rebuild! ctx))})}]))
-    (.pack window)
+    (widget-group/pack! window)
     window))
 
 (defn- horiz-sep [colspan]
@@ -136,7 +137,7 @@
                           {:text "Add component"
                            :on-clicked (fn [_actor {:keys [ctx/db
                                                            ctx/stage]}]
-                                         (.addActor stage (add-component-window (:db/schemas db) schema table)))})
+                                         (stage/add-actor! stage (add-component-window (:db/schemas db) schema table)))})
                   :colspan colspan}])]
              [(when opt?
                 [{:actor (separator/horizontal)

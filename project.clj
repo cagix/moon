@@ -2,19 +2,30 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
+
                  [com.badlogicgames.gdx/gdx "1.13.5"]
+                 ;[com.github.damn/clojure.gdx "1.13.5"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "482fadc0f9"]
                  [com.github.damn/clojure.gdx.graphics.g2d.freetype "1bc8c46339"]
                  [com.github.damn/clojure.gdx.graphics.g2d.shape-drawer "bd69dc5369"]
+                 ; clojure.gdx.scene2d.vis-ui
                  [com.github.damn/clojure.vis-ui "2d08546113"]
+
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
+
                  [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
                  [com.github.damn/clojure.math.vector2 "9b3fd73f9b"]
+
                  [com.github.damn/clojure.rand "6a273c942b"]
+
                  [com.github.damn/malli.utils "5da493efcb"]
+
                  [fr.reuz/qrecord "0.1.0"]
+
                  [org.clj-commons/pretty "3.2.0"]
+
                  [org.clojure/clojure "1.12.0"]
+
                  ; dev-only
                  [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]

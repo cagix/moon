@@ -4,6 +4,7 @@
             [cdq.graphics.textures :as textures]
             [clojure.gdx.scene2d.actor :as actor]
             [cdq.ui :as ui]
+            [cdq.ui.stage :as stage]
             [clojure.val-max :as val-max]
             [clojure.utils :as utils]))
 
@@ -50,5 +51,5 @@
        {:act (fn [_this _delta])
         :draw (fn [actor _batch _parent-alpha]
                 (when-let [stage (actor/stage actor)]
-                  (graphics/draw! (:ctx/graphics (.ctx stage))
-                                  (create-draws (.ctx stage)))))}))))
+                  (graphics/draw! (:ctx/graphics (stage/ctx stage))
+                                  (create-draws (stage/ctx stage)))))}))))

@@ -4,3 +4,6 @@
 
 (defn get [^MapLayers layers name]
   (.get layers ^String name))
+
+(defn add! [^MapLayers layers layer]
+  (.add layers layer))
