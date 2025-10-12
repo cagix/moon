@@ -9,7 +9,7 @@
             [cdq.ui.editor.window :as editor-window]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.scene2d.ui.table :as table]
+            [cdq.ui.table :as table]
             [cdq.ui.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]

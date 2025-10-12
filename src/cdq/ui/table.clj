@@ -1,4 +1,4 @@
-(ns clojure.scene2d.ui.table)
+(ns cdq.ui.table)
 
 (defprotocol Table
   (add! [_ actor-or-decl])

@@ -4,7 +4,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [cdq.ui.build.table :as build-table]
             [clojure.scene2d.vis-ui.text-button :as text-button]
-            [clojure.scene2d.ui.table :as table]
+            [cdq.ui.table :as table]
             [cdq.ui.window :as window]))
 
 (declare sound-columns)

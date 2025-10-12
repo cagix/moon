@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.text-button
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d.ui.table :as table]
+            [cdq.ui.table :as table]
             [clojure.vis-ui.text-button :as text-button] )
   (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))
 

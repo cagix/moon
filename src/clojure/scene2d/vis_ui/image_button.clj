@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d.ui.table :as table]
+            [cdq.ui.table :as table]
             [clojure.vis-ui.image-button :as image-button])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener

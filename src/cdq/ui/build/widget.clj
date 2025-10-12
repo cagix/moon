@@ -1,4 +1,4 @@
-(ns clojure.scene2d.widget
+(ns cdq.ui.build.widget
   (:require [cdq.ui.build.actor :as actor]))
 
 (defn set-opts! [actor opts]
