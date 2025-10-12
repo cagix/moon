@@ -4,3 +4,6 @@
 (defn create [tile]
   (doto (TiledMapTileLayer$Cell.)
     (.setTile tile)))
+
+(defn tile [^TiledMapTileLayer$Cell cell]
+  (.getTile cell))
