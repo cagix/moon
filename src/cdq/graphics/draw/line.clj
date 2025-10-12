@@ -1,5 +1,9 @@
 (ns cdq.graphics.draw.line
-  (:require [clojure.gdx.shape-drawer :as sd]))
+  (:require [clojure.color :as color]
+            [clojure.gdx.graphics.shape-drawer :as sd]))
 
-(defn do! [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
-  (sd/line! shape-drawer [sx sy] [ex ey] color))
+(defn do!
+  [{:keys [graphics/shape-drawer]}
+   [sx sy] [ex ey] color]
+  (sd/set-color! shape-drawer (color/float-bits color))
+  (sd/line! shape-drawer sx sy ex ey))

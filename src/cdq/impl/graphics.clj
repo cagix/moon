@@ -14,6 +14,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as fnt]
             [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -22,7 +23,6 @@
             [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.gdx.orthographic-camera :as camera]
-            [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport]))
 

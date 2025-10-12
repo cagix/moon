@@ -3,6 +3,7 @@
             [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
+            [clojure.gdx.maps.tiled.layer.cell :as cell]
             [clojure.grid2d :as g2d]))
 
 ; TODO properties->clj step probably not needed
@@ -23,7 +24,7 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [cell (layer/cell layer local-position)]
-                            [position (tiled/copy-tile (.getTile cell))])))})}))
+                            [position (tiled/copy-tile (cell/tile cell))])))})}))
 
 (defn step
   [{:keys [scaled-grid

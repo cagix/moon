@@ -1,17 +1,17 @@
 (ns clojure.gdx.utils.viewport
   (:import (com.badlogic.gdx.utils.viewport Viewport)))
 
-(defn camera [this]
-  (.getCamera this))
+(defn camera [^Viewport viewport]
+  (.getCamera viewport))
 
-(defn world-width [this]
-  (.getWorldWidth this))
+(defn world-width [^Viewport viewport]
+  (.getWorldWidth viewport))
 
-(defn world-height [this]
-  (.getWorldHeight this))
+(defn world-height [^Viewport viewport]
+  (.getWorldHeight viewport))
 
-(defn update! [viewport width height {:keys [center?]}]
+(defn update! [^Viewport viewport width height {:keys [center?]}]
   (.update viewport width height (boolean center?)))
 
-(defn unproject [viewport vector2]
+(defn unproject [^Viewport viewport vector2]
   (.unproject viewport vector2))
