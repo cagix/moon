@@ -1,45 +1,32 @@
 (ns cdq.graphics.camera
-  (:require [clojure.gdx.math.vector3 :as vector3])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)))
+  (:require [clojure.gdx.graphics.orthographic-camera :as camera]
+            [clojure.gdx.math.vector3 :as vector3]))
 
-(defprotocol Camera
-  (viewport-height [_])
-  (viewport-width [_])
-  (position [_])
-  (zoom [_])
-  (combined [_])
-  (set-position! [_ [x y]])
-  (set-zoom! [_ amount])
-  (frustum-bounds [_]))
+(defn viewport-height [this]
+  (camera/viewport-height this))
 
-(extend-type OrthographicCamera
-  Camera
-  (viewport-height [this]
-    (.viewportHeight this))
+(defn viewport-width [this]
+  (camera/viewport-width this))
 
-  (viewport-width [this]
-    (.viewportWidth this))
+(defn position [this]
+  (vector3/clojurize (camera/position this)))
 
-  (position [this]
-    (vector3/clojurize (.position this)))
+(defn zoom [this]
+  (camera/zoom this))
 
-  (zoom [this]
-    (.zoom this))
+(defn combined [this]
+  (camera/combined this))
 
-  (combined [this]
-    (.combined this))
+(defn set-position! [this position]
+  (camera/set-position! this position)
+  (camera/update! this))
 
-  (set-position! [this [x y]]
-    (set! (.x (.position this)) (float x))
-    (set! (.y (.position this)) (float y))
-    (.update this))
+(defn set-zoom! [this amount]
+  (camera/set-zoom! this amount)
+  (camera/update! this))
 
-  (set-zoom! [this amount]
-    (set! (.zoom this) amount)
-    (.update this))
-
-  (frustum-bounds [this]
-    (mapv vector3/clojurize (.planePoints (.frustum this)))))
+(defn frustum-bounds [this]
+  (mapv vector3/clojurize (.planePoints (camera/frustum this))))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))
