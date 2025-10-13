@@ -4,6 +4,7 @@
             [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tm-renderer :as tm-renderer]
+            [cdq.ui.stage :as stage]
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]
             [clojure.edn :as edn]
@@ -17,6 +18,8 @@
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.maps.map-properties :as props]
+            [clojure.gdx.maps.map-layers :as layers]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.scene2d.actor :as actor]
@@ -28,8 +31,7 @@
             [clojure.lwjgl.system.configuration :as lwjgl-config]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
-            [clojure.scene2d.vis-ui.window :as window])
-  (:import (cdq.ui Stage)))
+            [clojure.scene2d.vis-ui.window :as window]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -41,13 +43,13 @@
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
   (camera/set-position! camera
-                        [(/ (.get (tiled-map/properties tiled-map) "width") 2)
-                         (/ (.get (tiled-map/properties tiled-map) "height") 2)])
+                        [(/ (props/get (tiled-map/properties tiled-map) "width") 2)
+                         (/ (props/get (tiled-map/properties tiled-map) "height") 2)])
   (camera/set-zoom! camera
                     (camera/calculate-zoom camera
                                            :left [0 0]
-                                           :top [0 (.get (tiled-map/properties tiled-map) "height")]
-                                           :right [(.get (tiled-map/properties tiled-map) "width") 0]
+                                           :top [0 (props/get (tiled-map/properties tiled-map) "height")]
+                                           :right [(props/get (tiled-map/properties tiled-map) "width") 0]
                                            :bottom [0 0])))
 
 (def tile-size 48)
@@ -75,7 +77,7 @@
                         :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
-    (layer/set-visible! (.get (tiled-map/layers tiled-map) "creatures") true)
+    (layer/set-visible! (layers/get (tiled-map/layers tiled-map) "creatures") true)
     (show-whole-map! ctx)
     ctx))
 
@@ -89,7 +91,7 @@
                        :on-clicked (fn [actor ctx]
                                      (let [stage (actor/stage actor)
                                            new-ctx (generate-level ctx level-fn)]
-                                       (set! (.ctx stage) new-ctx)))})}])
+                                       (stage/set-ctx! stage new-ctx)))})}])
     :pack? true}))
 
 (defn create!
@@ -100,7 +102,7 @@
   ; skin = new Skin(Gdx.files.internal("data/uiskin.json"));
   (let [ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
         sprite-batch (sprite-batch/create)
-        stage (Stage. ui-viewport sprite-batch)
+        stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -128,7 +130,7 @@
                    :ctx/sprite-batch sprite-batch
                    :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale sprite-batch))
         ctx (generate-level ctx initial-level-fn)]
-    (.addActor (:ctx/stage ctx) (edit-window))
+    (stage/add-actor! (:ctx/stage ctx) (edit-window))
     ctx))
 
 (defn dispose!
@@ -169,17 +171,17 @@
 (defn render!
   [{:keys [ctx/stage]
     :as ctx}]
-  (let [ctx (if-let [new-ctx (.ctx stage)]
+  (let [ctx (if-let [new-ctx (stage/ctx stage)]
               new-ctx
               ctx)]
     (screen-utils/clear! color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)
-    (set! (.ctx stage) ctx)
-    (.act     stage)
-    (.draw    stage)
-    (.ctx  stage)))
+    (stage/set-ctx! stage ctx)
+    (stage/act! stage)
+    (stage/draw! stage)
+    (stage/ctx stage)))
 
 (defn resize!
   [{:keys [ctx/ui-viewport
