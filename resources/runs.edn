@@ -1,10 +1,9 @@
 {
- :listener [cdq.application.listener/create
-            {:state cdq.application/state
-             :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
-             :dispose cdq.game.dispose/do!
-             :render [cdq.game.render/do! #edn/resource "render-pipeline.edn"]
-             :resize cdq.game.resize/do!}]
+ :listener {:state cdq.application/state
+            :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
+            :dispose cdq.game.dispose/do!
+            :render [cdq.game.render/do! #edn/resource "render-pipeline.edn"]
+            :resize cdq.game.resize/do!}
  :config {:title "Cyber Dungeon Quest"
           :window {:width 1440
                    :height 900}
