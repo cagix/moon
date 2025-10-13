@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.build.stack :as stack]
             [clojure.scene2d.vis-ui.image-button :as image-button]
@@ -46,7 +47,7 @@
                                  :drawable/scale image-scale
                                  :tooltip tooltip})
                                (doto (label/create extra-info-text)
-                                 (.setTouchable touchable/disabled))]})})))
+                                 (actor/set-touchable! touchable/disabled))]})})))
 
 (defn- overview-table-rows
   [db

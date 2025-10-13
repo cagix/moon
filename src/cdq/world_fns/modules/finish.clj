@@ -2,14 +2,17 @@
   (:require [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             [cdq.world.tiled :as tiled]
+            [clojure.gdx.maps.map-properties :as props]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
+            [clojure.gdx.maps.tiled.layer.cell :as cell]
+            [clojure.gdx.maps.tiled.tiled-map-tile :as tile]
             [clojure.grid2d :as g2d]
             [clojure.grid2d.utils :as helper]))
 
 (defn- property-value [layer position property-key]
   (if-let [cell (layer/cell layer position)]
-    (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
+    (if-let [value (props/get (tile/properties (cell/tile cell)) property-key)]
       value
       :undefined)
     :no-cell))
@@ -58,7 +61,7 @@
                                             (fn [p]
                                               (and (= area-level (get scaled-area-level-grid p))
                                                    (#{:no-cell :undefined}
-                                                    (property-value (.get (tiled-map/layers tiled-map) "creatures")
+                                                    (property-value (props/get (tiled-map/layers tiled-map) "creatures")
                                                                     p
                                                                     "id"))))
                                             spawn-positions)))

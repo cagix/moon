@@ -8,7 +8,7 @@
   (Group/.findActor group actor-name))
 
 (defn add-actor! [group actor]
-  (.addActor group actor))
+  (Group/.addActor group actor))
 
 (defn children [group]
   (Group/.getChildren group))

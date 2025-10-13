@@ -44,7 +44,7 @@
   (<= (Math/abs (- x y)) float-rounding-error))
 
 (defn- approx-numbers [a b epsilon]
-  (<= (Math/abs (- a b)) epsilon))
+  (<= (Math/abs (double (- a b))) epsilon))
 
 (defn- round-n-decimals [^double x n]
   (let [z (math/pow 10 n)]

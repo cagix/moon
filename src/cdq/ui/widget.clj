@@ -2,6 +2,7 @@
   (:require [clojure.scene2d.vis-ui.window :as window]
             [cdq.ui.build.scroll-pane :as scroll-pane]
             [cdq.ui.build.table :as table]
+            [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.vis-ui.label :as label]))
@@ -55,11 +56,11 @@
     (text-button/create
      {:text "Map"
       :on-clicked (fn [actor _ctx]
-                    (.addActor (actor/stage actor)
-                               (data-viewer {:title "title"
-                                             :data v
-                                             :width 500
-                                             :height 500})))})
+                    (stage/add-actor! (actor/stage actor)
+                                      (data-viewer {:title "title"
+                                                    :data v
+                                                    :width 500
+                                                    :height 500})))})
     (label/create (v->text v))))
 
 (defn data-viewer

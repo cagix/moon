@@ -3,7 +3,8 @@
             [cdq.impl.graphics]
             [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
-            [clojure.gdx.audio.sound :as sound]))
+            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.files :as files]))
 
 (defn- create-audio
   [sounds]
@@ -28,12 +29,11 @@
                                       (for [sound-name sound-names
                                             :let [path (format path-format sound-name)]]
                                         [sound-name
-                                         (.internal files path)]))
+                                         (files/internal files path)]))
         sounds (into {}
                      (for [[sound-name file-handle] sound-name->file-handle]
                        [sound-name
-                        (audio/sound audio file-handle)]))
-        ]
+                        (audio/sound audio file-handle)]))]
     (assoc ctx
            :ctx/audio (create-audio sounds)
            :ctx/graphics (cdq.impl.graphics/create! graphics files (:graphics config))

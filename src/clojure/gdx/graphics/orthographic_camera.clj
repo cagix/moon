@@ -5,4 +5,4 @@
   (OrthographicCamera.))
 
 (defn set-to-ortho! [camera y-down? world-width world-height]
-  (.setToOrtho camera y-down? world-width world-height))
+  (OrthographicCamera/.setToOrtho camera y-down? world-width world-height))

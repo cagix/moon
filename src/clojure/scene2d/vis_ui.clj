@@ -1,5 +1,8 @@
 (ns clojure.scene2d.vis-ui
-  (:require [clojure.vis-ui :as vis-ui]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.bitmap-font.data :as bmfont-data]
+            [clojure.gdx.scene2d.ui.skin :as skin]
+            [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.tooltip :as tooltip]))
 
 (defn load! [{:keys [skin-scale]}]
@@ -9,10 +12,9 @@
     (vis-ui/dispose!))
   (vis-ui/load! skin-scale)
   (-> (vis-ui/skin)
-      (.getFont "default-font") ; FIXME SKIN !
-      .getData ; bitmap font
-      .markupEnabled ; bitmap font data !
-      (set! true))
+      (skin/font "default-font")
+      bitmap-font/data
+      (bmfont-data/set-enable-markup! true))
   (tooltip/set-default-appear-delay-time! 0))
 
 (defn dispose! []

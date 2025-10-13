@@ -2,7 +2,7 @@
   (:require cdq.ui.widget
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
@@ -11,20 +11,19 @@
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.vis-ui.label :as label])
-  (:import (cdq.ui Stage)))
+            [clojure.vis-ui.label :as label]))
 
-(defn- add-actors! [^Stage stage actor-fns ctx]
+(defn- add-actors! [stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
-    (.addActor stage (apply actor-fn ctx params))))
+    (stage/add-actor! stage (apply actor-fn ctx params))))
 
 (defn create!
   [{:keys [ctx/graphics]
     :as ctx}
    actor-fns]
   (vis-ui/load! {:skin-scale :x1})
-  (let [stage (Stage. (:graphics/ui-viewport graphics)
-                      (:graphics/batch       graphics))
+  (let [stage (stage/create (:graphics/ui-viewport graphics)
+                            (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
         ctx (assoc ctx
                    :ctx/stage stage
@@ -38,36 +37,37 @@
 (defn toggle-visible! [actor]
   (actor/set-visible! actor (not (actor/visible? actor))))
 
-(defn- stage-find [^Stage stage k]
+(defn- stage-find [stage k]
   (-> stage
-      .getRoot
-      (.findActor k)))
+      stage/root
+      (group/find-actor k)))
 
 (defn show-data-viewer! [this data]
-  (.addActor this (cdq.ui.widget/data-viewer
-                   {:title "Data View"
-                    :data data
-                    :width 500
-                    :height 500})))
+  (stage/add-actor! this
+                    (cdq.ui.widget/data-viewer
+                     {:title "Data View"
+                      :data data
+                      :width 500
+                      :height 500})))
 
 (defn viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
 (defn viewport-height [stage] (viewport/world-height (stage/viewport stage)))
 
 (defn get-ctx [this]
-  (.ctx this))
+  (stage/ctx this))
 
 (defn mouseover-actor [this position]
-  (let [[x y] (vector2/->clj (viewport/unproject (stage/viewport this) (vector2/->java position)))]
-    (.hit this x y true)))
+  (let [position (vector2/->clj (viewport/unproject (stage/viewport this) (vector2/->java position)))]
+    (stage/hit this position true)))
 
 (defn action-bar-selected-skill [this]
   (-> this
-      .getRoot
-      (.findActor "cdq.ui.action-bar")
+      stage/root
+      (group/find-actor "cdq.ui.action-bar")
       action-bar/selected-skill))
 
 (defn rebuild-actors! [stage ctx]
-  (.clear stage)
+  (stage/clear! stage)
   (add-actors! stage (:ctx/actor-fns ctx) ctx))
 
 (defn inventory-window-visible? [stage]
@@ -88,24 +88,25 @@
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}]
   (assert (not (-> stage
-                   .getRoot
+                   stage/root
                    (group/find-actor "cdq.ui.modal-window"))))
-  (.addActor stage
-             (window/create
-              {:title title
-               :rows [[{:actor (label/create text)}]
-                      [{:actor (text-button/create
-                                {:text button-text
-                                 :on-clicked (fn [_actor _ctx]
-                                               (.remove (-> stage
-                                                            .getRoot
-                                                            (.findActor "cdq.ui.modal-window")))
-                                               (on-click))})}]]
-               :actor/name "cdq.ui.modal-window"
-               :modal? true
-               :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
-                                       (* (viewport/world-height ui-viewport) (/ 3 4))]
-               :pack? true})))
+  (stage/add-actor! stage
+                    (window/create
+                     {:title title
+                      :rows [[{:actor (label/create text)}]
+                             [{:actor (text-button/create
+                                       {:text button-text
+                                        :on-clicked (fn [_actor _ctx]
+                                                      (actor/remove!
+                                                       (-> stage
+                                                           stage/root
+                                                           (group/find-actor "cdq.ui.modal-window")))
+                                                      (on-click))})}]]
+                      :actor/name "cdq.ui.modal-window"
+                      :modal? true
+                      :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
+                                              (* (viewport/world-height ui-viewport) (/ 3 4))]
+                      :pack? true})))
 
 (defn set-item! [stage cell item-properties]
   (-> stage
@@ -121,19 +122,19 @@
 
 (defn add-skill! [stage skill-properties]
   (-> stage
-      .getRoot
+      stage/root
       (group/find-actor "cdq.ui.action-bar")
       (action-bar/add-skill! skill-properties)))
 
 (defn remove-skill! [stage skill-id]
   (-> stage
-      .getRoot
+      stage/root
       (group/find-actor "cdq.ui.action-bar")
       (action-bar/remove-skill! skill-id)))
 
 (defn show-text-message! [stage message]
   (-> stage
-      .getRoot
+      stage/root
       (group/find-actor "player-message")
       (message/show! message)))
 

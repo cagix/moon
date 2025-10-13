@@ -1,5 +1,6 @@
 (ns cdq.ui.create.player-state-draw
   (:require [cdq.graphics :as graphics]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scene2d.actor :as actor]))
 
 (def state->draw-ui-view
@@ -19,5 +20,5 @@
 (defn create [_ctx]
   (actor/create
    {:draw (fn [this _batch _parent-alpha]
-            (handle-draws (.ctx (actor/stage this))))
+            (handle-draws (stage/ctx (actor/stage this))))
     :act (fn [this _delta])}))

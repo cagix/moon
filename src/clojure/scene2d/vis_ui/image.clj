@@ -1,8 +1,10 @@
 (ns clojure.scene2d.vis-ui.image
-  (:require [cdq.ui.build.widget :as widget]
-            [clojure.vis-ui.image :as image])
-  (:import (com.badlogic.gdx.utils Align
-                                   Scaling)))
+  (:require [cdq.ui.build.widget :as b-widget]
+            [clojure.gdx.scene2d.ui.image :as image]
+            [clojure.gdx.scene2d.ui.widget :as widget]
+            [clojure.gdx.utils.align :as align]
+            [clojure.gdx.utils.scaling :as scaling]
+            [clojure.vis-ui.image :as vis-image]))
 
 (defn create
   [{:keys [image/object
@@ -10,11 +12,11 @@
            align
            fill-parent?]
     :as opts}]
-  (let [image (image/create object)]
+  (let [image (vis-image/create object)]
     (when (= :center align)
-      (.setAlign image Align/center))
+      (image/set-align! image align/center))
     (when (= :fill scaling)
-      (.setScaling image Scaling/fill))
+      (image/set-scaling! image scaling/fill))
     (when fill-parent?
-      (.setFillParent image true))
-    (widget/set-opts! image opts)))
+      (widget/set-fill-parent! image true))
+    (b-widget/set-opts! image opts)))

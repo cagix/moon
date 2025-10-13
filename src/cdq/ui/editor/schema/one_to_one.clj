@@ -5,10 +5,13 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui.widget-group :as widget-group]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.build.table :as build-table]
             [cdq.ui.table :as table]
+            [cdq.ui.stage :as stage]
             [cdq.ui.window :as window]))
 
 (defn- add-one-to-one-rows
@@ -18,9 +21,9 @@
    property-type
    property-id]
   (let [redo-rows (fn [ctx id]
-                    (.clearChildren table)
+                    (group/clear-children! table)
                     (add-one-to-one-rows ctx table property-type id)
-                    (.pack (window/find-ancestor table)))]
+                    (widget-group/pack! (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[(when-not property-id
@@ -29,7 +32,7 @@
                    :on-clicked (fn [_actor {:keys [ctx/db
                                                    ctx/graphics
                                                    ctx/stage]}]
-                                 (.addActor
+                                 (stage/add-actor!
                                   stage
                                   (editor-overview-window/create
                                    {:db db
@@ -59,6 +62,6 @@
     table))
 
 (defn value [_  widget _schemas]
-  (->> (.getChildren widget)
+  (->> (group/children widget)
        (keep actor/user-object)
        first))

@@ -3,6 +3,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.image :as image]
+            [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]))
 
 (defn- find-cell [group cell]
@@ -19,7 +20,7 @@
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (doto (texture-region-drawable/create texture-region)
-                   (.setMinSize (float cell-size) (float cell-size)))]
+                   (drawable/set-min-size! cell-size cell-size))]
     (image/set-drawable! image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 

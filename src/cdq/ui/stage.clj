@@ -1,4 +1,5 @@
 (ns cdq.ui.stage
+  (:require [clojure.gdx.scene2d.stage :as stage])
   (:import (cdq.ui Stage)))
 
 (defn create [viewport batch]
@@ -10,11 +11,26 @@
 (defn set-ctx! [^Stage stage ctx]
   (set! (.ctx stage) ctx))
 
-(defn act! [^Stage stage]
-  (.act stage))
+(defn act! [stage]
+  (stage/act! stage))
 
-(defn draw! [^Stage stage]
-  (.draw stage))
+(defn draw! [stage]
+  (stage/draw! stage))
 
-(defn add-actor! [^Stage stage actor]
-  (.addActor stage actor))
+(defn add-actor! [stage actor]
+  (stage/add-actor! stage actor))
+
+(defn viewport [stage]
+  (stage/viewport stage))
+
+(defn root [stage]
+  (stage/root stage))
+
+(defn hit [stage position touchable?]
+  (stage/hit stage position touchable?))
+
+(defn clear! [stage]
+  (stage/clear! stage))
+
+(defn viewport [stage]
+  (stage/viewport stage))

@@ -9,7 +9,7 @@
                  [com.github.damn/clojure.gdx.graphics.g2d.freetype "1bc8c46339"]
                  [com.github.damn/clojure.gdx.graphics.g2d.shape-drawer "bd69dc5369"]
                  ; clojure.gdx.scene2d.vis-ui
-                 [com.github.damn/clojure.vis-ui "2d08546113"]
+                 [com.github.damn/clojure.vis-ui "41ed3ee736"]
 
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
 

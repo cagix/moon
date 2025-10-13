@@ -1,8 +1,9 @@
 (ns clojure.gdx.scene2d.utils.texture-region-drawable
   "Drawable for a `TextureRegion`."
-  (:import (com.badlogic.gdx.scenes.scene2d.utils TextureRegionDrawable)))
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.scenes.scene2d.utils TextureRegionDrawable)))
 
-(defn create [texture-region]
+(defn create [^TextureRegion texture-region]
   (TextureRegionDrawable. texture-region))
 
 (defn tint

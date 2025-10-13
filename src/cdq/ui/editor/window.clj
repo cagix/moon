@@ -6,6 +6,7 @@
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.scene2d.vis-ui.window :as vis-window]
@@ -18,7 +19,7 @@
     (try
      (let [new-ctx (update ctx :ctx/db f)
            stage (actor/stage actor)]
-       (set! (.ctx stage) new-ctx))
+       (stage/set-ctx! stage new-ctx))
      (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)
@@ -43,7 +44,7 @@
                  {:act (fn [this delta]
                          (when-let [stage (actor/stage this)]
                            (let [{:keys [ctx/input]
-                                  :as ctx} (.ctx stage)]
+                                  :as ctx} (stage/ctx stage)]
                              (when (input/key-just-pressed? input input.keys/enter)
                                (clicked-save-fn this ctx)))))
                   :draw (fn [this batch parent-alpha])})]

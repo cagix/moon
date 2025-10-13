@@ -6,7 +6,8 @@
   (proxy [Actor] []
     (act [delta]
       (act this delta)
-      (proxy-super act delta))
+      (let [^Actor this this]
+        (proxy-super act delta)))
     (draw [batch parent-alpha]
       (draw this batch parent-alpha))))
 

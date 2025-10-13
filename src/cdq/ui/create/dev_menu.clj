@@ -6,6 +6,7 @@
             [cdq.ui.build.table :as table]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.editor.window :as editor-window]
+            [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [clojure.string :as str]
             [clojure.gdx.scene2d.actor :as actor]
@@ -24,17 +25,17 @@
                                  :on-click (fn [_actor {:keys [ctx/db
                                                                ctx/graphics
                                                                ctx/stage]}]
-                                             (.addActor
+                                             (stage/add-actor!
                                               stage
                                               (editor-overview-window/create
                                                {:db db
                                                 :graphics graphics
                                                 :property-type property-type
                                                 :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
-                                                                 (.addActor stage
-                                                                             (editor-window/create
-                                                                              {:ctx ctx
-                                                                               :property (db/get-raw db id)})))})))})})
+                                                                 (stage/add-actor! stage
+                                                                                   (editor-window/create
+                                                                                    {:ctx ctx
+                                                                                     :property (db/get-raw db id)})))})))})})
         ctx-data-viewer {:label "Ctx Data"
                          :items [{:label "Show data"
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
@@ -51,7 +52,7 @@
                                                   stage (actor/stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
                                               (world/dispose! (:ctx/world ctx))
-                                              (set! (.ctx stage) ((requiring-resolve create-world) ctx world-fn))))})}
+                                              (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}
         update-labels [{:label "elapsed-time"
                         :update-fn (fn [ctx]
                                      (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))

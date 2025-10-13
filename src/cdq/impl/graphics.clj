@@ -7,6 +7,7 @@
             [cdq.graphics.tm-renderer :as tm-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -15,6 +16,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as fnt]
             [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
@@ -102,19 +104,21 @@
                   graphics/world-unit-scale
                   graphics/world-viewport]}
           f]
-    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-    ; -> also Widgets, etc. ? check.
-    (.setColor batch color/white)
-    (.setProjectionMatrix batch (camera/combined (viewport/camera world-viewport)))
-    (.begin batch)
+    ; fix scene2d.ui.tooltip flickering
+    ; _everything_ flickers with vis ui tooltip! it changes batch color somehow and does not
+    ; change it back !
+    (batch/set-color! batch [1 1 1 1])
+    ;
+    (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
+    (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (reset! unit-scale world-unit-scale)
       (f)
       (reset! unit-scale 1))
-    (.end batch)))
+    (batch/end! batch)))
 
 (defn create-cursor [files graphics path [hotspot-x hotspot-y]]
-  (let [pixmap (pixmap/create (.internal files path))
+  (let [pixmap (pixmap/create (files/internal files path))
         cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
     (pixmap/dispose! pixmap)
     cursor))
@@ -149,7 +153,7 @@
     (colors/put! name (color/create rgba)))
   (let [batch (sprite-batch/create)
         shape-drawer-texture (let [pixmap (doto (pixmap/create 1 1 pixmap.format/rgba8888)
-                                            (pixmap/set-color! color/white)
+                                            (pixmap/set-color! [1 1 1 1])
                                             (pixmap/draw-pixel! 0 0))
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
@@ -163,7 +167,7 @@
                                                                graphics
                                                                (format (:path-format cursors) path)
                                                                hotspot))))
-        (assoc :graphics/default-font (generate-font (.internal files (:path default-font))
+        (assoc :graphics/default-font (generate-font (files/internal files (:path default-font))
                                                      (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)

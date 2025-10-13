@@ -8,6 +8,7 @@
             [cdq.ui.stage :as stage]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.event :as event]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.utils.click-listener :as click-listener]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
@@ -45,7 +46,7 @@
         slot->drawable (fn [slot]
                          (doto (texture-region-drawable/create (slot->texture-region slot))
                            (drawable/set-min-size! cell-size cell-size)
-                           (texture-region-drawable/tint (color/create 1 1 1 0.4))))
+                           (texture-region-drawable/tint (color/create [1 1 1 0.4]))))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
@@ -132,7 +133,7 @@
       :clicked-cell-listener (fn [cell]
                                (click-listener/create
                                 (fn [event x y]
-                                  (let [{:keys [ctx/world] :as ctx} (stage/ctx (.getStage event))
+                                  (let [{:keys [ctx/world] :as ctx} (stage/ctx (event/stage event))
                                         eid (:world/player-eid world)
                                         entity @eid
                                         state-k (:state (:entity/fsm entity))

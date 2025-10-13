@@ -1,7 +1,7 @@
 (ns cdq.ui.message
   (:require [cdq.graphics :as graphics]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.viewport :as viewport]))
 
 (defn- draw-message [state vp-width vp-height]
@@ -18,7 +18,7 @@
   (doto (actor/create
          {:draw (fn [this _batch _parent-alpha]
                   (when-let [stage (actor/stage this)]
-                    (graphics/draw! (:ctx/graphics (.ctx stage))
+                    (graphics/draw! (:ctx/graphics (stage/ctx stage))
                                     [(draw-message (actor/user-object this)
                                                    (viewport/world-width  (stage/viewport stage))
                                                    (viewport/world-height (stage/viewport stage)))])))

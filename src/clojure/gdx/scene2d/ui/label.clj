@@ -3,3 +3,6 @@
 
 (defn set-text! [^Label label text]
   (.setText label (str text)))
+
+(defn set-alignment! [^Label label align]
+  (.setAlignment label align))

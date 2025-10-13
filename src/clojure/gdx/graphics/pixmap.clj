@@ -1,17 +1,21 @@
 (ns clojure.gdx.graphics.pixmap
-  (:import (com.badlogic.gdx.graphics Pixmap)))
+  (:import (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Pixmap
+                                      Pixmap$Format)))
 
 (defn create
-  ([file-handle]
+  ([^FileHandle file-handle]
    (Pixmap. file-handle))
-  ([width height pixmap-format]
-   (Pixmap. width height pixmap-format)))
+  ([width height ^Pixmap$Format pixmap-format]
+   (Pixmap. (int width)
+            (int height)
+            pixmap-format)))
 
-(defn dispose! [pixmap]
+(defn dispose! [^Pixmap pixmap]
   (.dispose pixmap))
 
-(defn set-color! [pixmap color]
-  (.setColor pixmap color))
+(defn set-color! [^Pixmap pixmap [r g b a]]
+  (.setColor pixmap r g b a))
 
-(defn draw-pixel! [pixmap x y]
+(defn draw-pixel! [^Pixmap pixmap x y]
   (.drawPixel pixmap x y))
