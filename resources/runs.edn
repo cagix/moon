@@ -1,6 +1,6 @@
 {
  :listener {:state cdq.application/state
-            :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
+            :create [cdq.game.create/pipeline #edn/resource "create-pipeline.edn"]
             :dispose cdq.game.dispose/do!
             :render [cdq.game.render/do! #edn/resource "render-pipeline.edn"]
             :resize cdq.game.resize/do!}

@@ -5,7 +5,3 @@
             (apply (requiring-resolve f) ctx params))
           ctx
           steps))
-
-(defn do! [steps]
-  (pipeline {}
-            steps))

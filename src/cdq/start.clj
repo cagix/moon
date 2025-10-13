@@ -1,5 +1,6 @@
 (ns cdq.start
   (:require [clojure.config :as config]
+            [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
@@ -18,7 +19,7 @@
                            (let [state @(requiring-resolve state)]
                              {:create (fn []
                                         (reset! state (let [[f params] create]
-                                                        ((requiring-resolve f) params))))
+                                                        ((requiring-resolve f) (gdx/context) params))))
                               :dispose (fn []
                                          ((requiring-resolve dispose) @state))
                               :render (fn []
