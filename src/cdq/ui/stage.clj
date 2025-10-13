@@ -31,6 +31,3 @@
 
 (defn clear! [stage]
   (stage/clear! stage))
-
-(defn viewport [stage]
-  (stage/viewport stage))
