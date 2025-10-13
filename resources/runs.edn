@@ -1,18 +1,12 @@
-[
- [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
- [cdq.application/create
-  {
-   :listener [cdq.application.listener/create
-              {:state cdq.application/state
-               :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
-               :dispose cdq.game.dispose/do!
-               :render [cdq.game.render/do! #edn/resource "render-pipeline.edn"]
-               :resize cdq.game.resize/do!}]
-   :config [clojure.gdx.backends.lwjgl.application.config/create
-            {:title "Cyber Dungeon Quest"
-             :window {:width 1440
-                      :height 900}
-             :fps 60}]
-   }
-  ]
- ]
+{
+ :listener [cdq.application.listener/create
+            {:state cdq.application/state
+             :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
+             :dispose cdq.game.dispose/do!
+             :render [cdq.game.render/do! #edn/resource "render-pipeline.edn"]
+             :resize cdq.game.resize/do!}]
+ :config {:title "Cyber Dungeon Quest"
+          :window {:width 1440
+                   :height 900}
+          :fps 60}
+ }
