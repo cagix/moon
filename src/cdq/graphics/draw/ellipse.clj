@@ -1,5 +1,5 @@
 (ns cdq.graphics.draw.ellipse
-  (:require [clojure.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.shape-drawer :as sd]))
 
 (defn do!

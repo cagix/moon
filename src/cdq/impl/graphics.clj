@@ -136,7 +136,7 @@
     (generator/dispose! generator)
     (data/set-scale! (fnt/data font) (/ quality-scaling))
     (data/set-enable-markup! (fnt/data font) enable-markup?)
-    (fnt/use-integer-positions! font use-integer-positions?)
+    (fnt/set-use-integer-positions! font use-integer-positions?)
     font))
 
 (defn create!

@@ -1,5 +1,5 @@
 (ns cdq.graphics.draw.sector
-  (:require [clojure.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.shape-drawer :as sd]
             [clojure.math :as math]))
 

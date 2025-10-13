@@ -1,5 +1,5 @@
 (ns cdq.graphics.tm-renderer
-  (:require [clojure.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.maps.map-layers :as layers]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
