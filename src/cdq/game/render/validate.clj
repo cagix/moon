@@ -8,12 +8,19 @@
 (def ^:private schema
   (m/schema
    [:map {:closed true}
+
+    ; TODO make separate libs !
     [:ctx/audio :some]
+
     [:ctx/db :some]
+
     [:ctx/graphics :some]
+
     [:ctx/input :some]
+
     [:ctx/stage :some]
     [:ctx/actor-fns :some]
+
     [:ctx/world :some]]))
 
 (defn step [ctx]
