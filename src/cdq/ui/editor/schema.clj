@@ -1,6 +1,7 @@
 (ns cdq.ui.editor.schema)
 
-(defprotocol Schema
- :extend-via-metadata true
- (create [_ v ctx])
- (value [_ widget schemas]))
+(defmulti create (fn [[schema-k :as _schema] v ctx]
+                   schema-k))
+
+(defmulti value (fn [[schema-k :as _schema] widget schemas]
+                  schema-k))

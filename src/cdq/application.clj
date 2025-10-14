@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [clojure.config :as config]
+  (:require cdq.ui.editor.schemas-impl
+            [clojure.config :as config]
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]

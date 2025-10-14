@@ -2,7 +2,6 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
-            [cdq.db.schema-fn-map :as schema-fn-map]
             [cdq.db.schemas :as schemas]
             [cdq.malli :as malli]
             [clojure.edn :as edn]
@@ -97,9 +96,7 @@
          (db/all-raw this property-type))))
 
 (defn create []
-  (let [schemas (update-vals (-> "schema.edn" io/resource slurp edn/read-string)
-                             (fn [[k :as schema]]
-                               (with-meta schema (get schema-fn-map/fn-map k))))
+  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         schemas (map->Schemas schemas)
         properties-file (io/resource "properties.edn")
         properties (-> properties-file slurp edn/read-string)]

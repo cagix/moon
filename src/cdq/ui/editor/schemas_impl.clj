@@ -1,4 +1,4 @@
-(ns cdq.db.schema-fn-map)
+(ns cdq.ui.editor.schemas-impl)
 
 (def fn-map
   '{
@@ -46,9 +46,10 @@
     }
   )
 
-(alter-var-root #'fn-map update-vals (fn [method-map]
-                                       (update-vals method-map
-                                                    (fn [sym]
-                                                      (let [avar (requiring-resolve sym)]
-                                                        (assert avar sym)
-                                                        avar)))))
+(doseq [[schema-k impls] fn-map
+        [multifn-sym impl-fn] impls
+        :let [multifn @(requiring-resolve multifn-sym)
+              method-var (requiring-resolve impl-fn)]]
+  (clojure.lang.MultiFn/.addMethod multifn
+                                   schema-k
+                                   method-var))
