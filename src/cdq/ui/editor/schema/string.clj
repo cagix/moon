@@ -3,7 +3,7 @@
             [clojure.vis-ui.text-field :as text-field]))
 
 (defn create [schema v _ctx]
-  (tooltip/add! (text-field/create (str schema))
+  (tooltip/add! (text-field/create (str v))
                 (str schema)))
 
 (defn value [_ widget _schemas]
