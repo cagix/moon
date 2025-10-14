@@ -1,9 +1,11 @@
 (ns cdq.application
-  (:require cdq.game.create
-            cdq.game.dispose
-            cdq.game.render
-            cdq.game.resize
-            cdq.ui.editor.schemas-impl
+  (:require cdq.ui.editor.schemas-impl
+            [cdq.audio :as audio]
+            [cdq.graphics :as graphics]
+            [cdq.graphics.ui-viewport :as ui-viewport]
+            [cdq.graphics.world-viewport :as world-viewport]
+            [cdq.ui :as ui]
+            [cdq.world :as world]
             [clojure.config :as config]
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
@@ -13,8 +15,29 @@
   (:gen-class))
 
 (defn- create! []
-  (cdq.game.create/pipeline (gdx/context)
-                            (config/edn-resource "create-pipeline.edn")))
+  (reduce (fn [ctx [f & params]]
+            (apply (requiring-resolve f) ctx params))
+          (gdx/context)
+          (config/edn-resource "create-pipeline.edn")))
+
+(defn- dispose!
+  [{:keys [ctx/audio
+           ctx/graphics
+           ctx/world]}]
+  (audio/dispose! audio)
+  (graphics/dispose! graphics)
+  (ui/dispose!)
+  (world/dispose! world))
+
+(defn- render! [ctx steps]
+  (reduce (fn [ctx f]
+            ((requiring-resolve f) ctx))
+          ctx
+          steps))
+
+(defn- resize! [{:keys [ctx/graphics]} width height]
+  (ui-viewport/update!    graphics width height)
+  (world-viewport/update! graphics width height))
 
 (def state (atom nil))
 
@@ -26,11 +49,11 @@
                            {:create (fn []
                                       (reset! state (create!)))
                             :dispose (fn []
-                                       (cdq.game.dispose/do! @state))
+                                       (dispose! @state))
                             :render (fn []
-                                      (swap! state cdq.game.render/do! render-pipeline))
+                                      (swap! state render! render-pipeline))
                             :resize (fn [width height]
-                                      (cdq.game.resize/do! @state width height))
+                                      (resize! @state width height))
                             :pause (fn [])
                             :resume (fn [])}))
                         (app-config/create config))))
