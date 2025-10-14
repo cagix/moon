@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.overview-window
   (:require [cdq.db :as db]
-            [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.build.stack :as stack]
+            [cdq.ui.editor.property :as property]
             [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]))

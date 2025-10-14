@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.schema.one-to-many
   (:require [cdq.db :as db]
-            [cdq.db.property :as property]
+            [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
