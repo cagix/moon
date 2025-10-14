@@ -1,4 +1,4 @@
-[[cdq.ui.create.dev-menu/create cdq.game.create.world/do!]
+[[cdq.ui.create.dev-menu/create cdq.application/create-world]
  [cdq.ui.create.action-bar/create]
  [cdq.ui.create.hp-mana-bar/create]
  [cdq.ui.create.windows/create [[cdq.ui.create.windows.entity-info/create]

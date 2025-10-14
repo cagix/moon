@@ -1,35 +1,64 @@
 (ns cdq.application
-  (:require cdq.ui.editor.schemas-impl
-            [cdq.audio :as audio]
+  (:require [cdq.audio :as audio]
+            ;
+            [cdq.db :as db]
+            cdq.impl.db
+            ;
+            [cdq.impl.graphics]
             [cdq.graphics :as graphics]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [cdq.graphics.textures :as textures]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
+            ;
             [cdq.input :as input]
+            ;
             [cdq.ui :as ui]
+            cdq.ui.editor.schemas-impl
+            cdq.ui.actor-information
+            cdq.ui.error-window
+            ;
+            [cdq.world-fns.creature-tiles]
+            ;
+            cdq.impl.world
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
+            [cdq.world.tiled-map :as tiled-map]
             [cdq.entity.body :as body]
             [cdq.entity.state :as state]
             [cdq.entity.skills.skill :as skill]
+            ;
             [clojure.color :as color]
+            ;
             [clojure.config :as config]
+            ;
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
+            ;
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            ;
             [clojure.math.geom :as geom]
             [clojure.math.vector2 :as v]
+            ;
             [clojure.throwable :as throwable]
             [clojure.txs :as txs]
+            [clojure.tx-handler :as tx-handler]
             [clojure.utils :as utils]
+            ;
             [malli.core :as m]
-            [malli.utils :as mu])
+            [malli.utils :as mu]
+            ;
+            [qrecord.core :as q])
   (:import (cdq.ui Stage))
   (:gen-class))
+
+(q/defrecord Context [])
 
 (defn- get-mouseover-entity
   [{:keys [world/grid
@@ -510,11 +539,136 @@
   (.draw stage)
   (.ctx  stage))
 
+(defn- create-audio-graphics-input
+  [{:keys [audio
+           files
+           graphics
+           input]}
+   config]
+  {:ctx/audio (audio/create audio files (:audio config))
+   :ctx/graphics (cdq.impl.graphics/create! graphics files (:graphics config))
+   :ctx/input input})
+
+(defn- merge-into-record [ctx]
+  (merge (map->Context {}) ctx))
+
+(defn- create-tx-handler!
+  [ctx
+   txs-fn-map
+   reaction-txs-fn-map]
+  (let [txs-fn-map          (update-vals txs-fn-map          requiring-resolve)
+        reaction-txs-fn-map (update-vals reaction-txs-fn-map requiring-resolve)]
+    (extend-type (class ctx)
+      txs/TransactionHandler
+      (handle! [ctx txs]
+        (let [handled-txs (tx-handler/actions! txs-fn-map
+                                               ctx
+                                               txs)]
+          (tx-handler/actions! reaction-txs-fn-map
+                               ctx
+                               handled-txs
+                               :strict? false)))))
+  ctx)
+
+(defn- create-db [ctx]
+  (assoc ctx :ctx/db (cdq.impl.db/create)))
+
+(defn create-ui! [ctx params]
+  (ui/create! ctx params))
+
+(defn- set-input-processor!
+  [{:keys [ctx/input
+           ctx/stage]
+    :as ctx}]
+  (input/set-processor! input stage)
+  ctx)
+
+(defn- spawn-player!
+  [{:keys [ctx/db
+           ctx/world]
+    :as ctx}]
+  (txs/handle! ctx
+               [[:tx/spawn-creature (let [{:keys [creature-id
+                                                  components]} (:world/player-components world)]
+                                      {:position (mapv (partial + 0.5) (:world/start-position world))
+                                       :creature-property (db/build db creature-id)
+                                       :components components})]])
+  (let [eid (get @(:world/entity-ids world) 1)]
+    (assert (:entity/player? @eid))
+    (assoc-in ctx [:ctx/world :world/player-eid] eid)))
+
+(defn- spawn-enemies!
+  [{:keys [ctx/db
+           ctx/world]
+    :as ctx}]
+  (txs/handle!
+   ctx
+   (for [[position creature-id] (tiled-map/spawn-positions (:world/tiled-map world))]
+     [:tx/spawn-creature {:position (mapv (partial + 0.5) position)
+                          :creature-property (db/build db (keyword creature-id))
+                          :components (:world/enemy-components world)}]))
+  ctx)
+
+(defn- call-world-fn
+  [world-fn creature-properties graphics]
+  (let [[f params] (-> world-fn io/resource slurp edn/read-string)]
+    ((requiring-resolve f)
+     (assoc params
+            :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
+                                                                             #(textures/texture-region graphics %))
+            :textures (:graphics/textures graphics)))))
+
+(def ^:private world-params
+  {:content-grid-cell-size 16
+   :world/factions-iterations {:good 15 :evil 5}
+   :world/max-delta 0.04
+   :world/minimum-size 0.39
+   :world/z-orders [:z-order/on-ground
+                    :z-order/ground
+                    :z-order/flying
+                    :z-order/effect]
+   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                         :initial-state :npc-sleeping}
+                            :entity/faction :evil}
+   :world/player-components {:creature-id :creatures/vampire
+                             :components {:entity/fsm {:fsm :fsms/player
+                                                       :initial-state :player-idle}
+                                          :entity/faction :good
+                                          :entity/player? true
+                                          :entity/free-skill-points 3
+                                          :entity/clickable {:type :clickable/player}
+                                          :entity/click-distance-tiles 1.5}}
+   :world/effect-body-props {:width 0.5
+                             :height 0.5
+                             :z-order :z-order/effect}})
+
+(defn- create-world
+  [{:keys [ctx/db
+           ctx/graphics
+           ctx/world]
+    :as ctx}
+   world-fn]
+  (let [world-fn-result (call-world-fn world-fn
+                                       (db/all-raw db :properties/creatures)
+                                       graphics)]
+    (-> ctx
+        (assoc :ctx/world (cdq.impl.world/create world-params world-fn-result))
+        spawn-player!
+        spawn-enemies!)))
+
 (defn- create! []
   (reduce (fn [ctx [f & params]]
-            (apply (requiring-resolve f) ctx params))
+            (apply f ctx params))
           (gdx/context)
-          (config/edn-resource "create-pipeline.edn")))
+          [[create-audio-graphics-input {:audio (config/edn-resource "audio.edn")
+                                         :graphics (config/edn-resource "graphics.edn")}]
+           [merge-into-record]
+           [create-tx-handler! (config/edn-resource "txs-fn-map.edn")
+            (config/edn-resource "reaction-txs-fn-map.edn")]
+           [create-db]
+           [create-ui! (config/edn-resource "ui.edn")]
+           [set-input-processor!]
+           [create-world (config/edn-resource "world.edn")]]))
 
 (defn- dispose!
   [{:keys [ctx/audio
