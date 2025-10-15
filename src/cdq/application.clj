@@ -4,7 +4,6 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            cdq.ui.editor.schemas-impl
             cdq.ui.actor-information
             cdq.ui.error-window
             [cdq.world-fns.creature-tiles]

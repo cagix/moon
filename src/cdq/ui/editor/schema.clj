@@ -6,6 +6,7 @@
             [cdq.ui.build.table :as build-table]
             [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
+            [cdq.ui.editor.widget.edn]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.tooltip :as tooltip]
@@ -237,3 +238,15 @@
 
 (defmethod value :s/string [_ widget _schemas]
   (text-field/text widget))
+
+(def fn-map
+  {:s/number {create       cdq.ui.editor.widget.edn/create
+              value        cdq.ui.editor.widget.edn/value}
+   :s/val-max {create       cdq.ui.editor.widget.edn/create
+               value        cdq.ui.editor.widget.edn/value}})
+
+(doseq [[schema-k impls] fn-map
+        [multifn method-var] impls ]
+  (clojure.lang.MultiFn/.addMethod multifn
+                                   schema-k
+                                   method-var))
