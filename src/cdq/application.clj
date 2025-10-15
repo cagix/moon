@@ -9,8 +9,9 @@
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.build.group :as build-group]
-            [cdq.ui.build.table :as table]
             [cdq.ui.build.stack :as stack]
+            [cdq.ui.build.table :as table]
+            [cdq.ui.dev-menu :as dev-menu]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.editor.window :as editor-window]
             [cdq.ui.message :as message]
@@ -39,7 +40,6 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.event :as event]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.gdx.scene2d.ui.label :as label]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.ui.widget-group :as widget-group]
@@ -47,7 +47,6 @@
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
             [clojure.scene2d.vis-ui.image :as image]
-            [clojure.scene2d.vis-ui.menu :as menu]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as vis-label]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
@@ -82,22 +81,6 @@
 (defn- validate [ctx]
   (mu/validate-humanize schema ctx)
   ctx)
-
-(defn- create-dev-menu*
-  [{:keys [menus update-labels]}]
-  (table/create
-   {:rows [[{:actor (menu/create
-                     {:menus menus
-                      :update-labels update-labels})
-             :expand-x? true
-             :fill-x? true
-             :colspan 1}]
-           [{:actor (doto (vis-label/create "")
-                      (actor/set-touchable! touchable/disabled))
-             :expand? true
-             :fill-x? true
-             :fill-y? true}]]
-    :fill-parent? true}))
 
 (declare rebuild-actors!
          create-world)
@@ -175,6 +158,14 @@
                         (update item :icon #(get (:graphics/textures graphics) %))
                         item))}))
 
+(defn- create-hp-mana-bar* [create-draws]
+  (actor/create
+   {:act (fn [_this _delta])
+    :draw (fn [actor _batch _parent-alpha]
+            (when-let [stage (actor/stage actor)]
+              (graphics/draw! (:ctx/graphics (stage/ctx stage))
+                              (create-draws (stage/ctx stage)))))}))
+
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150
               :rahmenh 26
@@ -208,19 +199,13 @@
                                                        name)
                                             :x (+ x 75)
                                             :y (+ y 2)
-                                            :up? true}]])
-          create-draws (fn [{:keys [ctx/world]}]
-                         (let [stats (:entity/stats @(:world/player-eid world))
-                               x (- x (/ rahmenw 2))]
-                           (concat
-                            (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
-                            (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP"))))]
-      (actor/create
-       {:act (fn [_this _delta])
-        :draw (fn [actor _batch _parent-alpha]
-                (when-let [stage (actor/stage actor)]
-                  (graphics/draw! (:ctx/graphics (stage/ctx stage))
-                                  (create-draws (stage/ctx stage)))))}))))
+                                            :up? true}]])]
+      (fn [{:keys [ctx/world]}]
+        (let [stats (:entity/stats @(:world/player-eid world))
+              x (- x (/ rahmenw 2))]
+          (concat
+           (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
+           (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP")))))))
 
 (defn- create-entity-info-window
   [{:keys [ctx/stage]}]
@@ -402,9 +387,9 @@
 (def message-duration-seconds 0.5)
 
 (defn- add-actors! [stage ctx]
-  (doseq [actor [(create-dev-menu* (create-dev-menu ctx))
+  (doseq [actor [(dev-menu/create (create-dev-menu ctx))
                  (action-bar/create)
-                 (create-hp-mana-bar ctx)
+                 (create-hp-mana-bar* (create-hp-mana-bar ctx))
                  (build-group/create
                   {:actor/name "cdq.ui.windows"
                    :group/actors [(create-entity-info-window ctx)
