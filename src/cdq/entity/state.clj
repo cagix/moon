@@ -5,13 +5,9 @@
    cdq.entity.state.npc-moving
    cdq.entity.state.npc-sleeping
    cdq.entity.state.player-dead
-   cdq.entity.state.player-idle
    cdq.entity.state.player-item-on-cursor
    cdq.entity.state.player-moving
    cdq.entity.state.stunned
-   cdq.entity.state.player-idle.handle-input
-   cdq.entity.state.player-item-on-cursor.handle-input
-   cdq.entity.state.player-moving.handle-input
    cdq.entity.state.player-idle.clicked-inventory-cell
    cdq.entity.state.player-item-on-cursor.clicked-inventory-cell
    )
@@ -19,14 +15,9 @@
 
 (defprotocol State
   (create       [_ eid world])
-  (handle-input [_ eid ctx])
-  (cursor       [_ eid ctx])
   (enter        [_ eid])
   (exit         [_ eid ctx])
-  (clicked-inventory-cell [_ eid cell])
-  ; cdq.ui.create.player-state-draw/state->draw-ui-view
-  ; cdq.ctx.render.assoc-paused/state->pause-game?
-  )
+  (clicked-inventory-cell [_ eid cell]))
 
 (def ^:private fn->k->var
   {
@@ -48,17 +39,6 @@
           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
           :player-moving         cdq.entity.state.player-moving/exit}
 
-   :cursor {:active-skill :cursors/sandclock
-            :player-dead :cursors/black-x
-            :player-idle cdq.entity.state.player-idle/cursor
-            :player-item-on-cursor :cursors/hand-grab
-            :player-moving :cursors/walking
-            :stunned :cursors/denied}
-
-   :handle-input {:player-idle           cdq.entity.state.player-idle.handle-input/txs
-                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor.handle-input/txs
-                  :player-moving         cdq.entity.state.player-moving.handle-input/txs}
-
    :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle.clicked-inventory-cell/txs
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor.clicked-inventory-cell/txs}
    })
@@ -69,17 +49,6 @@
              (if-let [f (k (:create fn->k->var))]
                (f eid v ctx)
                v))
-
-   :handle-input (fn [[k v] eid ctx]
-                   (if-let [f (k (:handle-input fn->k->var))]
-                     (f eid ctx)
-                     nil))
-
-   :cursor (fn [[k v] eid ctx]
-             (let [->cursor (k (:cursor fn->k->var))]
-               (if (keyword? ->cursor)
-                 ->cursor
-                 (->cursor eid ctx))))
 
    :enter (fn [[k v] eid]
             (when-let [f (k (:enter fn->k->var))]
