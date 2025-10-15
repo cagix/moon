@@ -8,14 +8,6 @@
     :s/number {cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
                cdq.ui.editor.schema/value        cdq.ui.editor.widget.edn/value}
 
-    :s/one-to-one {cdq.ui.editor.schema/create       cdq.ui.editor.schema.one-to-one/create
-                   cdq.ui.editor.schema/value        cdq.ui.editor.schema.one-to-one/value}
-
-    :s/sound {cdq.ui.editor.schema/create       cdq.ui.editor.schema.sound/create}
-
-    :s/string {cdq.ui.editor.schema/create       cdq.ui.editor.schema.string/create
-               cdq.ui.editor.schema/value        cdq.ui.editor.schema.string/value}
-
     :s/val-max {cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
                 cdq.ui.editor.schema/value        cdq.ui.editor.widget.edn/value}
 

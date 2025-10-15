@@ -1,6 +1,8 @@
 (ns cdq.ui.editor.schema
-  (:require [cdq.db :as db]
+  (:require [cdq.audio :as sounds]
+            [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.ui :as ui]
             [cdq.ui.build.table :as build-table]
             [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
@@ -18,7 +20,8 @@
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.utils :as utils]
             [clojure.vis-ui.label :as label]
-            [clojure.vis-ui.select-box :as select-box]))
+            [clojure.vis-ui.select-box :as select-box]
+            [clojure.vis-ui.text-field :as text-field]))
 
 (defmulti create (fn [[schema-k :as _schema] v ctx]
                    schema-k))
@@ -131,3 +134,106 @@
   (->> (group/children widget)
        (keep actor/user-object)
        set))
+
+(defn- add-one-to-one-rows
+  [{:keys [ctx/db
+           ctx/graphics]}
+   table
+   property-type
+   property-id]
+  (let [redo-rows (fn [ctx id]
+                    (group/clear-children! table)
+                    (add-one-to-one-rows ctx table property-type id)
+                    (widget-group/pack! (window/find-ancestor table)))]
+    (table/add-rows!
+     table
+     [[(when-not property-id
+         {:actor (text-button/create
+                  {:text "+"
+                   :on-clicked (fn [_actor {:keys [ctx/db
+                                                   ctx/graphics
+                                                   ctx/stage]}]
+                                 (stage/add-actor!
+                                  stage
+                                  (editor-overview-window/create
+                                   {:db db
+                                    :graphics graphics
+                                    :property-type property-type
+                                    :clicked-id-fn (fn [actor id ctx]
+                                                     (actor/remove! (window/find-ancestor actor))
+                                                     (redo-rows ctx id))})))})})]
+      [(when property-id
+         (let [property (db/get-raw db property-id)
+               texture-region (graphics/texture-region graphics (property/image property))
+               image-widget (image/create
+                             {:image/object texture-region
+                              :actor/user-object property-id})]
+           {:actor (tooltip/add! image-widget (property/tooltip property))}
+           image-widget))]
+      [(when property-id
+         {:actor (text-button/create
+                  {:text "-"
+                   :on-clicked (fn [_actor ctx]
+                                 (redo-rows ctx nil))})})]])))
+
+(defmethod create :s/one-to-one [[_ property-type] property-id ctx]
+  (let [table (build-table/create
+               {:cell-defaults {:pad 5}})]
+    (add-one-to-one-rows ctx table property-type property-id)
+    table))
+
+(defmethod value :s/one-to-one [_  widget _schemas]
+  (->> (group/children widget)
+       (keep actor/user-object)
+       first))
+
+(declare sound-columns)
+
+(defn- rebuild-sound-widget! [table sound-name]
+  (fn [actor _ctx]
+    (group/clear-children! table)
+    (table/add-rows! table [(sound-columns table sound-name)])
+    (actor/remove! (window/find-ancestor actor))
+    (widget-group/pack! (window/find-ancestor table))
+    (let [[k _] (actor/user-object table)]
+      (actor/set-user-object! table [k sound-name]))))
+
+(defn- open-select-sounds-handler [table]
+  (fn [_actor {:keys [ctx/audio
+                      ctx/stage]}]
+    (stage/add-actor! stage
+                      (cdq.ui.widget/scroll-pane-window
+                       {:viewport-height (ui/viewport-width stage)
+                        :rows (for [sound-name (sounds/sound-names audio)]
+                                [{:actor (text-button/create
+                                          {:text sound-name
+                                           :on-clicked (rebuild-sound-widget! table sound-name)})}
+                                 {:actor (text-button/create
+                                          {:text "play!"
+                                           :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                                         (sounds/play! audio sound-name))})}])}))))
+
+(defn- sound-columns [table sound-name]
+  [{:actor (text-button/create
+            {:text sound-name
+             :on-clicked (open-select-sounds-handler table)})}
+   {:actor (text-button/create
+            {:text "play!"
+             :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                           (sounds/play! audio sound-name))})}])
+
+(defmethod create :s/sound [_  sound-name _ctx]
+  (let [table (build-table/create {:cell-defaults {:pad 5}})]
+    (table/add-rows! table [(if sound-name
+                              (sound-columns table sound-name)
+                              [{:actor (text-button/create
+                                        {:text "No sound"
+                                         :on-clicked (open-select-sounds-handler table)})}])])
+    table))
+
+(defmethod create :s/string [schema v _ctx]
+  (tooltip/add! (text-field/create (str v))
+                (str schema)))
+
+(defmethod value :s/string [_ widget _schemas]
+  (text-field/text widget))
