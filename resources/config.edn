@@ -1,6 +1,6 @@
 {
- :config {:title "Cyber Dungeon Quest"
-          :window {:width 1440
-                   :height 900}
-          :fps 60}
+ :audio #edn/resource "audio.edn"
+ :graphics #edn/resource "graphics.edn"
+ :lwjgl-application #edn/resource "lwjgl_application.edn"
+ :world #edn/resource "world.edn"
  }

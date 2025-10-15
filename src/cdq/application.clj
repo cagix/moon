@@ -1618,14 +1618,11 @@
 (def state (atom nil))
 
 (defn -main []
-  (let [{:keys [config]} (config/edn-resource "config.edn")]
+  (let [config (config/edn-resource "config.edn")]
     (lwjgl-config/set-glfw-library-name! "glfw_async")
     (application/create (listener/create
                          {:create (fn []
-                                    (reset! state (create! (gdx/context)
-                                                           {:audio (config/edn-resource "audio.edn")
-                                                            :graphics (config/edn-resource "graphics.edn")
-                                                            :world (config/edn-resource "world.edn")})))
+                                    (reset! state (create! (gdx/context) config)))
 
                           :dispose (fn []
                                      (dispose! @state))
@@ -1638,4 +1635,4 @@
 
                           :pause (fn [])
                           :resume (fn [])})
-                        (app-config/create config))))
+                        (app-config/create (:lwjgl-application config)))))
