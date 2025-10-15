@@ -2,8 +2,6 @@
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.graphics.world-viewport :as world-viewport]
-            ;
             [cdq.input :as input]
             ;
             [cdq.ui :as ui]
@@ -96,7 +94,7 @@
     :as ctx}]
   (let [mp (input/mouse-position input)]
     (-> ctx
-        (assoc-in [:ctx/graphics :graphics/world-mouse-position] (world-viewport/unproject graphics mp))
+        (assoc-in [:ctx/graphics :graphics/world-mouse-position] (graphics/unproject-world graphics mp))
         (assoc-in [:ctx/graphics :graphics/ui-mouse-position] (graphics/unproject-ui graphics mp)))))
 
 (defn- update-mouseover-eid!
@@ -277,8 +275,8 @@
       [[:draw/grid
         (int left-x)
         (int bottom-y)
-        (inc (int (world-viewport/width  graphics)))
-        (+ 2 (int (world-viewport/height graphics)))
+        (inc (int (graphics/world-vp-width  graphics)))
+        (+ 2 (int (graphics/world-vp-height graphics)))
         1
         1
         [1 1 1 0.8]]])))
@@ -332,14 +330,14 @@
 (defn- draw-on-world-viewport!
   [{:keys [ctx/graphics]
     :as ctx} ]
-  (world-viewport/draw! graphics
-                        (fn []
-                          (doseq [f [draw-tile-grid
-                                     draw-cell-debug
-                                     draw-entities
-                                     #_geom-test
-                                     highlight-mouseover-tile]]
-                            (graphics/draw! graphics (f ctx)))))
+  (graphics/draw-on-world-vp! graphics
+                              (fn []
+                                (doseq [f [draw-tile-grid
+                                           draw-cell-debug
+                                           draw-entities
+                                           #_geom-test
+                                           highlight-mouseover-tile]]
+                                  (graphics/draw! graphics (f ctx)))))
   ctx)
 
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
@@ -699,7 +697,7 @@
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
   (graphics/update-ui-viewport! graphics width height)
-  (world-viewport/update! graphics width height))
+  (graphics/update-world-vp! graphics width height))
 
 (def state (atom nil))
 

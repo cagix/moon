@@ -2,7 +2,6 @@
   (:require [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tm-renderer :as tm-renderer]
-            [cdq.graphics.world-viewport]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
@@ -258,38 +257,37 @@
                        tiled-map
                        color-setter)))
 
-(extend-type Graphics
-  cdq.graphics.world-viewport/WorldViewport
-  (width [{:keys [graphics/world-viewport]}]
-    (viewport/world-width world-viewport))
+(defn world-vp-width [{:keys [graphics/world-viewport]}]
+  (viewport/world-width world-viewport))
 
-  (height [{:keys [graphics/world-viewport]}]
-    (viewport/world-height world-viewport))
+(defn world-vp-height [{:keys [graphics/world-viewport]}]
+  (viewport/world-height world-viewport))
 
-  (unproject [{:keys [graphics/world-viewport]} position]
-    (unproject world-viewport position))
+(defn unproject-world [{:keys [graphics/world-viewport]} position]
+  (unproject world-viewport position))
 
-  (update! [{:keys [graphics/world-viewport]} width height]
-    (viewport/update! world-viewport width height {:center? false}))
+(defn update-world-vp! [{:keys [graphics/world-viewport]} width height]
+  (viewport/update! world-viewport width height {:center? false}))
 
-  (draw! [{:keys [graphics/batch
-                  graphics/shape-drawer
-                  graphics/unit-scale
-                  graphics/world-unit-scale
-                  graphics/world-viewport]}
-          f]
-    ; fix scene2d.ui.tooltip flickering
-    ; _everything_ flickers with vis ui tooltip! it changes batch color somehow and does not
-    ; change it back !
-    (batch/set-color! batch [1 1 1 1])
-    ;
-    (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
-    (batch/begin! batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (reset! unit-scale world-unit-scale)
-      (f)
-      (reset! unit-scale 1))
-    (batch/end! batch)))
+(defn draw-on-world-vp!
+  [{:keys [graphics/batch
+           graphics/shape-drawer
+           graphics/unit-scale
+           graphics/world-unit-scale
+           graphics/world-viewport]}
+   f]
+  ; fix scene2d.ui.tooltip flickering
+  ; _everything_ flickers with vis ui tooltip! it changes batch color somehow and does not
+  ; change it back !
+  (batch/set-color! batch [1 1 1 1])
+  ;
+  (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
+  (batch/begin! batch)
+  (sd/with-line-width shape-drawer world-unit-scale
+    (reset! unit-scale world-unit-scale)
+    (f)
+    (reset! unit-scale 1))
+  (batch/end! batch))
 
 (defn create-cursor [files graphics path [hotspot-x hotspot-y]]
   (let [pixmap (pixmap/create (files/internal files path))
