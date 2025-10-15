@@ -146,3 +146,30 @@
       calculate-max-speed
       define-render-z-order
       (assoc-state world-fn-result)))
+
+(def destroy-components
+  {:entity/destroy-audiovisual
+   {:destroy! (fn [audiovisuals-id eid]
+                [[:tx/audiovisual
+                  (:body/position (:entity/body @eid))
+                  audiovisuals-id]])}})
+
+(defn remove-destroyed-entities!
+  [{:keys [world/content-grid
+           world/entity-ids
+           world/grid]}]
+  (mapcat
+   (fn [eid]
+     (let [id (:entity/id @eid)]
+       (assert (contains? @entity-ids id))
+       (swap! entity-ids dissoc id))
+     (content-grid/remove-entity! content-grid eid)
+     (grid/remove-from-touched-cells! grid eid)
+     (when (:body/collides? (:entity/body @eid))
+       (grid/remove-from-occupied-cells! grid eid))
+     (mapcat (fn [[k v]]
+               (when-let [destroy! (:destroy! (k destroy-components))]
+                 (destroy! v eid)))
+             @eid))
+   (filter (comp :entity/destroyed? deref)
+           (vals @entity-ids))))
