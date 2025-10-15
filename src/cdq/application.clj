@@ -1,6 +1,7 @@
 (ns cdq.application
   (:require [cdq.game :as game]
-            [clojure.config :as config]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
@@ -10,31 +11,47 @@
 
 (def state (atom nil))
 
-(defn start-lwjgl-app! [config]
-  (application/create (listener/create
-                       {:create (fn []
-                                  (reset! state (game/create! (gdx/context) config)))
+(defn create-listener [config]
+  (listener/create
+   {:create (fn []
+              (reset! state (game/create! (gdx/context) config)))
 
-                        :dispose (fn []
-                                   (game/dispose! @state))
+    :dispose (fn []
+               (game/dispose! @state))
 
-                        :render (fn []
-                                  (swap! state game/render!))
+    :render (fn []
+              (swap! state game/render!))
 
-                        :resize (fn [width height]
-                                  (game/resize! @state width height))
+    :resize (fn [width height]
+              (game/resize! @state width height))
 
-                        :pause (fn [])
-                        :resume (fn [])})
-                      (app-config/create (:lwjgl-application config))))
+    :pause (fn [])
+    :resume (fn [])}))
 
 (defn call [[f & params]]
   (apply f params))
 
+(defn create-app-config [opts]
+  (app-config/create opts))
+
+(defn start-lwjgl-app!
+  [{:keys [listener
+           config]}]
+  (application/create (call listener)
+                      (call config)))
+
+
+(defn edn-resource [path]
+  (->> path
+       io/resource
+       slurp
+       (edn/read-string {:readers {'edn/resource edn-resource}})))
+
 (defn -main []
-  (let [config (config/edn-resource "config.edn")]
+  (let [config (edn-resource "config.edn")]
     (doseq [command [
                      [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                     [start-lwjgl-app! config]
+                     [start-lwjgl-app! {:listener [create-listener config]
+                                        :config [create-app-config (:lwjgl-application config)]}]
                      ]]
       (call command))))
