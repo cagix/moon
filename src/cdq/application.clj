@@ -4,8 +4,6 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            cdq.ui.actor-information
-            cdq.ui.error-window
             [cdq.world-fns.creature-tiles]
             cdq.impl.world
             [cdq.world :as world]
@@ -346,7 +344,7 @@
    mouseover-actor]
   (cond
    mouseover-actor
-   [:interaction-state/mouseover-actor (ui/actor-information stage mouseover-actor)]
+   [:interaction-state/mouseover-actor (ui/actor-information mouseover-actor)]
 
    (and mouseover-eid
         (:entity/clickable @mouseover-eid))

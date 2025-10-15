@@ -1,17 +1,22 @@
 (ns cdq.ui
-  (:require cdq.ui.widget
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
-            [cdq.ui.stage :as stage]
+  (:require [cdq.ui.stage :as stage]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
+            [cdq.ui.widget]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.utils.viewport :as viewport]
+            [clojure.repl]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]
-            [clojure.gdx.math.vector2 :as vector2]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.vis-ui.label :as label]))
+            [clojure.utils :as utils]
+            [clojure.vis-ui.label :as label])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button
+                                               Label
+                                               Window)))
 
 (defn- add-actors! [stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -149,8 +154,53 @@
        group/children
        (run! #(actor/set-visible! % false))))
 
-(defprotocol ActorInformation
-  (actor-information [_ actor]))
+(defn- inventory-cell-with-item? [actor]
+  (and (actor/parent actor)
+       (= "inventory-cell" (actor/name (actor/parent actor)))
+       (actor/user-object (actor/parent actor))))
 
-(defprotocol ErrorWindow
-  (show-error-window! [_ throwable]))
+; FIXME does not work
+(defn- window-title-bar?
+  "Returns true if the actor is a window title bar."
+  [actor]
+  (when (instance? Label actor)
+    (when-let [p (actor/parent actor)]
+      (when-let [p (actor/parent p)]
+        (and (instance? Window actor)
+             (= (.getTitleLabel ^Window p) actor))))))
+
+(defn- button-class? [actor]
+  (some #(= Button %) (supers (class actor))))
+
+(comment
+ ; maybe use this?
+ (isa? (class actor) Button)
+ )
+
+(defn- button?
+  "Returns true if the actor or its parent is a button."
+  [actor]
+  (or (button-class? actor)
+      (and (actor/parent actor)
+           (button-class? (actor/parent actor)))))
+
+(defn actor-information [actor]
+  (let [inventory-slot (inventory-cell-with-item? actor)]
+    (cond
+     inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
+     (window-title-bar? actor) [:mouseover-actor/window-title-bar]
+     (button?           actor) [:mouseover-actor/button]
+     :else                     [:mouseover-actor/unspecified])))
+
+(defn show-error-window! [stage throwable]
+  (stage/add-actor! stage
+                    (window/create
+                     {:title "Error"
+                      :rows [[{:actor (label/create (binding [*print-level* 3]
+                                                      (utils/with-err-str
+                                                        (clojure.repl/pst throwable))))}]]
+                      :modal? true
+                      :close-button? true
+                      :close-on-escape? true
+                      :center? true
+                      :pack? true})))
