@@ -1,4 +1,4 @@
-(ns cdq.ui.build.widget-group
+(ns cdq.ui.widget-group
   (:require [cdq.ui.group :as group]
             [clojure.gdx.scene2d.ui.widget-group :as widget-group]))
 

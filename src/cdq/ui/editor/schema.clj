@@ -3,7 +3,6 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.ui :as ui]
-            [cdq.ui.build.table :as build-table]
             [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.editor.widget.edn]
@@ -40,7 +39,7 @@
 
 (defmethod create :s/animation
   [_ animation {:keys [ctx/graphics]}]
-  (build-table/create
+  (table/create
    {:rows [(for [image (:animation/frames animation)]
              {:actor (image-button/create
                       {:drawable/texture-region (graphics/texture-region graphics image)
@@ -126,7 +125,7 @@
                                 (redo-rows ctx (disj property-ids id)))})})])))
 
 (defmethod create :s/one-to-many [[_ property-type] property-ids ctx]
-  (let [table (build-table/create
+  (let [table (table/create
                {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
@@ -178,7 +177,7 @@
                                  (redo-rows ctx nil))})})]])))
 
 (defmethod create :s/one-to-one [[_ property-type] property-id ctx]
-  (let [table (build-table/create
+  (let [table (table/create
                {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows ctx table property-type property-id)
     table))
@@ -224,7 +223,7 @@
                            (sounds/play! audio sound-name))})}])
 
 (defmethod create :s/sound [_  sound-name _ctx]
-  (let [table (build-table/create {:cell-defaults {:pad 5}})]
+  (let [table (table/create {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (sound-columns table sound-name)
                               [{:actor (text-button/create

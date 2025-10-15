@@ -3,7 +3,7 @@
             [cdq.graphics :as graphics]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
-            [cdq.ui.build.stack :as stack]
+            [cdq.ui.stack :as stack]
             [cdq.ui.editor.property :as property]
             [cdq.ui.image-button :as image-button]
             [cdq.ui.window :as window]

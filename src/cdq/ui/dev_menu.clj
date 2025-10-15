@@ -1,5 +1,5 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.ui.build.table :as table]
+  (:require [cdq.ui.table :as table]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.menu :as menu]

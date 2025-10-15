@@ -3,7 +3,6 @@
             [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tm-renderer :as tm-renderer]
-            [cdq.ui.build.table]
             [cdq.ui.stage :as stage]
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]

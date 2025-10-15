@@ -1,5 +1,5 @@
 (ns cdq.ui.image
-  (:require [cdq.ui.build.widget :as b-widget]
+  (:require [cdq.ui.actor :as actor]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.utils.align :as align]
@@ -19,4 +19,4 @@
       (image/set-scaling! image scaling/fill))
     (when fill-parent?
       (widget/set-fill-parent! image true))
-    (b-widget/set-opts! image opts)))
+    (actor/set-opts! image opts)))

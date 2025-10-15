@@ -3,7 +3,7 @@
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.gdx.scene2d.ui.horizontal-group :as horizontal-group]
-            [cdq.ui.build.table :as table]
+            [cdq.ui.table :as table]
             [cdq.ui.image-button :as image-button]))
 
 (defn create []

@@ -4,7 +4,6 @@
             [cdq.db.schemas :as schemas]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [cdq.ui.build.table :as btable]
             [cdq.ui.editor.schema :as schema]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
@@ -136,7 +135,7 @@
            k
            table
            label-text]}]
-  [{:actor (btable/create
+  [{:actor (table/create
             {:cell-defaults {:pad 2}
              :rows [[{:actor (when display-remove-component-button?
                                (text-button/create
@@ -212,7 +211,7 @@
            k->optional?
            ks-sorted
            opt?]}]
-  (let [table (btable/create
+  (let [table (table/create
                {:cell-defaults {:pad 5}
                 :actor/name "cdq.db.schema.map.ui.widget"})
         colspan 3

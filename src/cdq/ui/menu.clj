@@ -1,6 +1,5 @@
 (ns cdq.ui.menu
-  (:require [cdq.ui.build.table :as btable]
-            [cdq.ui.table :as table]
+  (:require [cdq.ui.table :as table]
             [cdq.ui.stage :as stage]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.event :as event]
@@ -25,7 +24,7 @@
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [label (vis-label/create "")
-         sub-table (btable/create
+         sub-table (table/create
                     {:rows [[{:actor (image/create {:image/object icon})}
                              label]]})]
      (group/add-actor! table (set-label-text-actor label text-fn))
