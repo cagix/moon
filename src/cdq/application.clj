@@ -449,14 +449,6 @@
   (stage/clear! stage)
   (add-actors! stage ctx))
 
-(defn- create-ui!
-  [{:keys [ctx/graphics]
-    :as ctx}]
-  (let [stage (ui/create! graphics)
-        ctx (assoc ctx :ctx/stage stage)]
-    (add-actors! stage ctx)
-    ctx))
-
 (defn- get-stage-ctx
   [{:keys [ctx/stage]
     :as ctx}]
@@ -1213,19 +1205,6 @@
   (.draw stage)
   (.ctx  stage))
 
-(defn- create-audio-graphics-input
-  [{:keys [audio
-           files
-           graphics
-           input]}
-   config]
-  {:ctx/audio (audio/create audio files (:audio config))
-   :ctx/graphics (graphics/create! graphics files (:graphics config))
-   :ctx/input input})
-
-(defn- merge-into-record [ctx]
-  (merge (map->Context {}) ctx))
-
 (def reaction-txs-fn-map
   {
    :tx/set-item    (fn
@@ -1506,16 +1485,6 @@
                            handled-txs
                            :strict? false))))
 
-(defn- create-db [ctx]
-  (assoc ctx :ctx/db (db/create)))
-
-(defn- set-input-processor!
-  [{:keys [ctx/input
-           ctx/stage]
-    :as ctx}]
-  (input/set-processor! input stage)
-  ctx)
-
 (defn- spawn-player!
   [{:keys [ctx/db
            ctx/world]
@@ -1589,17 +1558,24 @@
         spawn-player!
         spawn-enemies!)))
 
-(defn- create! []
-  (reduce (fn [ctx [f & params]]
-            (apply f ctx params))
-          (gdx/context)
-          [[create-audio-graphics-input {:audio (config/edn-resource "audio.edn")
-                                         :graphics (config/edn-resource "graphics.edn")}]
-           [merge-into-record]
-           [create-db]
-           [create-ui!]
-           [set-input-processor!]
-           [create-world (config/edn-resource "world.edn")]]))
+(defn- create!
+  [{:keys [audio
+           files
+           graphics
+           input]}
+   config]
+  (let [graphics (graphics/create! graphics files (:graphics config))
+        stage (ui/create! graphics)
+        ctx (map->Context {})
+        ctx (merge ctx
+                   {:ctx/audio (audio/create audio files (:audio config))
+                    :ctx/db (db/create)
+                    :ctx/graphics graphics
+                    :ctx/input input
+                    :ctx/stage stage})]
+    (input/set-processor! input stage)
+    (add-actors! stage ctx)
+    (create-world ctx (:world config))))
 
 (defn- dispose!
   [{:keys [ctx/audio
@@ -1646,7 +1622,10 @@
     (lwjgl-config/set-glfw-library-name! "glfw_async")
     (application/create (listener/create
                          {:create (fn []
-                                    (reset! state (create!)))
+                                    (reset! state (create! (gdx/context)
+                                                           {:audio (config/edn-resource "audio.edn")
+                                                            :graphics (config/edn-resource "graphics.edn")
+                                                            :world (config/edn-resource "world.edn")})))
 
                           :dispose (fn []
                                      (dispose! @state))
