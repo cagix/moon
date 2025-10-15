@@ -1,5 +1,5 @@
 (ns cdq.ui.build.widget
-  (:require [cdq.ui.build.actor :as actor]))
+  (:require [cdq.ui.actor :as actor]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts))
