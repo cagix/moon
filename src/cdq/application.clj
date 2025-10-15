@@ -3,14 +3,11 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-            ;
             [cdq.ui :as ui]
             cdq.ui.editor.schemas-impl
             cdq.ui.actor-information
             cdq.ui.error-window
-            ;
             [cdq.world-fns.creature-tiles]
-            ;
             cdq.impl.world
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
@@ -20,31 +17,23 @@
             [cdq.entity.body :as body]
             [cdq.entity.state :as state]
             [cdq.entity.skills.skill :as skill]
-            ;
             [clojure.color :as color]
-            ;
             [clojure.config :as config]
-            ;
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
-            ;
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            ;
             [clojure.math.geom :as geom]
             [clojure.math.vector2 :as v]
-            ;
             [clojure.throwable :as throwable]
             [clojure.txs :as txs]
             [clojure.tx-handler :as tx-handler]
             [clojure.utils :as utils]
-            ;
             [malli.core :as m]
             [malli.utils :as mu]
-            ;
             [qrecord.core :as q])
   (:import (cdq.ui Stage))
   (:gen-class))
