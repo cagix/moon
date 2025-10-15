@@ -7,6 +7,7 @@
             [cdq.input :as input]
             [cdq.ui :as ui]
             [cdq.world :as world]
+            [cdq.world.info :as info]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.tiled-map :as tiled-map]
             [cdq.world-fns.creature-tiles]
@@ -689,12 +690,43 @@
 (defn- merge-into-record [ctx]
   (merge (map->Context {}) ctx))
 
+(def reaction-txs-fn-map
+  {
+   :tx/set-item    (fn
+                     [{:keys [ctx/graphics
+                              ctx/stage]}
+                      eid cell item]
+                     (when (:entity/player? @eid)
+                       (ui/set-item! stage cell
+                                     {:texture-region (graphics/texture-region graphics (:entity/image item))
+                                      :tooltip-text (info/text item nil)})
+                       nil))
+
+   :tx/remove-item (fn
+                     [{:keys [ctx/stage]}
+                      eid cell]
+                     (when (:entity/player? @eid)
+                       (ui/remove-item! stage cell)
+                       nil))
+
+   :tx/add-skill   (fn
+                     [{:keys [ctx/graphics
+                              ctx/stage]}
+                      eid skill]
+                     (when (:entity/player? @eid)
+                       (ui/add-skill! stage
+                                      {:skill-id (:property/id skill)
+                                       :texture-region (graphics/texture-region graphics (:entity/image skill))
+                                       :tooltip-text (fn [{:keys [ctx/world]}]
+                                                       (info/text skill world))})
+                       nil))
+   }
+  )
+
 (defn- create-tx-handler!
   [ctx
-   txs-fn-map
-   reaction-txs-fn-map]
-  (let [txs-fn-map          (update-vals txs-fn-map          requiring-resolve)
-        reaction-txs-fn-map (update-vals reaction-txs-fn-map requiring-resolve)]
+   txs-fn-map]
+  (let [txs-fn-map          (update-vals txs-fn-map          requiring-resolve)]
     (extend-type (class ctx)
       txs/TransactionHandler
       (handle! [ctx txs]
@@ -800,8 +832,7 @@
           [[create-audio-graphics-input {:audio (config/edn-resource "audio.edn")
                                          :graphics (config/edn-resource "graphics.edn")}]
            [merge-into-record]
-           [create-tx-handler! (config/edn-resource "txs-fn-map.edn")
-            (config/edn-resource "reaction-txs-fn-map.edn")]
+           [create-tx-handler! (config/edn-resource "txs-fn-map.edn")]
            [create-db]
            [create-ui! (config/edn-resource "ui.edn")]
            [set-input-processor!]

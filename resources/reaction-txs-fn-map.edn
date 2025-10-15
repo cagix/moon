@@ -1,5 +1,0 @@
-{
- :tx/set-item    cdq.tx.set-item/do!
- :tx/remove-item cdq.tx.remove-item/do!
- :tx/add-skill   cdq.tx.add-skill/do!
- }
