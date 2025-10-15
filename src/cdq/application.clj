@@ -170,9 +170,6 @@
                :fill-y? true}]]
       :fill-parent? true})))
 
-(defn- create-action-bar [_ctx]
-  (action-bar/create))
-
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150
               :rahmenh 26
@@ -219,12 +216,6 @@
                 (when-let [stage (actor/stage actor)]
                   (graphics/draw! (:ctx/graphics (stage/ctx stage))
                                   (create-draws (stage/ctx stage)))))}))))
-
-(defn- create-windows [ctx actor-fns]
-  (build-group/create
-   {:actor/name "cdq.ui.windows"
-    :group/actors (for [[actor-fn & params] actor-fns]
-                    (apply actor-fn ctx params))}))
 
 (defn- create-entity-info-window
   [{:keys [ctx/stage]}]
@@ -403,29 +394,22 @@
     (when-let [f (state->draw-ui-view state-k)]
       (graphics/draw! graphics (f player-eid ctx)))))
 
-(defn- create-player-state-draw [_ctx]
-  (actor/create
-   {:draw (fn [this _batch _parent-alpha]
-            (player-state-handle-draws (stage/ctx (actor/stage this))))
-    :act (fn [this _delta])}))
-
 (def message-duration-seconds 0.5)
 
-(defn- create-ui-message [_ctx]
-  (message/create message-duration-seconds))
-
-(def actor-fns
-  [[create-dev-menu]
-   [create-action-bar]
-   [create-hp-mana-bar]
-   [create-windows [[create-entity-info-window]
-                    [create-inventory-window]]]
-   [create-player-state-draw]
-   [create-ui-message]])
-
 (defn- add-actors! [stage ctx]
-  (doseq [[actor-fn & params] actor-fns]
-    (stage/add-actor! stage (apply actor-fn ctx params))))
+  (doseq [actor [(create-dev-menu ctx)
+                 (action-bar/create)
+                 (create-hp-mana-bar ctx)
+                 (build-group/create
+                  {:actor/name "cdq.ui.windows"
+                   :group/actors [(create-entity-info-window ctx)
+                                  (create-inventory-window ctx)]})
+                 (actor/create
+                  {:draw (fn [this _batch _parent-alpha]
+                           (player-state-handle-draws (stage/ctx (actor/stage this))))
+                   :act (fn [this _delta])})
+                 (message/create message-duration-seconds)]]
+    (stage/add-actor! stage actor)))
 
 (defn rebuild-actors! [stage ctx]
   (stage/clear! stage)
