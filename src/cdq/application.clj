@@ -4,13 +4,12 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [cdq.world-fns.creature-tiles]
-            cdq.impl.world
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.tiled-map :as tiled-map]
+            [cdq.world-fns.creature-tiles]
             [cdq.entity.body :as body]
             [cdq.entity.state :as state]
             [cdq.entity.skills.skill :as skill]
@@ -629,7 +628,7 @@
                                        (db/all-raw db :properties/creatures)
                                        graphics)]
     (-> ctx
-        (assoc :ctx/world (cdq.impl.world/create world-params world-fn-result))
+        (assoc :ctx/world (world/create world-params world-fn-result))
         spawn-player!
         spawn-enemies!)))
 
