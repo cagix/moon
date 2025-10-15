@@ -2,7 +2,6 @@
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             ;
@@ -200,7 +199,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (tiled-map-renderer/draw! graphics
+  (graphics/draw-tiled-map! graphics
                             (:world/tiled-map world)
                             (tile-color-setter
                              {:ray-blocked? (partial raycaster/blocked? world)

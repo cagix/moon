@@ -1,7 +1,6 @@
 (ns cdq.graphics
   (:require [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.tm-renderer :as tm-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
@@ -33,7 +32,8 @@
 
 (defprotocol PGraphics
   (draw! [_ draws])
-  (texture-region [_ image]))
+  (texture-region [_ image])
+  (draw-tiled-map! [_ tiled-map color-setter]))
 
 (defn clear-screen! [_ color]
   (screen-utils/clear! color))
@@ -228,17 +228,6 @@
   )
 
 (defrecord Graphics []
-  cdq.graphics.tiled-map-renderer/TiledMapRenderer
-  (draw!
-    [{:keys [graphics/tiled-map-renderer
-             graphics/world-viewport]}
-     tiled-map
-     color-setter]
-    (tm-renderer/draw! tiled-map-renderer
-                       world-viewport
-                       tiled-map
-                       color-setter))
-
   cdq.graphics.ui-viewport/UIViewport
   (unproject [{:keys [graphics/ui-viewport]} position]
     (unproject ui-viewport position))
@@ -259,7 +248,17 @@
     (let [texture (get textures file)]
       (if bounds
         (texture-region/create texture bounds)
-        (texture-region/create texture)))))
+        (texture-region/create texture))))
+
+  (draw-tiled-map!
+    [{:keys [graphics/tiled-map-renderer
+             graphics/world-viewport]}
+     tiled-map
+     color-setter]
+    (tm-renderer/draw! tiled-map-renderer
+                       world-viewport
+                       tiled-map
+                       color-setter)))
 
 (extend-type Graphics
   cdq.graphics.world-viewport/WorldViewport
