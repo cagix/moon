@@ -1,5 +1,13 @@
 (ns cdq.world
-  (:require [cdq.world.create.grid]
+  (:require cdq.entity.animation
+            cdq.entity.body
+            cdq.entity.delete-after-duration
+            cdq.entity.projectile-collision
+            cdq.entity.stats
+            cdq.entity.fsm
+            cdq.entity.inventory
+            cdq.entity.skills
+            [cdq.world.create.grid]
             [cdq.world.assoc-entity-spawn-schema :as assoc-entity-spawn-schema]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.create-fsms :as create-fsms]
@@ -13,7 +21,9 @@
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.grid2d :as g2d]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [malli.utils :as mu]
+            [qrecord.core :as q]))
 
 (defprotocol World
   (cache-active-entities [_])
@@ -190,3 +200,54 @@
          reverse
          (filter #(raycaster/line-of-sight? world player @%))
          first)))
+
+(def ^:private create-fns
+  {:entity/animation             cdq.entity.animation/create
+   :entity/body                  cdq.entity.body/create
+   :entity/delete-after-duration cdq.entity.delete-after-duration/create
+   :entity/projectile-collision  cdq.entity.projectile-collision/create
+   :entity/stats                 cdq.entity.stats/create})
+
+(defn- create-component [[k v] world]
+  (if-let [f (create-fns k)]
+    (f v world)
+    v))
+
+(def ^:private create!-fns
+  {:entity/fsm                             cdq.entity.fsm/create!
+   :entity/inventory                       cdq.entity.inventory/create!
+   :entity/skills                          cdq.entity.skills/create!})
+
+(defn- after-create-component [[k v] eid world]
+  (when-let [f (create!-fns k)]
+    (f v eid world)))
+
+(q/defrecord Entity [entity/body])
+
+(defn spawn-entity!
+  [{:keys [world/content-grid
+           world/entity-ids
+           world/grid
+           world/id-counter
+           world/spawn-entity-schema]
+    :as world}
+   entity]
+  (mu/validate-humanize spawn-entity-schema entity)
+  (let [entity (reduce (fn [m [k v]]
+                         (assoc m k (create-component [k v] world)))
+                       {}
+                       entity)
+        _ (assert (and (not (contains? entity :entity/id))))
+        entity (assoc entity :entity/id (swap! id-counter inc))
+        entity (merge (map->Entity {}) entity)
+        eid (atom entity)]
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (swap! entity-ids assoc id eid))
+    (content-grid/add-entity! content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid))
+    (grid/set-touched-cells! grid eid)
+    (when (:body/collides? (:entity/body @eid))
+      (grid/set-occupied-cells! grid eid))
+    (mapcat #(after-create-component % eid world) @eid)))

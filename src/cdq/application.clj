@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require cdq.world.tx.spawn-entity
-            cdq.ui.create.player-state-draw.player-item-on-cursor
+  (:require cdq.ui.create.player-state-draw.player-item-on-cursor
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effects.target-all :as target-all]
@@ -1315,7 +1314,9 @@
                                         (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                                         (utils/safe-merge components))]])
 
-   :tx/spawn-entity             cdq.world.tx.spawn-entity/do!
+   :tx/spawn-entity             (fn [{:keys [ctx/world]} entity]
+                                  (world/spawn-entity! world entity))
+
    :tx/sound                    (fn [{:keys [ctx/audio]} sound-name]
                                   (audio/play! audio sound-name)
                                   nil)
