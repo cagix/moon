@@ -1,7 +1,8 @@
 (ns cdq.application
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
-            [cdq.effect :as effect]
+            [cdq.effects.target-all :as target-all]
+            [cdq.effects.target-entity :as target-entity]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
@@ -244,6 +245,36 @@
       [1 1 1 0.5]]
      [:draw/texture-region texture-region [(- (float x) radius) y]]]))
 
+(def effect-k->fn
+  {:effects/target-all {:draw (fn [_
+                                   {:keys [effect/source]}
+                                   {:keys [ctx/world]}]
+                                (let [{:keys [world/active-entities]} world
+                                      source* @source]
+                                  (for [target* (map deref (target-all/affected-targets active-entities world source*))]
+                                    [:draw/line
+                                     (:body/position (:entity/body source*)) #_(start-point source* target*)
+                                     (:body/position (:entity/body target*))
+                                     [1 0 0 0.5]])))}
+
+   :effects/target-entity {:draw (fn [[_ {:keys [maxrange]}]
+                                      {:keys [effect/source effect/target]}
+                                      _ctx]
+                                   (when target
+                                     (let [body        (:entity/body @source)
+                                           target-body (:entity/body @target)]
+                                       [[:draw/line
+                                         (target-entity/start-point body target-body)
+                                         (target-entity/end-point body target-body maxrange)
+                                         (if (target-entity/in-range? body target-body maxrange)
+                                           [1 0 0 0.5]
+                                           [1 1 0 0.5])]])))}})
+
+(defn draw-effect [{k 0 :as component} effect-ctx ctx]
+  (if-let [f (:draw (effect-k->fn k))]
+    (f component effect-ctx ctx)
+    nil))
+
 (def ^:private render-layers
   (let [outline-alpha 0.4
         enemy-color [1 0 0 outline-alpha]
@@ -353,7 +384,7 @@
                                                            entity
                                                            (:body/position (:entity/body entity))
                                                            (timer/ratio (:world/elapsed-time world) counter))
-                                         (mapcat #(effect/draw % effect-ctx ctx)  ; update-effect-ctx here too ?
+                                         (mapcat #(draw-effect % effect-ctx ctx)  ; update-effect-ctx here too ?
                                                  effects))))}]))
 
 (def ^:dbg-flag show-body-bounds? false)

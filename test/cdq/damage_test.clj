@@ -1,9 +1,9 @@
 (ns cdq.damage-test
   (:require [cdq.entity.stats :as modifiers]
-            cdq.effects.target.damage
+            cdq.effect
             [clojure.test :refer :all]))
 
-(def get-damage cdq.effects.target.damage/calc-damage)
+(def get-damage cdq.effect/calc-damage)
 
 (deftest modify-source-damage
   (is (= (get-damage {:stats/modifiers {:modifier/damage-deal-min {:op/inc 1
