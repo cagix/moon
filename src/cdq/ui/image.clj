@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui.image
+(ns cdq.ui.image
   (:require [cdq.ui.build.widget :as b-widget]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.ui.widget :as widget]

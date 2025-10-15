@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui.image-button
+(ns cdq.ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
             [cdq.ui.table :as table]
             [cdq.ui.stage :as stage]

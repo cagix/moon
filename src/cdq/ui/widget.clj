@@ -3,7 +3,7 @@
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [cdq.ui.build.table :as table]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.vis-ui.text-button :as text-button]
+            [cdq.ui.text-button :as text-button]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.vis-ui.label :as label]))
 

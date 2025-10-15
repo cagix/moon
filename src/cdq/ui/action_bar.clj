@@ -4,7 +4,7 @@
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.gdx.scene2d.ui.horizontal-group :as horizontal-group]
             [cdq.ui.build.table :as table]
-            [clojure.scene2d.vis-ui.image-button :as image-button]))
+            [cdq.ui.image-button :as image-button]))
 
 (defn create []
   (table/create

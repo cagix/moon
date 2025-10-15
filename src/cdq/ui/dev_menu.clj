@@ -2,7 +2,7 @@
   (:require [cdq.ui.build.table :as table]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.scene2d.vis-ui.menu :as menu]
+            [cdq.ui.menu :as menu]
             [clojure.vis-ui.label :as vis-label]))
 
 (defn create

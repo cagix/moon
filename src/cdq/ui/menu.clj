@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui.menu
+(ns cdq.ui.menu
   (:require [cdq.ui.build.table :as btable]
             [cdq.ui.table :as table]
             [cdq.ui.stage :as stage]
@@ -8,7 +8,7 @@
             [clojure.gdx.scene2d.ui.cell :as cell]
             [clojure.gdx.scene2d.ui.label :as label]
             [clojure.gdx.scene2d.utils.change-listener :as change-listener]
-            [clojure.scene2d.vis-ui.image :as image]
+            [cdq.ui.image :as image]
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
             [clojure.vis-ui.menu-item :as menu-item]

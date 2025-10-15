@@ -10,7 +10,7 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.repl]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.scene2d.vis-ui.text-button :as text-button]
+            [cdq.ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.utils :as utils]
             [clojure.vis-ui.label :as label])

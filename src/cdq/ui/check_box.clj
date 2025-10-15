@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui.check-box
+(ns cdq.ui.check-box
   (:require [clojure.vis-ui.check-box :as check-box])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))

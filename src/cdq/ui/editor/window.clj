@@ -15,7 +15,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.widget-group :as widget-group]
-            [clojure.scene2d.vis-ui.text-button :as text-button]
+            [cdq.ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as vis-window]
             [clojure.set :as set]
             [clojure.throwable :as throwable]

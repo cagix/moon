@@ -30,7 +30,7 @@
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.scene2d.vis-ui.text-button :as text-button]
+            [cdq.ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
