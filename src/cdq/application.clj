@@ -2,7 +2,6 @@
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             ;
             [cdq.input :as input]
@@ -98,7 +97,7 @@
   (let [mp (input/mouse-position input)]
     (-> ctx
         (assoc-in [:ctx/graphics :graphics/world-mouse-position] (world-viewport/unproject graphics mp))
-        (assoc-in [:ctx/graphics :graphics/ui-mouse-position] (ui-viewport/unproject graphics mp)))))
+        (assoc-in [:ctx/graphics :graphics/ui-mouse-position] (graphics/unproject-ui graphics mp)))))
 
 (defn- update-mouseover-eid!
   [{:keys [ctx/graphics
@@ -699,7 +698,7 @@
       validate))
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
-  (ui-viewport/update!    graphics width height)
+  (graphics/update-ui-viewport! graphics width height)
   (world-viewport/update! graphics width height))
 
 (def state (atom nil))

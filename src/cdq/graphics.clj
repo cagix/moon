@@ -2,7 +2,6 @@
   (:require [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tm-renderer :as tm-renderer]
-            [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
@@ -227,14 +226,13 @@
    }
   )
 
+(defn unproject-ui [{:keys [graphics/ui-viewport]} position]
+  (unproject ui-viewport position))
+
+(defn update-ui-viewport! [{:keys [graphics/ui-viewport]} width height]
+  (viewport/update! ui-viewport width height {:center? true}))
+
 (defrecord Graphics []
-  cdq.graphics.ui-viewport/UIViewport
-  (unproject [{:keys [graphics/ui-viewport]} position]
-    (unproject ui-viewport position))
-
-  (update! [{:keys [graphics/ui-viewport]} width height]
-    (viewport/update! ui-viewport width height {:center? true}))
-
   PGraphics
   (draw! [graphics draws]
     (doseq [{k 0 :as component} draws
