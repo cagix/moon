@@ -1,4 +1,4 @@
-(ns cdq.ui.build.group
+(ns cdq.ui.group
   (:require [cdq.ui.actor :as actor]
             [clojure.gdx.scene2d.group :as group]))
 

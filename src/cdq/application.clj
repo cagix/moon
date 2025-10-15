@@ -8,7 +8,7 @@
             [cdq.input :as input]
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.build.group :as build-group]
+            [cdq.ui.group :as build-group]
             [cdq.ui.build.stack :as stack]
             [cdq.ui.build.table :as table]
             [cdq.ui.dev-menu :as dev-menu]
