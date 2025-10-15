@@ -83,6 +83,22 @@
   (mu/validate-humanize schema ctx)
   ctx)
 
+(defn- create-dev-menu*
+  [{:keys [menus update-labels]}]
+  (table/create
+   {:rows [[{:actor (menu/create
+                     {:menus menus
+                      :update-labels update-labels})
+             :expand-x? true
+             :fill-x? true
+             :colspan 1}]
+           [{:actor (doto (vis-label/create "")
+                      (actor/set-touchable! touchable/disabled))
+             :expand? true
+             :fill-x? true
+             :fill-y? true}]]
+    :fill-parent? true}))
+
 (declare rebuild-actors!
          create-world)
 
@@ -150,25 +166,14 @@
                         :update-fn (fn [ctx]
                                      (graphics/zoom (:ctx/graphics ctx)))
                         :icon "images/zoom.png"}]]
-    (table/create
-     {:rows [[{:actor (menu/create
-                       {:menus [ctx-data-viewer
-                                (open-editor db)
-                                help-info-text
-                                select-world]
-                        :update-labels (for [item update-labels]
-                                         (if (:icon item)
-                                           (update item :icon #(get (:graphics/textures graphics) %))
-                                           item))})
-               :expand-x? true
-               :fill-x? true
-               :colspan 1}]
-             [{:actor (doto (vis-label/create "")
-                        (actor/set-touchable! touchable/disabled))
-               :expand? true
-               :fill-x? true
-               :fill-y? true}]]
-      :fill-parent? true})))
+    {:menus [ctx-data-viewer
+             (open-editor db)
+             help-info-text
+             select-world]
+     :update-labels (for [item update-labels]
+                      (if (:icon item)
+                        (update item :icon #(get (:graphics/textures graphics) %))
+                        item))}))
 
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150
@@ -397,7 +402,7 @@
 (def message-duration-seconds 0.5)
 
 (defn- add-actors! [stage ctx]
-  (doseq [actor [(create-dev-menu ctx)
+  (doseq [actor [(create-dev-menu* (create-dev-menu ctx))
                  (action-bar/create)
                  (create-hp-mana-bar ctx)
                  (build-group/create
