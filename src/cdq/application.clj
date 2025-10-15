@@ -1,8 +1,6 @@
 (ns cdq.application
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
-            ;
-            [cdq.impl.graphics]
             [cdq.graphics :as graphics]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.graphics.textures :as textures]
@@ -544,7 +542,7 @@
            input]}
    config]
   {:ctx/audio (audio/create audio files (:audio config))
-   :ctx/graphics (cdq.impl.graphics/create! graphics files (:graphics config))
+   :ctx/graphics (graphics/create! graphics files (:graphics config))
    :ctx/input input})
 
 (defn- merge-into-record [ctx]
