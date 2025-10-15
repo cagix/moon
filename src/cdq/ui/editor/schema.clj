@@ -5,7 +5,6 @@
             [cdq.ui :as ui]
             [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
-            [cdq.ui.editor.widget.edn]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.tooltip :as tooltip]
@@ -18,6 +17,7 @@
             [cdq.ui.image :as image]
             [cdq.ui.image-button :as image-button]
             [cdq.ui.text-button :as text-button]
+            [clojure.edn :as edn]
             [clojure.utils :as utils]
             [clojure.vis-ui.label :as label]
             [clojure.vis-ui.select-box :as select-box]
@@ -238,14 +238,19 @@
 (defmethod value :s/string [_ widget _schemas]
   (text-field/text widget))
 
+(defn- create-edn-widget [schema v _ctx]
+  (tooltip/add! (text-field/create (utils/->edn-str v))
+                (str schema)))
+
+(defn- edn-widget-value [_  widget _schemas]
+  (edn/read-string (text-field/text widget)))
+
 (def fn-map
-  {:s/number {create       cdq.ui.editor.widget.edn/create
-              value        cdq.ui.editor.widget.edn/value}
-   :s/val-max {create       cdq.ui.editor.widget.edn/create
-               value        cdq.ui.editor.widget.edn/value}})
+  {:s/number {create  create-edn-widget
+              value   edn-widget-value}
+   :s/val-max {create create-edn-widget
+               value  edn-widget-value}})
 
 (doseq [[schema-k impls] fn-map
-        [multifn method-var] impls ]
-  (clojure.lang.MultiFn/.addMethod multifn
-                                   schema-k
-                                   method-var))
+        [multifn method-var] impls]
+  (clojure.lang.MultiFn/.addMethod multifn schema-k method-var))
