@@ -1,10 +1,5 @@
 (ns cdq.application
-  (:require cdq.entity.state.player-idle.handle-input
-            cdq.entity.state.player-item-on-cursor.handle-input
-            cdq.entity.state.player-moving.handle-input
-            cdq.entity.state.player-idle.clicked-inventory-cell
-            cdq.entity.state.player-item-on-cursor.clicked-inventory-cell
-            [cdq.audio :as audio]
+  (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effects.target-all :as target-all]
             [cdq.effects.target-entity :as target-entity]
@@ -41,6 +36,7 @@
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
             [clojure.gdx.graphics.color :as gdxcolor]
+            [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.math.vector2 :as gdxvector2]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.event :as event]
@@ -240,8 +236,45 @@
                                :draw (fn [this batch parent-alpha])}))
     window))
 
-(let [fn-map {:player-idle           cdq.entity.state.player-idle.clicked-inventory-cell/txs
-              :player-item-on-cursor cdq.entity.state.player-item-on-cursor.clicked-inventory-cell/txs}]
+(let [fn-map {:player-idle           (fn [eid cell]
+                                       (when-let [item (get-in (:entity/inventory @eid) cell)]
+                                         [[:tx/sound "bfxr_takeit"]
+                                          [:tx/event eid :pickup-item item]
+                                          [:tx/remove-item eid cell]]))
+
+              :player-item-on-cursor (fn [eid cell]
+                                       (let [entity @eid
+                                             inventory (:entity/inventory entity)
+                                             item-in-cell (get-in inventory cell)
+                                             item-on-cursor (:entity/item-on-cursor entity)]
+                                         (cond
+                                          ; PUT ITEM IN EMPTY CELL
+                                          (and (not item-in-cell)
+                                               (inventory/valid-slot? cell item-on-cursor))
+                                          [[:tx/sound "bfxr_itemput"]
+                                           [:tx/dissoc eid :entity/item-on-cursor]
+                                           [:tx/set-item eid cell item-on-cursor]
+                                           [:tx/event eid :dropped-item]]
+
+                                          ; STACK ITEMS
+                                          (and item-in-cell
+                                               (inventory/stackable? item-in-cell item-on-cursor))
+                                          [[:tx/sound "bfxr_itemput"]
+                                           [:tx/dissoc eid :entity/item-on-cursor]
+                                           [:tx/stack-item eid cell item-on-cursor]
+                                           [:tx/event eid :dropped-item]]
+
+                                          ; SWAP ITEMS
+                                          (and item-in-cell
+                                               (inventory/valid-slot? cell item-on-cursor))
+                                          [[:tx/sound "bfxr_itemput"]
+                                           ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+                                           ; TODO? coud handle pickup-item from item-on-cursor state also
+                                           [:tx/dissoc eid :entity/item-on-cursor]
+                                           [:tx/remove-item eid cell]
+                                           [:tx/set-item eid cell item-on-cursor]
+                                           [:tx/event eid :dropped-item]
+                                           [:tx/event eid :pickup-item item-in-cell]])))}]
   (defn state->clicked-inventory-cell [[k v] eid cell]
     (when-let [f (k fn-map)]
       (f eid cell))))
@@ -995,9 +1028,81 @@
     (graphics/set-cursor! graphics cursor-key))
   ctx)
 
-(let [fn-map {:player-idle           cdq.entity.state.player-idle.handle-input/txs
-              :player-item-on-cursor cdq.entity.state.player-item-on-cursor.handle-input/txs
-              :player-moving         cdq.entity.state.player-moving.handle-input/txs}]
+(defn- interaction-state->txs [[k params] stage player-eid]
+  (case k
+    :interaction-state/mouseover-actor nil
+
+    :interaction-state/clickable-mouseover-eid
+    (let [{:keys [clicked-eid
+                  in-click-range?]} params]
+      (if in-click-range?
+        (case (:type (:entity/clickable @clicked-eid))
+          :clickable/player
+          [[:tx/toggle-inventory-visible]]
+
+          :clickable/item
+          (let [item (:entity/item @clicked-eid)]
+            (cond
+             (ui/inventory-window-visible? stage)
+             [[:tx/sound "bfxr_takeit"]
+              [:tx/mark-destroyed clicked-eid]
+              [:tx/event player-eid :pickup-item item]]
+
+             (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
+             [[:tx/sound "bfxr_pickup"]
+              [:tx/mark-destroyed clicked-eid]
+              [:tx/pickup-item player-eid item]]
+
+             :else
+             [[:tx/sound "bfxr_denied"]
+              [:tx/show-message "Your Inventory is full"]])))
+        [[:tx/sound "bfxr_denied"]
+         [:tx/show-message "Too far away"]]))
+
+    :interaction-state.skill/usable
+    (let [[skill effect-ctx] params]
+      [[:tx/event player-eid :start-action [skill effect-ctx]]])
+
+    :interaction-state.skill/not-usable
+    (let [state params]
+      [[:tx/sound "bfxr_denied"]
+       [:tx/show-message (case state
+                           :cooldown "Skill is still on cooldown"
+                           :not-enough-mana "Not enough mana"
+                           :invalid-params "Cannot use this here")]])
+
+    :interaction-state/no-skill-selected
+    [[:tx/sound "bfxr_denied"]
+     [:tx/show-message "No selected skill"]]))
+
+(let [fn-map {:player-idle           (fn
+                                       [player-eid
+                                        {:keys [ctx/input
+                                                ctx/interaction-state
+                                                ctx/stage] :as ctx}]
+                                       (if-let [movement-vector (input/player-movement-vector input)]
+                                         [[:tx/event player-eid :movement-input movement-vector]]
+                                         (when (input/button-just-pressed? input input.buttons/left)
+                                           (interaction-state->txs interaction-state
+                                                                   stage
+                                                                   player-eid))))
+
+              :player-item-on-cursor (fn
+                                       [eid {:keys [ctx/input
+                                                    ctx/stage]}]
+                                       (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))]
+                                         (when (and (input/button-just-pressed? input input.buttons/left)
+                                                    (player-item-on-cursor/world-item? mouseover-actor))
+                                           [[:tx/event eid :drop-item]])))
+
+              :player-moving         (let [speed (fn [{:keys [entity/stats]}]
+                                                   (or (stats/get-stat-value stats :stats/movement-speed)
+                                                       0))]
+                                       (fn [eid {:keys [ctx/input]}]
+                                         (if-let [movement-vector (input/player-movement-vector input)]
+                                           [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                                             :speed (speed @eid)}]]
+                                           [[:tx/event eid :no-movement-input]])))}]
   (defn state->handle-input [[k v] eid ctx]
     (if-let [f (k fn-map)]
       (f eid ctx)
