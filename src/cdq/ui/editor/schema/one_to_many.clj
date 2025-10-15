@@ -1,9 +1,9 @@
 (ns cdq.ui.editor.schema.one-to-many
   (:require [cdq.db :as db]
+            [cdq.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.graphics.textures :as textures]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.widget-group :as widget-group]
@@ -42,7 +42,7 @@
                                                    (redo-rows ctx (conj property-ids id)))})))})}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
-              texture-region (textures/texture-region graphics (property/image property))
+              texture-region (graphics/texture-region graphics (property/image property))
               image-widget (image/create
                             {:image/object texture-region
                              :actor/user-object property-id})]

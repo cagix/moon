@@ -1,7 +1,6 @@
 (ns cdq.graphics
   (:require [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.textures]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.tm-renderer :as tm-renderer]
             [cdq.graphics.ui-viewport]
@@ -32,6 +31,10 @@
             [clojure.math :as math]
             [clojure.string :as str]))
 
+(defprotocol PGraphics
+  (draw! [_ draws])
+  (texture-region [_ image]))
+
 (defn clear-screen! [_ color]
   (screen-utils/clear! color))
 
@@ -58,9 +61,6 @@
   (disposable/dispose! default-font)
   (disposable/dispose! shape-drawer-texture)
   (run! disposable/dispose! (vals textures)))
-
-(defprotocol PGraphics
-  (draw! [_ draws]))
 
 (defn position [{:keys [graphics/world-viewport]}]
   (camera/position (viewport/camera world-viewport)))
@@ -228,16 +228,6 @@
   )
 
 (defrecord Graphics []
-  cdq.graphics.textures/Textures
-  (texture-region [{:keys [graphics/textures]}
-                   {:keys [image/file image/bounds]}]
-    (assert file)
-    (assert (contains? textures file))
-    (let [texture (get textures file)]
-      (if bounds
-        (texture-region/create texture bounds)
-        (texture-region/create texture))))
-
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
   (draw!
     [{:keys [graphics/tiled-map-renderer
@@ -260,7 +250,16 @@
   (draw! [graphics draws]
     (doseq [{k 0 :as component} draws
             :when component]
-      (apply (draw-fns k) graphics (rest component)))))
+      (apply (draw-fns k) graphics (rest component))))
+
+  (texture-region [{:keys [graphics/textures]}
+                   {:keys [image/file image/bounds]}]
+    (assert file)
+    (assert (contains? textures file))
+    (let [texture (get textures file)]
+      (if bounds
+        (texture-region/create texture bounds)
+        (texture-region/create texture)))))
 
 (extend-type Graphics
   cdq.graphics.world-viewport/WorldViewport

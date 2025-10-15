@@ -1,5 +1,5 @@
 (ns cdq.tx.add-skill
-  (:require [cdq.graphics.textures :as textures]
+  (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [cdq.world.info :as info]))
 
@@ -10,7 +10,7 @@
   (when (:entity/player? @eid)
     (ui/add-skill! stage
                    {:skill-id (:property/id skill)
-                    :texture-region (textures/texture-region graphics (:entity/image skill))
+                    :texture-region (graphics/texture-region graphics (:entity/image skill))
                     :tooltip-text (fn [{:keys [ctx/world]}]
                                     (info/text skill world))})
     nil))

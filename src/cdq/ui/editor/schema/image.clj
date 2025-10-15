@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.schema.image
-  (:require [cdq.graphics.textures :as textures]
+  (:require [cdq.graphics :as graphics]
             [clojure.scene2d.vis-ui.image-button :as image-button]))
 
 (defn create [schema  image {:keys [ctx/graphics]}]
   (image-button/create
-   {:drawable/texture-region (textures/texture-region graphics image)
+   {:drawable/texture-region (graphics/texture-region graphics image)
     :drawable/scale 2})
   #_(ui/image-button image
                      (fn [_actor ctx]

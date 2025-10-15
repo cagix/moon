@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.overview-window
   (:require [cdq.db :as db]
-            [cdq.graphics.textures :as textures]
+            [cdq.graphics :as graphics]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.build.stack :as stack]
@@ -61,7 +61,7 @@
     (->> (db/all-raw db property-type)
          (sort-by sort-by-fn)
          (map (fn [property]
-                {:texture-region (textures/texture-region graphics (property/image property))
+                {:texture-region (graphics/texture-region graphics (property/image property))
                  :on-clicked (fn [actor ctx]
                                (clicked-id-fn actor (:property/id property) ctx))
                  :tooltip (property/tooltip property)

@@ -3,7 +3,6 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [cdq.graphics.textures :as textures]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             ;
@@ -611,7 +610,7 @@
     ((requiring-resolve f)
      (assoc params
             :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
-                                                                             #(textures/texture-region graphics %))
+                                                                             #(graphics/texture-region graphics %))
             :textures (:graphics/textures graphics)))))
 
 (def ^:private world-params

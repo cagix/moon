@@ -3,7 +3,6 @@
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics :as graphics]
-            [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [cdq.ui.stage :as stage]
             [clojure.gdx.graphics.color :as color]
@@ -122,7 +121,7 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (textures/texture-region graphics
+                                 (graphics/texture-region graphics
                                                           {:image/file "images/items.png"
                                                            :image/bounds bounds})))]
     (create-inventory-window*

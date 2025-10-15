@@ -1,5 +1,5 @@
 (ns cdq.tx.set-item
-  (:require [cdq.graphics.textures :as textures]
+  (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [cdq.world.info :as info]))
 
@@ -9,6 +9,6 @@
    eid cell item]
   (when (:entity/player? @eid)
     (ui/set-item! stage cell
-                  {:texture-region (textures/texture-region graphics (:entity/image item))
+                  {:texture-region (graphics/texture-region graphics (:entity/image item))
                    :tooltip-text (info/text item nil)})
     nil))
