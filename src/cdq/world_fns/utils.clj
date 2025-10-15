@@ -1,4 +1,4 @@
-(ns clojure.grid2d.utils
+(ns cdq.world-fns.utils
   (:require [clojure.grid2d :as g2d]))
 
 (defn scale-grid [grid [w h]]

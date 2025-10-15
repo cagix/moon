@@ -1,4 +1,4 @@
-(ns clojure.grid2d.nads
+(ns cdq.world-fns.nads
   (:require [clojure.grid2d :as g2d]))
 
 (comment

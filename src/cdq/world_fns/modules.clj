@@ -2,6 +2,9 @@
   (:require [cdq.world.tiled :as tiled]
             [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
+            [cdq.world-fns.caves :as caves]
+            [cdq.world-fns.nads :as nads]
+            [cdq.world-fns.utils :as helper]
             [clojure.gdx.maps.map-properties :as props]
             [clojure.gdx.maps.map-layers :as layers]
             [clojure.gdx.maps.tiled :as tiled-map]
@@ -9,10 +12,7 @@
             [clojure.gdx.maps.tiled.layer.cell :as cell]
             [clojure.gdx.maps.tiled.tiled-map-tile :as tile]
             [clojure.gdx.maps.tiled.tmx :as tmx]
-            [clojure.grid2d :as g2d]
-            [clojure.grid2d.caves :as caves]
-            [clojure.grid2d.nads :as nads]
-            [clojure.grid2d.utils :as helper]))
+            [clojure.grid2d :as g2d]))
 
 (defn- property-value [layer position property-key]
   (if-let [cell (layer/cell layer position)]

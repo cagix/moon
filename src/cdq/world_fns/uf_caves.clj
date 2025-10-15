@@ -1,11 +1,11 @@
 (ns cdq.world-fns.uf-caves
   (:require [cdq.world.tiled :as tiled]
             [cdq.world-fns.creature-layer :as creature-layer]
+            [cdq.world-fns.caves :as caves]
+            [cdq.world-fns.nads :as nads]
+            [cdq.world-fns.utils :as helper]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.grid2d :as g2d]
-            [clojure.grid2d.caves :as caves]
-            [clojure.grid2d.nads :as nads]
-            [clojure.grid2d.utils :as helper]
             [clojure.rand :as rand]))
 
 (defn- assoc-transition-cells [grid]
