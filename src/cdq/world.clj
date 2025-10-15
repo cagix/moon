@@ -6,6 +6,7 @@
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.world.tick-entities :as tick-entities]
+            [cdq.world.raycaster :as raycaster]
             [cdq.world.update-potential-fields :as update-potential-fields]
             [cdq.world.tiled :as tiled]
             [clojure.gdx.maps.map-properties :as props]
@@ -173,3 +174,19 @@
              @eid))
    (filter (comp :entity/destroyed? deref)
            (vals @entity-ids))))
+
+(defn mouseover-entity
+  [{:keys [world/grid
+           world/mouseover-eid
+           world/player-eid
+           world/render-z-order]
+    :as world}
+   position]
+  (let [player @player-eid
+        hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
+                     (grid/point->entities grid position))]
+    (->> render-z-order
+         (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
+         reverse
+         (filter #(raycaster/line-of-sight? world player @%))
+         first)))
