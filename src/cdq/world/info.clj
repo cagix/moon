@@ -1,5 +1,6 @@
 (ns cdq.world.info
   (:require [cdq.stats.ops.info :as ops]
+            cdq.entity.stats.info
             [clojure.string :as str]
             [clojure.timer :as timer]
             [clojure.utils :as utils]))
@@ -62,7 +63,7 @@
   {:creature/level (fn [[_ v] _world]
                      (str "Level: " v))
 
-   :entity/stats (requiring-resolve 'cdq.entity.stats.info/text)
+   :entity/stats cdq.entity.stats.info/text
 
    :effects.target/convert (fn [_ _world]
                              "Converts target to your side.")
