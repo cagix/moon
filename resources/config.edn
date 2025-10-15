@@ -1,6 +1,9 @@
-{
- :audio #edn/resource "audio.edn"
- :graphics #edn/resource "graphics.edn"
- :lwjgl-application #edn/resource "lwjgl_application.edn"
- :world #edn/resource "world.edn"
- }
+[
+ [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+ [clojure.gdx.application.lwjgl/start!
+  {:listener [cdq.application.listener/create
+              {:audio #edn/resource "audio.edn"
+               :graphics #edn/resource "graphics.edn"
+               :world #edn/resource "world.edn"}]
+   :config [cdq.application.config/create #edn/resource "lwjgl_application.edn"]}]
+ ]
