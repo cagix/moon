@@ -1,11 +1,17 @@
 (ns cdq.ui.widget
   (:require [clojure.scene2d.vis-ui.window :as window]
-            [cdq.ui.build.scroll-pane :as scroll-pane]
+            [clojure.vis-ui.scroll-pane :as scroll-pane]
             [cdq.ui.build.table :as table]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.vis-ui.label :as label]))
+
+(defn- create-scroll-pane
+  [{:keys [scroll-pane/actor
+           actor/name]}]
+  (doto (scroll-pane/create actor)
+    (actor/set-name! name)))
 
 (defn scroll-pane-cell [viewport-height rows]
   (let [table (table/create
@@ -13,7 +19,7 @@
                 :actor/name "scroll-pane-table"
                 :cell-defaults {:pad 5}
                 :pack? true})]
-    {:actor (scroll-pane/create
+    {:actor (create-scroll-pane
              {:actor/name "cdq.ui.widget.scroll-pane-table"
               :scroll-pane/actor table})
      :width  (+ (actor/width table) 50)
@@ -80,7 +86,7 @@
                                       {:rows [[scroll-pane-table]]
                                        :cell-defaults {:pad 1}
                                        :pack? true})]
-                           {:actor (scroll-pane/create
+                           {:actor (create-scroll-pane
                                     {:actor/name "dbg scroll pane"
                                      :scroll-pane/actor table})
                             :width width ; (- (viewport/world-width viewport) 100) ; (+ 100 (/ (viewport/world-width viewport) 2))
