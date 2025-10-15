@@ -9,7 +9,7 @@
             [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.repl]
-            [clojure.scene2d.vis-ui :as vis-ui]
+            [cdq.ui.skin :as vis-ui]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]
             [clojure.utils :as utils]

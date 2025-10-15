@@ -29,7 +29,7 @@
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
-            [clojure.scene2d.vis-ui :as vis-ui]
+            [cdq.ui.skin :as vis-ui]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]))
 

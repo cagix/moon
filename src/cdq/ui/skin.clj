@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui
+(ns cdq.ui.skin
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.bitmap-font.data :as bmfont-data]
             [clojure.gdx.scene2d.ui.skin :as skin]
