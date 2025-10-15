@@ -1,27 +1,20 @@
 (ns cdq.entity.state
-  (:require
-   cdq.entity.state.active-skill
-   cdq.entity.state.npc-dead
-   cdq.entity.state.npc-moving
-   cdq.entity.state.npc-sleeping
-   cdq.entity.state.player-dead
-   cdq.entity.state.player-item-on-cursor
-   cdq.entity.state.player-moving
-   cdq.entity.state.stunned
-   cdq.entity.state.player-idle.clicked-inventory-cell
-   cdq.entity.state.player-item-on-cursor.clicked-inventory-cell
-   )
-  )
+  (:require cdq.entity.state.active-skill
+            cdq.entity.state.npc-dead
+            cdq.entity.state.npc-moving
+            cdq.entity.state.npc-sleeping
+            cdq.entity.state.player-dead
+            cdq.entity.state.player-item-on-cursor
+            cdq.entity.state.player-moving
+            cdq.entity.state.stunned))
 
 (defprotocol State
   (create       [_ eid world])
   (enter        [_ eid])
-  (exit         [_ eid ctx])
-  (clicked-inventory-cell [_ eid cell]))
+  (exit         [_ eid ctx]))
 
 (def ^:private fn->k->var
-  {
-   :create {:active-skill          cdq.entity.state.active-skill/create
+  {:create {:active-skill          cdq.entity.state.active-skill/create
             :npc-moving            cdq.entity.state.npc-moving/create
             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
             :player-moving         cdq.entity.state.player-moving/create
@@ -37,11 +30,7 @@
    :exit {:npc-moving            cdq.entity.state.npc-moving/exit
           :npc-sleeping          cdq.entity.state.npc-sleeping/exit
           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-          :player-moving         cdq.entity.state.player-moving/exit}
-
-   :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle.clicked-inventory-cell/txs
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor.clicked-inventory-cell/txs}
-   })
+          :player-moving         cdq.entity.state.player-moving/exit}})
 
 (extend clojure.lang.APersistentVector
   State
@@ -56,8 +45,4 @@
 
    :exit (fn [[k v] eid ctx]
            (when-let [f (k (:exit fn->k->var))]
-             (f v eid ctx)))
-
-   :clicked-inventory-cell (fn [[k v] eid cell]
-                             (when-let [f (k (:clicked-inventory-cell fn->k->var))]
-                               (f eid cell)))})
+             (f v eid ctx)))})

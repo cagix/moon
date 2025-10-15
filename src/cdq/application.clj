@@ -2,6 +2,8 @@
   (:require cdq.entity.state.player-idle.handle-input
             cdq.entity.state.player-item-on-cursor.handle-input
             cdq.entity.state.player-moving.handle-input
+            cdq.entity.state.player-idle.clicked-inventory-cell
+            cdq.entity.state.player-item-on-cursor.clicked-inventory-cell
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effects.target-all :as target-all]
@@ -238,6 +240,12 @@
                                :draw (fn [this batch parent-alpha])}))
     window))
 
+(let [fn-map {:player-idle           cdq.entity.state.player-idle.clicked-inventory-cell/txs
+              :player-item-on-cursor cdq.entity.state.player-item-on-cursor.clicked-inventory-cell/txs}]
+  (defn state->clicked-inventory-cell [[k v] eid cell]
+    (when-let [f (k fn-map)]
+      (f eid cell))))
+
 (defn- draw-cell-rect-actor [draw-cell-rect]
   (widget/create
     (fn [this _batch _parent-alpha]
@@ -356,9 +364,9 @@
                                         eid (:world/player-eid world)
                                         entity @eid
                                         state-k (:state (:entity/fsm entity))
-                                        txs (state/clicked-inventory-cell [state-k (state-k entity)]
-                                                                          eid
-                                                                          cell)]
+                                        txs (state->clicked-inventory-cell [state-k (state-k entity)]
+                                                                           eid
+                                                                           cell)]
                                     (txs/handle! ctx txs)))))
       :slot->texture-region slot->texture-region})))
 
