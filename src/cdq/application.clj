@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require cdq.ui.create.player-state-draw.player-item-on-cursor
-            [cdq.audio :as audio]
+  (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effects.target-all :as target-all]
             [cdq.effects.target-entity :as target-entity]
@@ -380,7 +379,16 @@
       :slot->texture-region slot->texture-region})))
 
 (def state->draw-ui-view
-  {:player-item-on-cursor cdq.ui.create.player-state-draw.player-item-on-cursor/draws})
+  {:player-item-on-cursor (fn
+                            [eid
+                             {:keys [ctx/graphics
+                                     ctx/input
+                                     ctx/stage]}]
+                            (when (not (player-item-on-cursor/world-item? (ui/mouseover-actor stage (input/mouse-position input))))
+                              [[:draw/texture-region
+                                (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
+                                (:graphics/ui-mouse-position graphics)
+                                {:center? true}]]))})
 
 (defn- player-state-handle-draws
   [{:keys [ctx/graphics
