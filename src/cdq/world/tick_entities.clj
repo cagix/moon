@@ -1,5 +1,6 @@
 (ns cdq.world.tick-entities
   (:require [cdq.effect :as effect]
+            [cdq.entity.animation :as animation]
             [cdq.entity.body :as body]
             [cdq.entity.skills.skill :as skill]
             [cdq.entity.stats :as stats]
@@ -7,7 +8,6 @@
             [cdq.world.grid.cell :as cell]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-fields-movement :as potential-fields-movement]
-            [clojure.animation :as animation]
             [clojure.grid2d :as g2d]
             [clojure.math :as math]
             [clojure.math.vector2 :as v]

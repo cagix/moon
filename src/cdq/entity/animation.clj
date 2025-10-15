@@ -1,9 +1,14 @@
-(ns cdq.entity.animation
-  (:require [clojure.animation]))
+(ns cdq.entity.animation)
 
-(defrecord Animation
+(defprotocol Animation
+  (tick [_ delta])
+  (restart [_])
+  (stopped? [_])
+  (current-frame [_]))
+
+(defrecord RAnimation
   [frames frame-duration looping? cnt maxcnt delete-after-stopped?]
-  clojure.animation/Animation
+  Animation
   (tick [this delta]
     (let [maxcnt (float maxcnt)
           newcnt (+ (float cnt) (float delta))]
@@ -28,7 +33,7 @@
            delete-after-stopped?]}
    _world]
   (assert (not (and looping? delete-after-stopped?)))
-  (map->Animation
+  (map->RAnimation
    {:frames (vec frames)
     :frame-duration frame-duration
     :looping? looping?
