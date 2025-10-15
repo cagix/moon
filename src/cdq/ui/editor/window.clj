@@ -16,7 +16,6 @@
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.widget-group :as widget-group]
             [cdq.ui.text-button :as text-button]
-            [clojure.scene2d.vis-ui.window :as vis-window]
             [clojure.set :as set]
             [clojure.throwable :as throwable]
             [clojure.utils :as utils]
@@ -92,7 +91,7 @@
         ; or find a way to find the widget from the context @ save button
         ; should be possible
         widget (schema/create schema property ctx)]
-    (vis-window/create
+    (window/create
      (create* {:scroll-pane-height (ui/viewport-height stage)
                :widget widget
                :get-widget-value #(schema/value schema widget schemas)
@@ -168,7 +167,7 @@
     :label-text (k->label-text k)}))
 
 (defn- add-component-window [schemas schema map-widget-table]
-  (let [window (vis-window/create
+  (let [window (window/create
                 {:title "Choose"
                  :modal? true
                  :close-button? true

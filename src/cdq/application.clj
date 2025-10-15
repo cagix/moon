@@ -47,7 +47,7 @@
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
             [cdq.ui.image :as image]
-            [clojure.scene2d.vis-ui.window :as window]
+            [cdq.ui.window :as window]
             [clojure.vis-ui.label :as vis-label]
             [clojure.lwjgl.system.configuration :as lwjgl-config]
             [clojure.edn :as edn]

@@ -1,5 +1,5 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d.vis-ui.window :as window]
+  (:require [cdq.ui.window :as window]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [cdq.ui.build.table :as table]
             [cdq.ui.stage :as stage]

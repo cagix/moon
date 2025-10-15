@@ -11,7 +11,7 @@
             [clojure.repl]
             [clojure.scene2d.vis-ui :as vis-ui]
             [cdq.ui.text-button :as text-button]
-            [clojure.scene2d.vis-ui.window :as window]
+            [cdq.ui.window :as window]
             [clojure.utils :as utils]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button

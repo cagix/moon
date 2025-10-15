@@ -6,7 +6,7 @@
             [cdq.ui.build.stack :as stack]
             [cdq.ui.editor.property :as property]
             [cdq.ui.image-button :as image-button]
-            [clojure.scene2d.vis-ui.window :as window]
+            [cdq.ui.window :as window]
             [clojure.vis-ui.label :as label]))
 
 (def ^:private property-type->overview-table-props
