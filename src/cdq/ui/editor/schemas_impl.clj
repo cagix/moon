@@ -2,9 +2,6 @@
 
 (def fn-map
   '{
-    :s/map {cdq.ui.editor.schema/create       cdq.ui.editor.schema.map/create
-            cdq.ui.editor.schema/value        cdq.ui.editor.schema.map/value}
-
     :s/number {cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
                cdq.ui.editor.schema/value        cdq.ui.editor.widget.edn/value}
 

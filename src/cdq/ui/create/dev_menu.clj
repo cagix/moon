@@ -33,7 +33,7 @@
                                                 :property-type property-type
                                                 :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
                                                                  (stage/add-actor! stage
-                                                                                   (editor-window/create
+                                                                                   (editor-window/create-editor-window
                                                                                     {:ctx ctx
                                                                                      :property (db/get-raw db id)})))})))})})
         ctx-data-viewer {:label "Ctx Data"
