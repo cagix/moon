@@ -7,6 +7,7 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [cdq.world.info :as info]
             [cdq.world.raycaster :as raycaster]
@@ -51,12 +52,38 @@
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]
-    [:ctx/actor-fns :some]
     [:ctx/world :some]]))
 
 (defn- validate [ctx]
   (mu/validate-humanize schema ctx)
   ctx)
+
+(declare rebuild-actors!)
+
+(def actor-fns
+  '[[cdq.ui.create.dev-menu/create cdq.application/create-world cdq.application/rebuild-actors!]
+    [cdq.ui.create.action-bar/create]
+    [cdq.ui.create.hp-mana-bar/create]
+    [cdq.ui.create.windows/create [[cdq.ui.create.windows.entity-info/create]
+                                   [cdq.ui.create.windows.inventory/create]]]
+    [cdq.ui.create.player-state-draw/create]
+    [cdq.ui.create.message/create]])
+
+(defn- add-actors! [stage ctx]
+  (doseq [[actor-fn & params] actor-fns]
+    (stage/add-actor! stage (apply (requiring-resolve actor-fn) ctx params))))
+
+(defn rebuild-actors! [stage ctx]
+  (stage/clear! stage)
+  (add-actors! stage ctx))
+
+(defn- create-ui!
+  [{:keys [ctx/graphics]
+    :as ctx}]
+  (let [stage (ui/create! graphics)
+        ctx (assoc ctx :ctx/stage stage)]
+    (add-actors! stage ctx)
+    ctx))
 
 (defn- get-stage-ctx
   [{:keys [ctx/stage]
@@ -738,8 +765,6 @@
          '[cdq.world.grid :as grid]
          '[clojure.math.vector2 :as v])
 
-(require '[clojure.gdx.scene2d.stage :as stage])
-
 (defn world-move-entity
   [{:keys [world/content-grid
            world/grid]}
@@ -957,7 +982,7 @@
                                   (ui/show-text-message! stage message)
                                   nil)
    :tx/show-modal               (fn [{:keys [ctx/stage]} opts]
-                                  (ui/show-modal-window! stage (stage/viewport stage) opts)
+                                  (ui/show-modal-window! stage (clojure.gdx.scene2d.stage/viewport stage) opts)
                                   nil)
    }
   )
@@ -973,9 +998,6 @@
 
 (defn- create-db [ctx]
   (assoc ctx :ctx/db (db/create)))
-
-(defn create-ui! [ctx params]
-  (ui/create! ctx params))
 
 (defn- set-input-processor!
   [{:keys [ctx/input
@@ -1065,7 +1087,7 @@
                                          :graphics (config/edn-resource "graphics.edn")}]
            [merge-into-record]
            [create-db]
-           [create-ui! (config/edn-resource "ui.edn")]
+           [create-ui!]
            [set-input-processor!]
            [create-world (config/edn-resource "world.edn")]]))
 

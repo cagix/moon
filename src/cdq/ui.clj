@@ -18,23 +18,11 @@
                                                Label
                                                Window)))
 
-(defn- add-actors! [stage actor-fns ctx]
-  (doseq [[actor-fn & params] actor-fns]
-    (stage/add-actor! stage (apply actor-fn ctx params))))
-
 (defn create!
-  [{:keys [ctx/graphics]
-    :as ctx}
-   actor-fns]
+  [{:keys [graphics/batch
+           graphics/ui-viewport]}]
   (vis-ui/load! {:skin-scale :x1})
-  (let [stage (stage/create (:graphics/ui-viewport graphics)
-                            (:graphics/batch       graphics))
-        actor-fns (map #(update % 0 requiring-resolve) actor-fns)
-        ctx (assoc ctx
-                   :ctx/stage stage
-                   :ctx/actor-fns actor-fns)]
-    (add-actors! stage actor-fns ctx)
-    ctx))
+  (stage/create ui-viewport batch))
 
 (defn dispose! []
   (vis-ui/dispose!))
@@ -70,10 +58,6 @@
       stage/root
       (group/find-actor "cdq.ui.action-bar")
       action-bar/selected-skill))
-
-(defn rebuild-actors! [stage ctx]
-  (stage/clear! stage)
-  (add-actors! stage (:ctx/actor-fns ctx) ctx))
 
 (defn inventory-window-visible? [stage]
   (-> stage

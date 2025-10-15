@@ -17,7 +17,8 @@
 
 (defn create [{:keys [ctx/db
                       ctx/graphics]}
-              create-world]
+              create-world
+              rebuild-actors]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]
@@ -50,7 +51,7 @@
                                 :on-click (fn [actor {:keys [ctx/stage] :as ctx}]
                                             (let [ui stage
                                                   stage (actor/stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
-                                              (ui/rebuild-actors! ui ctx)
+                                              ((requiring-resolve rebuild-actors) ui ctx)
                                               (world/dispose! (:ctx/world ctx))
                                               (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}
         update-labels [{:label "elapsed-time"

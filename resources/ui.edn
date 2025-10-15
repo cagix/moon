@@ -1,7 +1,0 @@
-[[cdq.ui.create.dev-menu/create cdq.application/create-world]
- [cdq.ui.create.action-bar/create]
- [cdq.ui.create.hp-mana-bar/create]
- [cdq.ui.create.windows/create [[cdq.ui.create.windows.entity-info/create]
-                                [cdq.ui.create.windows.inventory/create]]]
- [cdq.ui.create.player-state-draw/create]
- [cdq.ui.create.message/create]]
