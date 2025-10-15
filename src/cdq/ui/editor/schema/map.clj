@@ -1,10 +1,8 @@
 (ns cdq.ui.editor.schema.map
   (:require [cdq.db.schemas :as schemas]
-            [cdq.ui.editor.schema]
+            [cdq.ui.editor.schema :as schema]
             [cdq.ui.table :as table]
             [cdq.ui.build.table :as btable]
-            [cdq.ui.editor.value-widget :as value-widget]
-            [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
             [cdq.malli :as malli]
             [clojure.gdx.scene2d.actor :as actor]
@@ -19,6 +17,18 @@
             [clojure.vis-ui.separator :as separator]
             [malli.utils :as mu]))
 
+(defn- map-widget-table-value [table schemas]
+  (into {}
+        (for [widget (filter (comp vector? actor/user-object) (group/children table))
+              :let [[k _] (actor/user-object widget)]]
+          [k (schema/value (get schemas k) widget schemas)])))
+
+(defn- build-value-widget [ctx schema k v]
+  (let [widget (schema/create schema v ctx)]
+    ; FIXME assert no user object !
+    (actor/set-user-object! widget [k v])
+    widget))
+
 (defn- rebuild!
   [{:keys [ctx/db
            ctx/stage]
@@ -30,7 +40,7 @@
                              (group/find-actor "cdq.ui.widget.scroll-pane-table")
                              (group/find-actor "scroll-pane-table")
                              (group/find-actor "cdq.db.schema.map.ui.widget"))
-        property (map-widget-table/get-value map-widget-table (:db/schemas db))]
+        property (map-widget-table-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
     (stage/add-actor! stage (editor-window/create
                              {:ctx ctx
@@ -92,7 +102,7 @@
                  {:text (name k)
                   :on-clicked (fn [_actor ctx]
                                 (actor/remove! window)
-                                (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
+                                (table/add-rows! map-widget-table [(component-row (build-value-widget ctx
                                                                                                       (get schemas k)
                                                                                                       k
                                                                                                       (schemas/default-value schemas k))
@@ -179,11 +189,11 @@
      {:schema schema
       :k->widget (into {}
                        (for [[k v] m]
-                         [k (value-widget/build ctx (get schemas k) k v)]))
+                         [k (build-value-widget ctx (get schemas k) k v)]))
       :k->optional? #(mu/optional? % (malli/form schema schemas))
       :ks-sorted (map first (utils/sort-by-k-order property-k-sort-order m))
       :opt? (seq (set/difference (mu/optional-keyset (malli/form schema schemas))
                                  (set (keys m))))})))
 
 (defn value [_ table schemas]
-  (map-widget-table/get-value table schemas))
+  (map-widget-table-value table schemas))
