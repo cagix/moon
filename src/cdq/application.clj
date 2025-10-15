@@ -1,8 +1,6 @@
 (ns cdq.application
   (:require [cdq.audio :as audio]
-            ;
             [cdq.db :as db]
-            cdq.impl.db
             ;
             [cdq.impl.graphics]
             [cdq.graphics :as graphics]
@@ -571,7 +569,7 @@
   ctx)
 
 (defn- create-db [ctx]
-  (assoc ctx :ctx/db (cdq.impl.db/create)))
+  (assoc ctx :ctx/db (db/create)))
 
 (defn create-ui! [ctx params]
   (ui/create! ctx params))
@@ -716,12 +714,16 @@
     (application/create (listener/create
                          {:create (fn []
                                     (reset! state (create!)))
+
                           :dispose (fn []
                                      (dispose! @state))
+
                           :render (fn []
                                     (swap! state render!))
+
                           :resize (fn [width height]
                                     (resize! @state width height))
+
                           :pause (fn [])
                           :resume (fn [])})
                         (app-config/create config))))
