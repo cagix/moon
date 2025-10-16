@@ -35,16 +35,13 @@
             [clojure.gdx.math.vector2 :as gdxvector2]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.event :as event]
-            [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.ui.label :as label]
             [clojure.gdx.scene2d.ui.widget :as widget]
-            [clojure.gdx.scene2d.ui.widget-group :as widget-group]
             [clojure.gdx.scene2d.utils.click-listener :as click-listener]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
+            [cdq.ui.info-window :as info-window]
             [cdq.ui.image :as image]
             [cdq.ui.window :as window]
-            [clojure.vis-ui.label :as vis-label]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.math.vector2 :as v]
@@ -203,31 +200,17 @@
 
 (defn- create-entity-info-window
   [{:keys [ctx/stage]}]
-  (let [title "info"
-        actor-name "cdq.ui.windows.entity-info"
-        visible? false
-        position [(ui/viewport-width stage) 0]
-        set-label-text! (fn [{:keys [ctx/world]}]
-                          (if-let [eid (:world/mouseover-eid world)]
-                            (info/text (apply dissoc @eid [:entity/skills
-                                                           :entity/faction
-                                                           :active-skill])
-                                       world)
-                            ""))
-        label (vis-label/create "")
-        window (window/create {:title title
-                               :actor/name actor-name
-                               :actor/visible? visible?
-                               :actor/position position
-                               :rows [[{:actor label
-                                        :expand? true}]]})]
-    (group/add-actor! window (actor/create
-                              {:act (fn [this _delta]
-                                      (when-let [stage (actor/stage this)]
-                                        (label/set-text! label (set-label-text! (stage/ctx stage))))
-                                      (widget-group/pack! window))
-                               :draw (fn [this batch parent-alpha])}))
-    window))
+  {:title "Entity Info"
+   :actor-name "cdq.ui.windows.entity-info"
+   :visible? false
+   :position [(ui/viewport-width stage) 0]
+   :set-label-text! (fn [{:keys [ctx/world]}]
+                      (if-let [eid (:world/mouseover-eid world)]
+                        (info/text (apply dissoc @eid [:entity/skills
+                                                       :entity/faction
+                                                       :active-skill])
+                                   world)
+                        ""))})
 
 (let [fn-map {:player-idle           (fn [eid cell]
                                        (when-let [item (get-in (:entity/inventory @eid) cell)]
@@ -429,7 +412,7 @@
                  (create-hp-mana-bar* (create-hp-mana-bar ctx))
                  (build-group/create
                   {:actor/name "cdq.ui.windows"
-                   :group/actors [(create-entity-info-window ctx)
+                   :group/actors [(info-window/create (create-entity-info-window ctx))
                                   (create-inventory-window ctx)]})
                  (actor/create
                   {:draw (fn [this _batch _parent-alpha]
