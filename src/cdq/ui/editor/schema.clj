@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.schema
-  (:require [cdq.audio :as sounds]
+  (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.ui :as ui]
@@ -204,14 +204,14 @@
     (stage/add-actor! stage
                       (cdq.ui.widget/scroll-pane-window
                        {:viewport-height (ui/viewport-width stage)
-                        :rows (for [sound-name (sounds/sound-names audio)]
+                        :rows (for [sound-name (audio/sound-names audio)]
                                 [{:actor (text-button/create
                                           {:text sound-name
                                            :on-clicked (rebuild-sound-widget! table sound-name)})}
                                  {:actor (text-button/create
                                           {:text "play!"
                                            :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                                                         (sounds/play! audio sound-name))})}])}))))
+                                                         (audio/play! audio sound-name))})}])}))))
 
 (defn- sound-columns [table sound-name]
   [{:actor (text-button/create
@@ -220,7 +220,7 @@
    {:actor (text-button/create
             {:text "play!"
              :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                           (sounds/play! audio sound-name))})}])
+                           (audio/play! audio sound-name))})}])
 
 (defmethod create :s/sound [_  sound-name _ctx]
   (let [table (table/create {:cell-defaults {:pad 5}})]
