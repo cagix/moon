@@ -1,5 +1,8 @@
 (ns cdq.application.listener
-  (:require [cdq.game :as game]
+  (:require [cdq.game.create :as create]
+            [cdq.game.dispose :as dispose]
+            [cdq.game.render :as render]
+            [cdq.game.resize :as resize]
             [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]))
 
@@ -8,16 +11,16 @@
 (defn create [config]
   (listener/create
    {:create (fn []
-              (reset! state (game/create! (gdx/context) config)))
+              (reset! state (create/do! (gdx/context) config)))
 
     :dispose (fn []
-               (game/dispose! @state))
+               (dispose/do! @state))
 
     :render (fn []
-              (swap! state game/render!))
+              (swap! state render/do!))
 
     :resize (fn [width height]
-              (game/resize! @state width height))
+              (resize/do! @state width height))
 
     :pause (fn [])
     :resume (fn [])}))
