@@ -16,6 +16,7 @@
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
+            [cdq.world.impl]
             [cdq.world.info :as info]
             [cdq.world.tiled-map :as tiled-map]
             [cdq.world-fns.creature-tiles]
@@ -159,7 +160,7 @@
                                        (db/all-raw db :properties/creatures)
                                        graphics)]
     (-> ctx
-        (assoc :ctx/world (world/create world-params world-fn-result))
+        (assoc :ctx/world (cdq.world.impl/create world-params world-fn-result))
         spawn-player!
         spawn-enemies!)))
 
