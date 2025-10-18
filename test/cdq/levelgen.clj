@@ -1,5 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.db :as db]
+            [cdq.db.impl]
             [cdq.files :as files-utils]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tm-renderer :as tm-renderer]
@@ -107,7 +108,7 @@
         world-unit-scale (float (/ tile-size))
         ctx {:ctx/stage stage}
         ctx (-> ctx
-                (assoc :ctx/db (db/create)))
+                (assoc :ctx/db (cdq.db.impl/create)))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (fit-viewport/create world-width
