@@ -1,5 +1,6 @@
 (ns cdq.game.create
-  (:require [cdq.audio :as audio]
+  (:require [cdq.game.create.dev-menu-config :as dev-menu-config]
+            [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
@@ -10,8 +11,6 @@
             [cdq.ui.stack :as stack]
             [cdq.ui.table :as table]
             [cdq.ui.dev-menu :as dev-menu]
-            [cdq.ui.editor.overview-window :as editor-overview-window]
-            [cdq.ui.editor.window :as editor-window]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
@@ -36,7 +35,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.math.vector2 :as v]
-            [clojure.string :as str]
             [clojure.timer :as timer]
             [clojure.txs :as txs]
             [clojure.tx-handler :as tx-handler]
@@ -48,79 +46,6 @@
 
 (declare rebuild-actors!
          create-world)
-
-(defn- create-dev-menu
-  [{:keys [ctx/db
-           ctx/graphics]}]
-  (let [open-editor (fn [db]
-                      {:label "Editor"
-                       :items (for [property-type (sort (db/property-types db))]
-                                {:label (str/capitalize (name property-type))
-                                 :on-click (fn [_actor {:keys [ctx/db
-                                                               ctx/graphics
-                                                               ctx/stage]}]
-                                             (stage/add-actor!
-                                              stage
-                                              (editor-overview-window/create
-                                               {:db db
-                                                :graphics graphics
-                                                :property-type property-type
-                                                :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
-                                                                 (stage/add-actor! stage
-                                                                                   (editor-window/create-editor-window
-                                                                                    {:ctx ctx
-                                                                                     :property (db/get-raw db id)})))})))})})
-        ctx-data-viewer {:label "Ctx Data"
-                         :items [{:label "Show data"
-                                  :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                                              (ui/show-data-viewer! stage ctx))}]}
-        help-info-text {:label "Help"
-                        :items [{:label input/info-text}]}
-        select-world {:label "Select World"
-                      :items (for [world-fn ["world_fns/vampire.edn"
-                                             "world_fns/uf_caves.edn"
-                                             "world_fns/modules.edn"]]
-                               {:label (str "Start " world-fn)
-                                :on-click (fn [actor {:keys [ctx/stage] :as ctx}]
-                                            (let [ui stage
-                                                  stage (actor/stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
-                                              (rebuild-actors! ui ctx)
-                                              (world/dispose! (:ctx/world ctx))
-                                              (stage/set-ctx! stage (create-world ctx world-fn))))})}
-        update-labels [{:label "elapsed-time"
-                        :update-fn (fn [ctx]
-                                     (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
-                        :icon "images/clock.png"}
-                       {:label "FPS"
-                        :update-fn (fn [ctx]
-                                     (graphics/frames-per-second (:ctx/graphics ctx)))
-                        :icon "images/fps.png"}
-                       {:label "Mouseover-entity id"
-                        :update-fn (fn [{:keys [ctx/world]}]
-                                     (let [eid (:world/mouseover-eid world)]
-                                       (when-let [entity (and eid @eid)]
-                                         (:entity/id entity))))
-                        :icon "images/mouseover.png"}
-                       {:label "paused?"
-                        :update-fn (comp :world/paused? :ctx/world)}
-                       {:label "GUI"
-                        :update-fn (fn [{:keys [ctx/graphics]}]
-                                     (mapv int (:graphics/ui-mouse-position graphics)))}
-                       {:label "World"
-                        :update-fn (fn [{:keys [ctx/graphics]}]
-                                     (mapv int (:graphics/world-mouse-position graphics)))}
-                       {:label "Zoom"
-                        :update-fn (fn [ctx]
-                                     (graphics/zoom (:ctx/graphics ctx)))
-                        :icon "images/zoom.png"}]]
-    {:menus [ctx-data-viewer
-             (open-editor db)
-             help-info-text
-             select-world]
-     :update-labels (for [item update-labels]
-                      (if (:icon item)
-                        (update item :icon #(get (:graphics/textures graphics) %))
-                        item))}))
 
 (defn- create-hp-mana-bar* [create-draws]
   (actor/create
@@ -380,7 +305,7 @@
 (def message-duration-seconds 0.5)
 
 (defn- add-actors! [stage ctx]
-  (doseq [actor [(dev-menu/create (create-dev-menu ctx))
+  (doseq [actor [(dev-menu/create (dev-menu-config/create ctx rebuild-actors! create-world))
                  (action-bar/create)
                  (create-hp-mana-bar* (create-hp-mana-bar ctx))
                  (build-group/create
