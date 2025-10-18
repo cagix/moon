@@ -3,8 +3,6 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [cdq.ui.editor.overview-window :as editor-overview-window]
-            [cdq.ui.editor.window :as editor-window]
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [clojure.gdx.scene2d.actor :as actor]
@@ -15,25 +13,14 @@
   [{:keys [ctx/db
            ctx/graphics]}
    rebuild-actors!
-   create-world]
+   create-world
+   open-editor!]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]
                                 {:label (str/capitalize (name property-type))
-                                 :on-click (fn [_actor {:keys [ctx/db
-                                                               ctx/graphics
-                                                               ctx/stage]}]
-                                             (stage/add-actor!
-                                              stage
-                                              (editor-overview-window/create
-                                               {:db db
-                                                :graphics graphics
-                                                :property-type property-type
-                                                :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
-                                                                 (stage/add-actor! stage
-                                                                                   (editor-window/create-editor-window
-                                                                                    {:ctx ctx
-                                                                                     :property (db/get-raw db id)})))})))})})
+                                 :on-click (fn [_actor ctx]
+                                             (open-editor! ctx property-type))})})
         ctx-data-viewer {:label "Ctx Data"
                          :items [{:label "Show data"
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]

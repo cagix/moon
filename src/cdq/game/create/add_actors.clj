@@ -62,7 +62,8 @@
     (doseq [actor [(dev-menu/create ((:dev-menu config)
                                      ctx
                                      rebuild-actors!
-                                     (requiring-resolve 'cdq.game.create.world/step)))
+                                     (requiring-resolve 'cdq.game.create.world/step)
+                                     (requiring-resolve 'cdq.game.open-editor/do!)))
                    (action-bar/create)
                    (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
                    (build-group/create
