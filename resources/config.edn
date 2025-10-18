@@ -4,6 +4,11 @@
   {:listener [cdq.application.listener/create
               {:audio #edn/resource "audio.edn"
                :graphics #edn/resource "graphics.edn"
-               :world #edn/resource "world.edn"}]
+               :world #edn/resource "world.edn"
+               :create cdq.game.create/do!
+               :render-pipeline #edn/resource "render_pipeline.edn"
+               :dispose cdq.game.dispose/do!
+               :resize cdq.game.resize/do!
+               }]
    :config [cdq.application.config/create #edn/resource "lwjgl_application.edn"]}]
  ]
