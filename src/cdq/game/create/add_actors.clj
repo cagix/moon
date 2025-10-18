@@ -1,6 +1,5 @@
 (ns cdq.game.create.add-actors
-  (:require [cdq.game.create.dev-menu-config :as dev-menu-config]
-            [cdq.game.create.hp-mana-bar-config :as hp-mana-bar-config]
+  (:require [cdq.game.create.hp-mana-bar-config :as hp-mana-bar-config]
             [cdq.game.create.entity-info-window-config :as entity-info-window-config]
             [cdq.game.create.inventory-window :as inventory-window]
             [cdq.graphics :as graphics]
@@ -59,18 +58,20 @@
   (step stage ctx))
 
 (defn step [stage ctx]
-  (doseq [actor [(dev-menu/create (dev-menu-config/create ctx
-                                                          rebuild-actors!
-                                                          (requiring-resolve 'cdq.game.create.world/step)))
-                 (action-bar/create)
-                 (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
-                 (build-group/create
-                  {:actor/name "cdq.ui.windows"
-                   :group/actors [(info-window/create (entity-info-window-config/create ctx))
-                                  (inventory-window/create ctx)]})
-                 (actor/create
-                  {:draw (fn [this _batch _parent-alpha]
-                           (player-state-handle-draws (stage/ctx (actor/stage this))))
-                   :act (fn [this _delta])})
-                 (message/create message-duration-seconds)]]
-    (stage/add-actor! stage actor)))
+  (let [config (.config stage)]
+    (doseq [actor [(dev-menu/create ((:dev-menu config)
+                                     ctx
+                                     rebuild-actors!
+                                     (requiring-resolve 'cdq.game.create.world/step)))
+                   (action-bar/create)
+                   (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
+                   (build-group/create
+                    {:actor/name "cdq.ui.windows"
+                     :group/actors [(info-window/create (entity-info-window-config/create ctx))
+                                    (inventory-window/create ctx)]})
+                   (actor/create
+                    {:draw (fn [this _batch _parent-alpha]
+                             (player-state-handle-draws (stage/ctx (actor/stage this))))
+                     :act (fn [this _delta])})
+                   (message/create message-duration-seconds)]]
+      (stage/add-actor! stage actor))))

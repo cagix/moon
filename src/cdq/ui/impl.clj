@@ -51,9 +51,10 @@
 
 (defn create!
   [{:keys [graphics/batch
-           graphics/ui-viewport]}]
+           graphics/ui-viewport]}
+   config]
   (vis-ui/load! {:skin-scale :x1})
-  (stage/create ui-viewport batch))
+  (stage/create ui-viewport batch config))
 
 (defn- toggle-visible! [actor]
   (actor/set-visible! actor (not (actor/visible? actor))))

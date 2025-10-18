@@ -12,7 +12,7 @@
     :as ctx}
    config]
   (let [graphics ((:graphics-impl config) graphics files (:graphics config))
-        stage ((:ui-impl config) graphics)
+        stage ((:ui-impl config) graphics (:ui-config config))
         ctx (-> (map->Context {})
                 (assoc :ctx/graphics graphics)
                 (assoc :ctx/stage stage)

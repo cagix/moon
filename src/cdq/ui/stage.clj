@@ -2,8 +2,8 @@
   (:require [clojure.gdx.scene2d.stage :as stage])
   (:import (cdq.ui Stage)))
 
-(defn create [viewport batch]
-  (Stage. viewport batch))
+(defn create [viewport batch config]
+  (Stage. viewport batch config))
 
 (defn ctx [^Stage stage]
   (.ctx stage))
