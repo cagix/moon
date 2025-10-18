@@ -5,6 +5,7 @@
             [cdq.game.create.inventory-window :as inventory-window]
             [cdq.game.create.txs]
             [cdq.audio :as audio]
+            [cdq.db.impl]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.graphics.impl]
@@ -176,7 +177,7 @@
         ctx (cdq.game.create.txs/do! ctx)
         ctx (merge ctx
                    {:ctx/audio (audio/create audio files (:audio config))
-                    :ctx/db (db/create)
+                    :ctx/db (cdq.db.impl/create)
                     :ctx/graphics graphics
                     :ctx/input input
                     :ctx/stage stage})]
