@@ -29,54 +29,27 @@
             [clojure.string :as str]))
 
 (defprotocol PGraphics
+  (unproject-ui [_ position])
+  (update-ui-viewport! [_ width height])
+  (clear-screen! [_ color])
+  (set-cursor! [_ cursor-key])
   (draw! [_ draws])
   (texture-region [_ image])
-  (draw-tiled-map! [_ tiled-map color-setter]))
-
-(defn clear-screen! [_ color]
-  (screen-utils/clear! color))
-
-(defn set-cursor! [{:keys [graphics/core
-                           graphics/cursors]}
-                   cursor-key]
-  (assert (contains? cursors cursor-key))
-  (graphics/set-cursor! core (get cursors cursor-key)))
-
-(defn frames-per-second [{:keys [graphics/core]}]
-  (graphics/frames-per-second core))
-
-(defn delta-time [{:keys [graphics/core]}]
-  (graphics/delta-time core))
-
-(defn dispose!
-  [{:keys [graphics/batch
-           graphics/cursors
-           graphics/default-font
-           graphics/shape-drawer-texture
-           graphics/textures]}]
-  (disposable/dispose! batch)
-  (run! disposable/dispose! (vals cursors))
-  (disposable/dispose! default-font)
-  (disposable/dispose! shape-drawer-texture)
-  (run! disposable/dispose! (vals textures)))
-
-(defn position [{:keys [graphics/world-viewport]}]
-  (camera/position (viewport/camera world-viewport)))
-
-(defn visible-tiles [{:keys [graphics/world-viewport]}]
-  (camera/visible-tiles (viewport/camera world-viewport)))
-
-(defn frustum [{:keys [graphics/world-viewport]}]
-  (camera/frustum (viewport/camera world-viewport)))
-
-(defn zoom [{:keys [graphics/world-viewport]}]
-  (camera/zoom (viewport/camera world-viewport)))
-
-(defn change-zoom! [{:keys [graphics/world-viewport]} amount]
-  (camera/inc-zoom! (viewport/camera world-viewport) amount))
-
-(defn set-position! [{:keys [graphics/world-viewport]} position]
-  (camera/set-position! (viewport/camera world-viewport) position))
+  (draw-tiled-map! [_ tiled-map color-setter])
+  (frames-per-second [_])
+  (delta-time [_])
+  (dispose! [_])
+  (position [_])
+  (visible-tiles [_])
+  (frustum [_])
+  (zoom [_])
+  (change-zoom! [_ amount])
+  (set-position! [_ position])
+  (world-vp-width [_])
+  (world-vp-height [_])
+  (unproject-world [_ position])
+  (update-world-vp! [_ width height])
+  (draw-on-world-vp! [_ f]))
 
 (defn- draw-text! [font batch {:keys [scale text x y up? h-align target-width wrap?]}]
   (let [text-height (fn []
@@ -100,8 +73,6 @@
   (-> viewport
       (viewport/unproject (vector2/->java x y))
       vector2/->clj))
-
-(declare draw!)
 
 (def ^:private draw-fns
   {
@@ -225,14 +196,41 @@
    }
   )
 
-(defn unproject-ui [{:keys [graphics/ui-viewport]} position]
-  (unproject ui-viewport position))
-
-(defn update-ui-viewport! [{:keys [graphics/ui-viewport]} width height]
-  (viewport/update! ui-viewport width height {:center? true}))
-
 (defrecord Graphics []
   PGraphics
+  (unproject-ui [{:keys [graphics/ui-viewport]} position]
+    (unproject ui-viewport position))
+
+  (update-ui-viewport! [{:keys [graphics/ui-viewport]} width height]
+    (viewport/update! ui-viewport width height {:center? true}))
+
+  (dispose!
+    [{:keys [graphics/batch
+             graphics/cursors
+             graphics/default-font
+             graphics/shape-drawer-texture
+             graphics/textures]}]
+    (disposable/dispose! batch)
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font)
+    (disposable/dispose! shape-drawer-texture)
+    (run! disposable/dispose! (vals textures)))
+
+  (frames-per-second [{:keys [graphics/core]}]
+    (graphics/frames-per-second core))
+
+  (delta-time [{:keys [graphics/core]}]
+    (graphics/delta-time core))
+
+  (clear-screen! [_ color]
+    (screen-utils/clear! color))
+
+  (set-cursor! [{:keys [graphics/core
+                        graphics/cursors]}
+                cursor-key]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! core (get cursors cursor-key)))
+
   (draw! [graphics draws]
     (doseq [{k 0 :as component} draws
             :when component]
@@ -255,50 +253,69 @@
     (tm-renderer/draw! tiled-map-renderer
                        world-viewport
                        tiled-map
-                       color-setter)))
+                       color-setter))
 
-(defn world-vp-width [{:keys [graphics/world-viewport]}]
-  (viewport/world-width world-viewport))
+  (position [{:keys [graphics/world-viewport]}]
+    (camera/position (viewport/camera world-viewport)))
 
-(defn world-vp-height [{:keys [graphics/world-viewport]}]
-  (viewport/world-height world-viewport))
+  (visible-tiles [{:keys [graphics/world-viewport]}]
+    (camera/visible-tiles (viewport/camera world-viewport)))
 
-(defn unproject-world [{:keys [graphics/world-viewport]} position]
-  (unproject world-viewport position))
+  (frustum [{:keys [graphics/world-viewport]}]
+    (camera/frustum (viewport/camera world-viewport)))
 
-(defn update-world-vp! [{:keys [graphics/world-viewport]} width height]
-  (viewport/update! world-viewport width height {:center? false}))
+  (zoom [{:keys [graphics/world-viewport]}]
+    (camera/zoom (viewport/camera world-viewport)))
 
-(defn draw-on-world-vp!
-  [{:keys [graphics/batch
-           graphics/shape-drawer
-           graphics/unit-scale
-           graphics/world-unit-scale
-           graphics/world-viewport]}
-   f]
-  ; fix scene2d.ui.tooltip flickering
-  ; _everything_ flickers with vis ui tooltip! it changes batch color somehow and does not
-  ; change it back !
-  (batch/set-color! batch [1 1 1 1])
-  ;
-  (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
-  (batch/begin! batch)
-  (sd/with-line-width shape-drawer world-unit-scale
-    (reset! unit-scale world-unit-scale)
-    (f)
-    (reset! unit-scale 1))
-  (batch/end! batch))
+  (change-zoom! [{:keys [graphics/world-viewport]} amount]
+    (camera/inc-zoom! (viewport/camera world-viewport) amount))
 
-(defn create-cursor [files graphics path [hotspot-x hotspot-y]]
+  (set-position! [{:keys [graphics/world-viewport]} position]
+    (camera/set-position! (viewport/camera world-viewport) position))
+
+  (world-vp-width [{:keys [graphics/world-viewport]}]
+    (viewport/world-width world-viewport))
+
+  (world-vp-height [{:keys [graphics/world-viewport]}]
+    (viewport/world-height world-viewport))
+
+  (unproject-world [{:keys [graphics/world-viewport]} position]
+    (unproject world-viewport position))
+
+  (update-world-vp! [{:keys [graphics/world-viewport]} width height]
+    (viewport/update! world-viewport width height {:center? false}))
+
+  (draw-on-world-vp!
+    [{:keys [graphics/batch
+             graphics/shape-drawer
+             graphics/unit-scale
+             graphics/world-unit-scale
+             graphics/world-viewport]}
+     f]
+    ; fix scene2d.ui.tooltip flickering
+    ; _everything_ flickers with vis ui tooltip! it changes batch color somehow and does not
+    ; change it back !
+    (batch/set-color! batch [1 1 1 1])
+    ;
+    (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
+    (batch/begin! batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (reset! unit-scale world-unit-scale)
+      (f)
+      (reset! unit-scale 1))
+    (batch/end! batch)))
+
+(defn- create-cursor [files graphics path [hotspot-x hotspot-y]]
   (let [pixmap (pixmap/create (files/internal files path))
         cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
     (pixmap/dispose! pixmap)
     cursor))
 
-(defn generate-font [file-handle {:keys [size
-                                         quality-scaling
-                                         enable-markup?
-                                         use-integer-positions?]}]
+(defn- generate-font
+  [file-handle {:keys [size
+                       quality-scaling
+                       enable-markup?
+                       use-integer-positions?]}]
   (let [generator (generator/create file-handle)
         font (generator/font generator
                              (parameter/create
