@@ -1,5 +1,8 @@
 (ns cdq.game.create
   (:require [cdq.game.create.dev-menu-config :as dev-menu-config]
+            [cdq.game.create.hp-mana-bar-config :as hp-mana-bar-config]
+            [cdq.game.create.entity-info-window-config :as entity-info-window-config]
+            [cdq.game.create.inventory-window :as inventory-window]
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.entity.stats :as stats]
@@ -8,8 +11,6 @@
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.group :as build-group]
-            [cdq.ui.stack :as stack]
-            [cdq.ui.table :as table]
             [cdq.ui.dev-menu :as dev-menu]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
@@ -21,16 +22,8 @@
             [cdq.entity.state :as state]
             [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.entity.stats :as stats]
-            [clojure.gdx.graphics.color :as gdxcolor]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.event :as event]
-            [clojure.gdx.scene2d.ui.widget :as widget]
-            [clojure.gdx.scene2d.utils.click-listener :as click-listener]
-            [clojure.gdx.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scene2d.utils.texture-region-drawable :as texture-region-drawable]
-            [clojure.gdx.math.vector2 :as gdxvector2]
             [cdq.ui.info-window :as info-window]
-            [cdq.ui.image :as image]
             [cdq.ui.window :as window]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -39,7 +32,6 @@
             [clojure.txs :as txs]
             [clojure.tx-handler :as tx-handler]
             [clojure.utils :as utils]
-            [clojure.val-max :as val-max]
             [qrecord.core :as q]))
 
 (q/defrecord Context [])
@@ -54,228 +46,6 @@
             (when-let [stage (actor/stage actor)]
               (graphics/draw! (:ctx/graphics (stage/ctx stage))
                               (create-draws (stage/ctx stage)))))}))
-
-(let [config {:rahmen-file "images/rahmen.png"
-              :rahmenw 150
-              :rahmenh 26
-              :hpcontent-file "images/hp.png"
-              :manacontent-file "images/mana.png"
-              :y-mana 80}]
-  (defn- create-hp-mana-bar
-    [{:keys [ctx/stage
-             ctx/graphics]}]
-    (let [{:keys [rahmen-file
-                  rahmenw
-                  rahmenh
-                  hpcontent-file
-                  manacontent-file
-                  y-mana]} config
-          [x y-mana] [(/ (ui/viewport-width stage) 2)
-                      y-mana]
-          rahmen-tex-reg (graphics/texture-region graphics {:image/file rahmen-file})
-          y-hp (+ y-mana rahmenh)
-          render-hpmana-bar (fn [x y content-file minmaxval name]
-                              [[:draw/texture-region rahmen-tex-reg [x y]]
-                               [:draw/texture-region
-                                (graphics/texture-region graphics
-                                                         {:image/file content-file
-                                                          :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
-                                [x y]]
-                               [:draw/text {:text (str (utils/readable-number (minmaxval 0))
-                                                       "/"
-                                                       (minmaxval 1)
-                                                       " "
-                                                       name)
-                                            :x (+ x 75)
-                                            :y (+ y 2)
-                                            :up? true}]])]
-      (fn [{:keys [ctx/world]}]
-        (let [stats (:entity/stats @(:world/player-eid world))
-              x (- x (/ rahmenw 2))]
-          (concat
-           (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
-           (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP")))))))
-
-(defn- create-entity-info-window
-  [{:keys [ctx/stage]}]
-  {:title "Entity Info"
-   :actor-name "cdq.ui.windows.entity-info"
-   :visible? false
-   :position [(ui/viewport-width stage) 0]
-   :set-label-text! (fn [{:keys [ctx/world]}]
-                      (if-let [eid (:world/mouseover-eid world)]
-                        (info/text (apply dissoc @eid [:entity/skills
-                                                       :entity/faction
-                                                       :active-skill])
-                                   world)
-                        ""))})
-
-(let [fn-map {:player-idle           (fn [eid cell]
-                                       (when-let [item (get-in (:entity/inventory @eid) cell)]
-                                         [[:tx/sound "bfxr_takeit"]
-                                          [:tx/event eid :pickup-item item]
-                                          [:tx/remove-item eid cell]]))
-
-              :player-item-on-cursor (fn [eid cell]
-                                       (let [entity @eid
-                                             inventory (:entity/inventory entity)
-                                             item-in-cell (get-in inventory cell)
-                                             item-on-cursor (:entity/item-on-cursor entity)]
-                                         (cond
-                                          ; PUT ITEM IN EMPTY CELL
-                                          (and (not item-in-cell)
-                                               (inventory/valid-slot? cell item-on-cursor))
-                                          [[:tx/sound "bfxr_itemput"]
-                                           [:tx/dissoc eid :entity/item-on-cursor]
-                                           [:tx/set-item eid cell item-on-cursor]
-                                           [:tx/event eid :dropped-item]]
-
-                                          ; STACK ITEMS
-                                          (and item-in-cell
-                                               (inventory/stackable? item-in-cell item-on-cursor))
-                                          [[:tx/sound "bfxr_itemput"]
-                                           [:tx/dissoc eid :entity/item-on-cursor]
-                                           [:tx/stack-item eid cell item-on-cursor]
-                                           [:tx/event eid :dropped-item]]
-
-                                          ; SWAP ITEMS
-                                          (and item-in-cell
-                                               (inventory/valid-slot? cell item-on-cursor))
-                                          [[:tx/sound "bfxr_itemput"]
-                                           ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-                                           ; TODO? coud handle pickup-item from item-on-cursor state also
-                                           [:tx/dissoc eid :entity/item-on-cursor]
-                                           [:tx/remove-item eid cell]
-                                           [:tx/set-item eid cell item-on-cursor]
-                                           [:tx/event eid :dropped-item]
-                                           [:tx/event eid :pickup-item item-in-cell]])))}]
-  (defn state->clicked-inventory-cell [[k v] eid cell]
-    (when-let [f (k fn-map)]
-      (f eid cell))))
-
-(defn- draw-cell-rect-actor [draw-cell-rect]
-  (widget/create
-    (fn [this _batch _parent-alpha]
-      (when-let [stage (actor/stage this)]
-        (let [{:keys [ctx/graphics
-                      ctx/world]} (stage/ctx stage)]
-          (graphics/draw! graphics
-                          (let [ui-mouse (:graphics/ui-mouse-position graphics)]
-                            (draw-cell-rect @(:world/player-eid world)
-                                            (actor/x this)
-                                            (actor/y this)
-                                            (let [[x y] (-> this
-                                                            (actor/stage->local-coordinates (gdxvector2/->java ui-mouse))
-                                                            gdxvector2/->clj)]
-                                              (actor/hit this x y true))
-                                            (actor/user-object (actor/parent this))))))))))
-
-(defn- create-inventory-window*
-  [{:keys [position
-           title
-           actor/visible?
-           clicked-cell-listener
-           slot->texture-region]}]
-  (let [cell-size 48
-        slot->drawable (fn [slot]
-                         (doto (texture-region-drawable/create (slot->texture-region slot))
-                           (drawable/set-min-size! cell-size cell-size)
-                           (texture-region-drawable/tint (gdxcolor/create [1 1 1 0.4]))))
-        droppable-color   [0   0.6 0 0.8 1]
-        not-allowed-color [0.6 0   0 0.8 1]
-        draw-cell-rect (fn [player-entity x y mouseover? cell]
-                         [[:draw/rectangle x y cell-size cell-size [0.5 0.5 0.5 1]]
-                          (when (and mouseover?
-                                     (= :player-item-on-cursor (:state (:entity/fsm player-entity))))
-                            (let [item (:entity/item-on-cursor player-entity)
-                                  color (if (inventory/valid-slot? cell item)
-                                          droppable-color
-                                          not-allowed-color)]
-                              [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
-        ->cell (fn [slot & {:keys [position]}]
-                 (let [cell [slot (or position [0 0])]
-                       background-drawable (slot->drawable slot)]
-                   {:actor (stack/create
-                            {:actor/name "inventory-cell"
-                             :actor/user-object cell
-                             :actor/listener (clicked-cell-listener cell)
-                             :group/actors [(draw-cell-rect-actor draw-cell-rect)
-                                            (image/create
-                                             {:image/object background-drawable
-                                              :actor/name "image-widget"
-                                              :actor/user-object {:background-drawable background-drawable
-                                                                  :cell-size cell-size}})]})}))]
-    (window/create
-     {:title title
-      :actor/name "cdq.ui.windows.inventory"
-      :actor/visible? visible?
-      :pack? true
-      :actor/position position
-      :rows [[{:actor (table/create
-                       {:actor/name "inventory-cell-table"
-                        :rows (concat [[nil nil
-                                        (->cell :inventory.slot/helm)
-                                        (->cell :inventory.slot/necklace)]
-                                       [nil
-                                        (->cell :inventory.slot/weapon)
-                                        (->cell :inventory.slot/chest)
-                                        (->cell :inventory.slot/cloak)
-                                        (->cell :inventory.slot/shield)]
-                                       [nil nil
-                                        (->cell :inventory.slot/leg)]
-                                       [nil
-                                        (->cell :inventory.slot/glove)
-                                        (->cell :inventory.slot/rings :position [0 0])
-                                        (->cell :inventory.slot/rings :position [1 0])
-                                        (->cell :inventory.slot/boot)]]
-                                      (for [y (range 4)]
-                                        (for [x (range 6)]
-                                          (->cell :inventory.slot/bag :position [x y]))))})
-               :pad 4}]]})))
-
-(defn- create-inventory-window
-  [{:keys [ctx/graphics
-           ctx/stage]}]
-  (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
-                                             :shield   1
-                                             :rings    2
-                                             :necklace 3
-                                             :helm     4
-                                             :cloak    5
-                                             :chest    6
-                                             :leg      7
-                                             :glove    8
-                                             :boot     9
-                                             :bag      10}
-        slot->texture-region (fn [slot]
-                               (let [width  48
-                                     height 48
-                                     sprite-x 21
-                                     sprite-y (+ (slot->y-sprite-idx slot) 2)
-                                     bounds [(* sprite-x width)
-                                             (* sprite-y height)
-                                             width
-                                             height]]
-                                 (graphics/texture-region graphics
-                                                          {:image/file "images/items.png"
-                                                           :image/bounds bounds})))]
-    (create-inventory-window*
-     {:title "Inventory"
-      :actor/visible? false
-      :position [(ui/viewport-width  stage)
-                 (ui/viewport-height stage)]
-      :clicked-cell-listener (fn [cell]
-                               (click-listener/create
-                                (fn [event x y]
-                                  (let [{:keys [ctx/world] :as ctx} (stage/ctx (event/stage event))
-                                        eid (:world/player-eid world)
-                                        entity @eid
-                                        state-k (:state (:entity/fsm entity))
-                                        txs (state->clicked-inventory-cell [state-k (state-k entity)]
-                                                                           eid
-                                                                           cell)]
-                                    (txs/handle! ctx txs)))))
-      :slot->texture-region slot->texture-region})))
 
 (def state->draw-ui-view
   {:player-item-on-cursor (fn
@@ -307,11 +77,11 @@
 (defn- add-actors! [stage ctx]
   (doseq [actor [(dev-menu/create (dev-menu-config/create ctx rebuild-actors! create-world))
                  (action-bar/create)
-                 (create-hp-mana-bar* (create-hp-mana-bar ctx))
+                 (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
                  (build-group/create
                   {:actor/name "cdq.ui.windows"
-                   :group/actors [(info-window/create (create-entity-info-window ctx))
-                                  (create-inventory-window ctx)]})
+                   :group/actors [(info-window/create (entity-info-window-config/create ctx))
+                                  (inventory-window/create ctx)]})
                  (actor/create
                   {:draw (fn [this _batch _parent-alpha]
                            (player-state-handle-draws (stage/ctx (actor/stage this))))
