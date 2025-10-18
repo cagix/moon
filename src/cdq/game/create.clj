@@ -7,6 +7,7 @@
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.graphics.impl]
             [cdq.input :as input]
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
@@ -29,9 +30,6 @@
             [qrecord.core :as q]))
 
 (q/defrecord Context [])
-
-(declare rebuild-actors!
-         create-world)
 
 (defn- create-hp-mana-bar* [create-draws]
   (actor/create
@@ -67,6 +65,9 @@
       (graphics/draw! graphics (f player-eid ctx)))))
 
 (def message-duration-seconds 0.5)
+
+(declare rebuild-actors!
+         create-world)
 
 (defn- add-actors! [stage ctx]
   ; => stage-config passed once saved in the cdq.ui.Stage
@@ -168,7 +169,7 @@
            graphics
            input]}
    config]
-  (let [graphics (graphics/create! graphics files (:graphics config))
+  (let [graphics (cdq.graphics.impl/create! graphics files (:graphics config))
         stage (ui/create! graphics)
         ctx (map->Context {})
         ctx (cdq.game.create.txs/do! ctx)
