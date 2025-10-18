@@ -2,9 +2,23 @@
  [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
  [clojure.gdx.application.lwjgl/start!
   {:listener [cdq.application.listener/create
-              {:audio #edn/resource "audio.edn"
+              {
+               :handle-txs cdq.game.create.txs/do!
+
+               :audio-impl cdq.audio/create
+               :audio #edn/resource "audio.edn"
+
+               :db-impl cdq.db.impl/create
+
+               :graphics-impl cdq.graphics.impl/create!
                :graphics #edn/resource "graphics.edn"
+
+               :ui-impl cdq.ui/create!
+               :add-actors cdq.game.create.add-actors/step
+
+               :create-world cdq.game.create.world/step
                :world #edn/resource "world.edn"
+
                :create cdq.game.create/do!
                :render-pipeline #edn/resource "render_pipeline.edn"
                :dispose cdq.game.dispose/do!

@@ -34,7 +34,12 @@
                 #_(set-gdx-nil!)
                 ; com.badlogic.gdx.graphics.glutils/VertexBufferObject
                 ; Gdx.gl20.glGenBuffer();
-                (reset! state ((:create config) gdx config))))
+                (reset! state ((:create config)
+                               {:clojure.gdx/audio (:audio gdx)
+                                :clojure.gdx/files (:files gdx)
+                                :clojure.gdx/graphics (:graphics gdx)
+                                :clojure.gdx/input (:input gdx)}
+                               config))))
 
     :dispose (fn []
                ((:dispose config) @state))
