@@ -7,8 +7,9 @@
 (defn do!
   [{:keys [ctx/audio
            ctx/graphics
+           ctx/stage
            ctx/world]}]
   (audio/dispose! audio)
   (graphics/dispose! graphics)
-  (ui/dispose!)
+  (ui/dispose! stage)
   (world/dispose! world))

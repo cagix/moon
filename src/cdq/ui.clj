@@ -1,190 +1,22 @@
-(ns cdq.ui
-  (:require [cdq.ui.stage :as stage]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.message :as message]
-            [cdq.ui.widget]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.math.vector2 :as vector2]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.repl]
-            [cdq.ui.skin :as vis-ui]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
-            [clojure.utils :as utils]
-            [clojure.vis-ui.label :as label])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               Label
-                                               Window)))
+(ns cdq.ui)
 
-(defn create!
-  [{:keys [graphics/batch
-           graphics/ui-viewport]}]
-  (vis-ui/load! {:skin-scale :x1})
-  (stage/create ui-viewport batch))
-
-(defn dispose! []
-  (vis-ui/dispose!))
-
-(defn toggle-visible! [actor]
-  (actor/set-visible! actor (not (actor/visible? actor))))
-
-(defn- stage-find [stage k]
-  (-> stage
-      stage/root
-      (group/find-actor k)))
-
-(defn show-data-viewer! [this data]
-  (stage/add-actor! this
-                    (cdq.ui.widget/data-viewer
-                     {:title "Data View"
-                      :data data
-                      :width 500
-                      :height 500})))
-
-(defn viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
-(defn viewport-height [stage] (viewport/world-height (stage/viewport stage)))
-
-(defn get-ctx [this]
-  (stage/ctx this))
-
-(defn mouseover-actor [this position]
-  (let [position (vector2/->clj (viewport/unproject (stage/viewport this) (vector2/->java position)))]
-    (stage/hit this position true)))
-
-(defn action-bar-selected-skill [this]
-  (-> this
-      stage/root
-      (group/find-actor "cdq.ui.action-bar")
-      action-bar/selected-skill))
-
-(defn inventory-window-visible? [stage]
-  (-> stage
-      (stage-find "cdq.ui.windows")
-      (group/find-actor "cdq.ui.windows.inventory")
-      actor/visible?))
-
-(defn toggle-inventory-visible! [stage]
-  (-> stage
-      (stage-find "cdq.ui.windows")
-      (group/find-actor "cdq.ui.windows.inventory")
-      toggle-visible!))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}]
-  (assert (not (-> stage
-                   stage/root
-                   (group/find-actor "cdq.ui.modal-window"))))
-  (stage/add-actor! stage
-                    (window/create
-                     {:title title
-                      :rows [[{:actor (label/create text)}]
-                             [{:actor (text-button/create
-                                       {:text button-text
-                                        :on-clicked (fn [_actor _ctx]
-                                                      (actor/remove!
-                                                       (-> stage
-                                                           stage/root
-                                                           (group/find-actor "cdq.ui.modal-window")))
-                                                      (on-click))})}]]
-                      :actor/name "cdq.ui.modal-window"
-                      :modal? true
-                      :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
-                                              (* (viewport/world-height ui-viewport) (/ 3 4))]
-                      :pack? true})))
-
-(defn set-item! [stage cell item-properties]
-  (-> stage
-      (stage-find "cdq.ui.windows")
-      (group/find-actor "cdq.ui.windows.inventory")
-      (inventory-window/set-item! cell item-properties)))
-
-(defn remove-item! [stage inventory-cell]
-  (-> stage
-      (stage-find "cdq.ui.windows")
-      (group/find-actor "cdq.ui.windows.inventory")
-      (inventory-window/remove-item! inventory-cell)))
-
-(defn add-skill! [stage skill-properties]
-  (-> stage
-      stage/root
-      (group/find-actor "cdq.ui.action-bar")
-      (action-bar/add-skill! skill-properties)))
-
-(defn remove-skill! [stage skill-id]
-  (-> stage
-      stage/root
-      (group/find-actor "cdq.ui.action-bar")
-      (action-bar/remove-skill! skill-id)))
-
-(defn show-text-message! [stage message]
-  (-> stage
-      stage/root
-      (group/find-actor "player-message")
-      (message/show! message)))
-
-(defn toggle-entity-info-window! [stage]
-  (-> stage
-      (stage-find "cdq.ui.windows")
-      (group/find-actor "cdq.ui.windows.entity-info")
-      toggle-visible!))
-
-(defn close-all-windows! [stage]
-  (->> (stage-find stage "cdq.ui.windows")
-       group/children
-       (run! #(actor/set-visible! % false))))
-
-(defn- inventory-cell-with-item? [actor]
-  (and (actor/parent actor)
-       (= "inventory-cell" (actor/name (actor/parent actor)))
-       (actor/user-object (actor/parent actor))))
-
-; FIXME does not work
-(defn- window-title-bar?
-  "Returns true if the actor is a window title bar."
-  [actor]
-  (when (instance? Label actor)
-    (when-let [p (actor/parent actor)]
-      (when-let [p (actor/parent p)]
-        (and (instance? Window actor)
-             (= (.getTitleLabel ^Window p) actor))))))
-
-(defn- button-class? [actor]
-  (some #(= Button %) (supers (class actor))))
-
-(comment
- ; maybe use this?
- (isa? (class actor) Button)
- )
-
-(defn- button?
-  "Returns true if the actor or its parent is a button."
-  [actor]
-  (or (button-class? actor)
-      (and (actor/parent actor)
-           (button-class? (actor/parent actor)))))
-
-(defn actor-information [actor]
-  (let [inventory-slot (inventory-cell-with-item? actor)]
-    (cond
-     inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
-     (window-title-bar? actor) [:mouseover-actor/window-title-bar]
-     (button?           actor) [:mouseover-actor/button]
-     :else                     [:mouseover-actor/unspecified])))
-
-(defn show-error-window! [stage throwable]
-  (stage/add-actor! stage
-                    (window/create
-                     {:title "Error"
-                      :rows [[{:actor (label/create (binding [*print-level* 3]
-                                                      (utils/with-err-str
-                                                        (clojure.repl/pst throwable))))}]]
-                      :modal? true
-                      :close-button? true
-                      :close-on-escape? true
-                      :center? true
-                      :pack? true})))
+(defprotocol UserInterface
+  (dispose! [_])
+  (show-data-viewer! [_ data])
+  (viewport-width  [_])
+  (viewport-height [_])
+  (get-ctx [_])
+  (mouseover-actor [_ position])
+  (action-bar-selected-skill [_])
+  (inventory-window-visible? [_])
+  (toggle-inventory-visible! [_])
+  (show-modal-window! [_ ui-viewport {:keys [title text button-text on-click]}])
+  (set-item! [_ cell item-properties])
+  (remove-item! [_ inventory-cell])
+  (add-skill! [_ skill-properties])
+  (remove-skill! [_ skill-id])
+  (show-text-message! [_ message])
+  (toggle-entity-info-window! [_])
+  (close-all-windows! [_])
+  (show-error-window! [_ throwable])
+  (actor-information [_ actor]))

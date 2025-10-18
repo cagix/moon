@@ -13,7 +13,7 @@
                :graphics-impl cdq.graphics.impl/create!
                :graphics #edn/resource "graphics.edn"
 
-               :ui-impl cdq.ui/create!
+               :ui-impl cdq.ui.impl/create!
                :add-actors cdq.game.create.add-actors/step
 
                :create-world cdq.game.create.world/step

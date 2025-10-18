@@ -23,7 +23,7 @@
    mouseover-actor]
   (cond
    mouseover-actor
-   [:interaction-state/mouseover-actor (ui/actor-information mouseover-actor)]
+   [:interaction-state/mouseover-actor (ui/actor-information stage mouseover-actor)]
 
    (and mouseover-eid
         (:entity/clickable @mouseover-eid))
