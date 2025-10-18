@@ -251,3 +251,15 @@
     (when (:body/collides? (:entity/body @eid))
       (grid/set-occupied-cells! grid eid))
     (mapcat #(after-create-component % eid world) @eid)))
+
+(defn player-position [{:keys [world/player-eid]}]
+  (:body/position (:entity/body @player-eid)))
+
+(defn update-time
+  [{:keys [world/max-delta]
+    :as world}
+   delta-ms]
+  (let [delta-ms (min delta-ms max-delta)]
+    (-> world
+        (assoc :world/delta-time delta-ms)
+        (update :world/elapsed-time + delta-ms))))
