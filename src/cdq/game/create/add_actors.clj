@@ -5,7 +5,6 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [cdq.ui.group :as build-group]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
             [cdq.world.info :as info]
@@ -64,10 +63,10 @@
                     (requiring-resolve 'cdq.game.open-editor/do!))
                    {:type :actor/action-bar}
                    (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
-                   (build-group/create
-                    {:actor/name "cdq.ui.windows"
-                     :group/actors [(info-window/create (entity-info-window-config/create ctx))
-                                    (inventory-window/create ctx)]})
+                   {:type :actor/group
+                    :actor/name "cdq.ui.windows"
+                    :group/actors [(info-window/create (entity-info-window-config/create ctx))
+                                   (inventory-window/create ctx)]}
                    (actor/create
                     {:draw (fn [this _batch _parent-alpha]
                              (player-state-handle-draws (stage/ctx (actor/stage this))))
