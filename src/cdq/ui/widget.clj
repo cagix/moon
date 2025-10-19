@@ -55,21 +55,20 @@
    :else
    (str (class v))))
 
-(declare data-viewer)
-
 (defn- v->actor [v]
   (if (map? v)
     (text-button/create
      {:text "Map"
       :on-clicked (fn [actor _ctx]
                     (stage/add-actor! (actor/stage actor)
-                                      (data-viewer {:title "title"
-                                                    :data v
-                                                    :width 500
-                                                    :height 500})))})
+                                      {:type :actor/data-viewer
+                                       :title "title"
+                                       :data v
+                                       :width 500
+                                       :height 500}))})
     (label/create (v->text v))))
 
-(defn data-viewer
+(defmethod stage/build :actor/data-viewer
   [{:keys [title
            data
            width

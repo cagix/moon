@@ -4,7 +4,6 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
-            [cdq.ui.widget]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.math.vector2 :as vector2]
@@ -71,11 +70,11 @@
 
   (show-data-viewer! [this data]
     (stage/add-actor! this
-                      (cdq.ui.widget/data-viewer
-                       {:title "Data View"
-                        :data data
-                        :width 500
-                        :height 500})))
+                      {:type :actor/data-viewer
+                       :title "Data View"
+                       :data data
+                       :width 500
+                       :height 500}))
 
   (viewport-width  [stage]
     (viewport/world-width (stage/viewport stage)))
