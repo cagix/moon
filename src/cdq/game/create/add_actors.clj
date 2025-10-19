@@ -7,7 +7,6 @@
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.group :as build-group]
-            [cdq.ui.dev-menu :as dev-menu]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
             [cdq.world.info :as info]
@@ -59,11 +58,11 @@
 
 (defn step [stage ctx]
   (let [config (.config stage)]
-    (doseq [actor [(dev-menu/create ((:dev-menu config)
-                                     ctx
-                                     rebuild-actors!
-                                     (requiring-resolve 'cdq.game.create.world/step)
-                                     (requiring-resolve 'cdq.game.open-editor/do!)))
+    (doseq [actor [((:dev-menu config)
+                    ctx
+                    rebuild-actors!
+                    (requiring-resolve 'cdq.game.create.world/step)
+                    (requiring-resolve 'cdq.game.open-editor/do!))
                    (action-bar/create)
                    (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
                    (build-group/create

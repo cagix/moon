@@ -1,11 +1,12 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.ui.table :as table]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.menu :as menu]
             [clojure.vis-ui.label :as vis-label]))
 
-(defn create
+(defmethod stage/build :actor/dev-menu
   [{:keys [menus update-labels]}]
   (table/create
    {:rows [[{:actor (menu/create

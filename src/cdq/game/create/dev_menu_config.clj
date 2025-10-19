@@ -64,7 +64,8 @@
                         :update-fn (fn [ctx]
                                      (graphics/zoom (:ctx/graphics ctx)))
                         :icon "images/zoom.png"}]]
-    {:menus [ctx-data-viewer
+    {:type :actor/dev-menu
+     :menus [ctx-data-viewer
              (open-editor db)
              help-info-text
              select-world]
