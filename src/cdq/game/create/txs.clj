@@ -24,6 +24,10 @@
 
 (def reaction-txs-fn-map
   {
+   :tx/sound                    (fn [{:keys [ctx/audio]} sound-name]
+                                  (audio/play! audio sound-name)
+                                  nil)
+
    :tx/set-item    (fn
                      [{:keys [ctx/graphics
                               ctx/stage]}
@@ -264,9 +268,9 @@
    :tx/spawn-entity             (fn [{:keys [ctx/world]} entity]
                                   (cdq.world.tx.spawn-entity/do! world entity))
 
-   :tx/sound                    (fn [{:keys [ctx/audio]} sound-name]
-                                  (audio/play! audio sound-name)
+   :tx/sound                    (fn [_ctx sound-name]
                                   nil)
+
    :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
                                   (ui/toggle-inventory-visible! stage)
                                   nil)
