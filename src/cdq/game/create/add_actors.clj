@@ -5,7 +5,6 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.group :as build-group]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
@@ -63,7 +62,7 @@
                     rebuild-actors!
                     (requiring-resolve 'cdq.game.create.world/step)
                     (requiring-resolve 'cdq.game.open-editor/do!))
-                   (action-bar/create)
+                   {:type :actor/action-bar}
                    (create-hp-mana-bar* (hp-mana-bar-config/create ctx))
                    (build-group/create
                     {:actor/name "cdq.ui.windows"

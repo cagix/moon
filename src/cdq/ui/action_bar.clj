@@ -4,9 +4,10 @@
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.gdx.scene2d.ui.horizontal-group :as horizontal-group]
             [cdq.ui.table :as table]
+            [cdq.ui.stage :as stage]
             [cdq.ui.image-button :as image-button]))
 
-(defn create []
+(defmethod stage/build :actor/action-bar [_]
   (table/create
    {:rows [[{:actor (doto (horizontal-group/create {:pad 2
                                                     :space 2})
