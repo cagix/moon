@@ -20,13 +20,13 @@
 
 (defmulti build :type)
 
-(defn- build? [actor-or-decl]
+#_(defn- build? [actor-or-decl]
   (if (instance? Actor actor-or-decl)
     actor-or-decl
     (build actor-or-decl)))
 
-(defn add-actor! [stage actor-or-decl]
-  (stage/add-actor! stage (build? actor-or-decl)))
+(defn add-actor! [stage actor-decl]
+  (stage/add-actor! stage (build actor-decl)))
 
 (defn viewport [stage]
   (stage/viewport stage))

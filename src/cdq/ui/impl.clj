@@ -11,7 +11,6 @@
             [clojure.repl]
             [cdq.ui.skin :as vis-ui]
             [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
             [clojure.utils :as utils]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
@@ -116,22 +115,22 @@
                      stage/root
                      (group/find-actor "cdq.ui.modal-window"))))
     (stage/add-actor! stage
-                      (window/create
-                       {:title title
-                        :rows [[{:actor (label/create text)}]
-                               [{:actor (text-button/create
-                                         {:text button-text
-                                          :on-clicked (fn [_actor _ctx]
-                                                        (actor/remove!
-                                                         (-> stage
-                                                             stage/root
-                                                             (group/find-actor "cdq.ui.modal-window")))
-                                                        (on-click))})}]]
-                        :actor/name "cdq.ui.modal-window"
-                        :modal? true
-                        :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
-                                                (* (viewport/world-height ui-viewport) (/ 3 4))]
-                        :pack? true})))
+                      {:type :actor/window
+                       :title title
+                       :rows [[{:actor (label/create text)}]
+                              [{:actor (text-button/create
+                                        {:text button-text
+                                         :on-clicked (fn [_actor _ctx]
+                                                       (actor/remove!
+                                                        (-> stage
+                                                            stage/root
+                                                            (group/find-actor "cdq.ui.modal-window")))
+                                                       (on-click))})}]]
+                       :actor/name "cdq.ui.modal-window"
+                       :modal? true
+                       :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
+                                               (* (viewport/world-height ui-viewport) (/ 3 4))]
+                       :pack? true}))
 
   (set-item! [stage cell item-properties]
     (-> stage
@@ -176,16 +175,16 @@
 
   (show-error-window! [stage throwable]
     (stage/add-actor! stage
-                      (window/create
-                       {:title "Error"
-                        :rows [[{:actor (label/create (binding [*print-level* 3]
-                                                        (utils/with-err-str
-                                                          (clojure.repl/pst throwable))))}]]
-                        :modal? true
-                        :close-button? true
-                        :close-on-escape? true
-                        :center? true
-                        :pack? true})))
+                      {:type :actor/window
+                       :title "Error"
+                       :rows [[{:actor (label/create (binding [*print-level* 3]
+                                                       (utils/with-err-str
+                                                         (clojure.repl/pst throwable))))}]]
+                       :modal? true
+                       :close-button? true
+                       :close-on-escape? true
+                       :center? true
+                       :pack? true}))
 
   (actor-information [_ actor]
     (let [inventory-slot (inventory-cell-with-item? actor)]
