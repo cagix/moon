@@ -23,4 +23,5 @@
   actor)
 
 (defmethod stage/build :actor/actor [opts]
-  (actor/create opts))
+  (-> (actor/create opts)
+      (set-opts! opts)))

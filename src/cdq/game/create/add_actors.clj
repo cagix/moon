@@ -67,9 +67,9 @@
                     :actor/name "cdq.ui.windows"
                     :group/actors [(info-window/create (entity-info-window-config/create ctx))
                                    (inventory-window/create ctx)]}
-                   (actor/create
-                    {:draw (fn [this _batch _parent-alpha]
-                             (player-state-handle-draws (stage/ctx (actor/stage this))))
-                     :act (fn [this _delta])})
+                   {:type :actor/actor
+                    :draw (fn [this _batch _parent-alpha]
+                            (player-state-handle-draws (stage/ctx (actor/stage this))))
+                    :act (fn [this _delta])}
                    (message/create message-duration-seconds)]]
       (stage/add-actor! stage actor))))
