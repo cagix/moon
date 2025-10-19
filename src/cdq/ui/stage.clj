@@ -1,6 +1,7 @@
 (ns cdq.ui.stage
   (:require [clojure.gdx.scene2d.stage :as stage])
-  (:import (cdq.ui Stage)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (cdq.ui Stage)))
 
 (defn create [viewport batch config]
   (Stage. viewport batch config))
@@ -17,8 +18,15 @@
 (defn draw! [stage]
   (stage/draw! stage))
 
-(defn add-actor! [stage actor]
-  (stage/add-actor! stage actor))
+(defmulti build :type)
+
+(defn- build? [actor-or-decl]
+  (if (instance? Actor actor-or-decl)
+    actor-or-decl
+    (build actor-or-decl)))
+
+(defn add-actor! [stage actor-or-decl]
+  (stage/add-actor! stage (build? actor-or-decl)))
 
 (defn viewport [stage]
   (stage/viewport stage))

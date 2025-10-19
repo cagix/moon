@@ -4,6 +4,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.touchable :as touchable]
             [cdq.ui.stack :as stack]
+            [cdq.ui.stage :as stage]
             [cdq.ui.editor.property :as property]
             [cdq.ui.image-button :as image-button]
             [cdq.ui.window :as window]
@@ -85,3 +86,6 @@
                                graphics
                                property-type
                                clicked-id-fn)}))
+
+(defmethod stage/build :actor/editor-overview-window [opts]
+  (create opts))

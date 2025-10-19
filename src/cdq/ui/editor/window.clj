@@ -79,7 +79,7 @@
      :cell-defaults {:pad 5}
      :pack? true}))
 
-(defn create-editor-window
+(defmethod stage/build :actor/editor-window
   [{:keys [ctx
            property]}]
   (let [{:keys [ctx/db
@@ -121,9 +121,9 @@
                              (group/find-actor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
-    (stage/add-actor! stage (create-editor-window
-                             {:ctx ctx
-                              :property property}))))
+    (stage/add-actor! stage {:type :actor/editor-window
+                             :ctx ctx
+                             :property property})))
 
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
