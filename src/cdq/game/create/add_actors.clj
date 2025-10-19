@@ -15,12 +15,12 @@
             [cdq.ui.window :as window]))
 
 (defn- create-hp-mana-bar* [create-draws]
-  (actor/create
-   {:act (fn [_this _delta])
-    :draw (fn [actor _batch _parent-alpha]
-            (when-let [stage (actor/stage actor)]
-              (graphics/draw! (:ctx/graphics (stage/ctx stage))
-                              (create-draws (stage/ctx stage)))))}))
+  {:type :actor/actor
+   :act (fn [_this _delta])
+   :draw (fn [actor _batch _parent-alpha]
+           (when-let [stage (actor/stage actor)]
+             (graphics/draw! (:ctx/graphics (stage/ctx stage))
+                             (create-draws (stage/ctx stage)))))})
 
 (def state->draw-ui-view
   {:player-item-on-cursor (fn

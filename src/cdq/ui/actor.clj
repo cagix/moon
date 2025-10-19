@@ -1,5 +1,6 @@
 (ns cdq.ui.actor
-  (:require [clojure.gdx.scene2d.actor :as actor]))
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [cdq.ui.stage :as stage]))
 
 (def opts-fn-map
   {:actor/name        actor/set-name!
@@ -20,3 +21,6 @@
           :when f]
     (f actor v))
   actor)
+
+(defmethod stage/build :actor/actor [opts]
+  (actor/create opts))
