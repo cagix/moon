@@ -6,6 +6,7 @@
   (m/schema
    [:map {:closed true}
     [:ctx/audio :some]
+    [:ctx/config :some]
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]

@@ -1,7 +1,6 @@
 (ns cdq.game.create.world
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.world.impl]
             [cdq.world.tiled-map :as tiled-map]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
@@ -68,7 +67,8 @@
                              :z-order :z-order/effect}})
 
 (defn step
-  [{:keys [ctx/db
+  [{:keys [ctx/config
+           ctx/db
            ctx/graphics
            ctx/world]
     :as ctx}
@@ -77,6 +77,6 @@
                                        (db/all-raw db :properties/creatures)
                                        graphics)]
     (-> ctx
-        (assoc :ctx/world (cdq.world.impl/create world-params world-fn-result))
+        (assoc :ctx/world ((:world-impl config) world-params world-fn-result))
         spawn-player!
         spawn-enemies!)))

@@ -22,6 +22,7 @@
 
                :create-world cdq.game.create.world/step
                :world #edn/resource "world.edn"
+               :world-impl cdq.world.impl/create
 
                :create cdq.game.create/do!
                :render-pipeline #edn/resource "render_pipeline.edn"

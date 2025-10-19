@@ -19,7 +19,8 @@
                 ((:handle-txs config))
                 (assoc :ctx/audio ((:audio-impl config) audio files (:audio config)))
                 (assoc :ctx/db ((:db-impl config)))
-                (assoc :ctx/input input))]
+                (assoc :ctx/input input)
+                (assoc :ctx/config {:world-impl (:world-impl config)}))]
     (input/set-processor! input stage)
     ((:add-actors config) stage ctx)
     ((:create-world config) ctx (:world config))))
