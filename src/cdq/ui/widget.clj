@@ -26,7 +26,7 @@
      :height (min (- viewport-height 50)
                   (actor/height table))}))
 
-(defn scroll-pane-window
+(defmethod stage/build :actor/scroll-pane-window
   [{:keys [viewport-height rows]}]
   (window/create
    {:title "Choose"

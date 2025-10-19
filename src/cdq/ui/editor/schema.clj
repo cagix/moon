@@ -201,16 +201,16 @@
   (fn [_actor {:keys [ctx/audio
                       ctx/stage]}]
     (stage/add-actor! stage
-                      (cdq.ui.widget/scroll-pane-window
-                       {:viewport-height (ui/viewport-width stage)
-                        :rows (for [sound-name (audio/sound-names audio)]
-                                [{:actor (text-button/create
-                                          {:text sound-name
-                                           :on-clicked (rebuild-sound-widget! table sound-name)})}
-                                 {:actor (text-button/create
-                                          {:text "play!"
-                                           :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                                                         (audio/play! audio sound-name))})}])}))))
+                      {:type :actor/scroll-pane-window
+                       :viewport-height (ui/viewport-width stage)
+                       :rows (for [sound-name (audio/sound-names audio)]
+                               [{:actor (text-button/create
+                                         {:text sound-name
+                                          :on-clicked (rebuild-sound-widget! table sound-name)})}
+                                {:actor (text-button/create
+                                         {:text "play!"
+                                          :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                                        (audio/play! audio sound-name))})}])})))
 
 (defn- sound-columns [table sound-name]
   [{:actor (text-button/create

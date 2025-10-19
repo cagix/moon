@@ -165,7 +165,8 @@
     :table table
     :label-text (k->label-text k)}))
 
-(defn- add-component-window [schemas schema map-widget-table]
+(defmethod stage/build :actor/add-component-window
+  [{:keys [schemas schema map-widget-table]}]
   (let [window (window/create
                 {:title "Choose"
                  :modal? true
@@ -229,7 +230,12 @@
                           {:text "Add component"
                            :on-clicked (fn [_actor {:keys [ctx/db
                                                            ctx/stage]}]
-                                         (stage/add-actor! stage (add-component-window (:db/schemas db) schema table)))})
+                                         (stage/add-actor!
+                                          stage
+                                          {:type :actor/add-component-window
+                                           :schemas (:db/schemas db)
+                                           :schema schema
+                                           :map-widget-table table}))})
                   :colspan colspan}])]
              [(when opt?
                 [{:actor (separator/horizontal)
