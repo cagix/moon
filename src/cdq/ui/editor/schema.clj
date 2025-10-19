@@ -4,7 +4,6 @@
             [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [cdq.ui.editor.property :as property]
-            [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.tooltip :as tooltip]
@@ -104,13 +103,13 @@
                                                  ctx/stage]}]
                                (stage/add-actor!
                                 stage
-                                (editor-overview-window/create
-                                 {:db db
-                                  :graphics graphics
-                                  :property-type property-type
-                                  :clicked-id-fn (fn [actor id ctx]
-                                                   (actor/remove! (window/find-ancestor actor))
-                                                   (redo-rows ctx (conj property-ids id)))})))})}]
+                                {:type :actor/editor-overview-window
+                                 :db db
+                                 :graphics graphics
+                                 :property-type property-type
+                                 :clicked-id-fn (fn [actor id ctx]
+                                                  (actor/remove! (window/find-ancestor actor))
+                                                  (redo-rows ctx (conj property-ids id)))}))})}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
               texture-region (graphics/texture-region graphics (property/image property))
@@ -155,13 +154,13 @@
                                                    ctx/stage]}]
                                  (stage/add-actor!
                                   stage
-                                  (editor-overview-window/create
-                                   {:db db
-                                    :graphics graphics
-                                    :property-type property-type
-                                    :clicked-id-fn (fn [actor id ctx]
-                                                     (actor/remove! (window/find-ancestor actor))
-                                                     (redo-rows ctx id))})))})})]
+                                  {:type :actor/editor-overview-window
+                                   :db db
+                                   :graphics graphics
+                                   :property-type property-type
+                                   :clicked-id-fn (fn [actor id ctx]
+                                                    (actor/remove! (window/find-ancestor actor))
+                                                    (redo-rows ctx id))}))})})]
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (graphics/texture-region graphics (property/image property))

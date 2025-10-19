@@ -1,6 +1,7 @@
 [
  [clojure.core/require cdq.ui.editor.window]
  [clojure.core/require cdq.ui.dev-menu]
+ [clojure.core/require cdq.ui.editor.overview-window]
  [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
  [clojure.gdx.application.lwjgl/start!
   {:listener [cdq.application.listener/create
