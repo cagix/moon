@@ -6,6 +6,7 @@
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [cdq.world.info :as info]
+            [cdq.world.tx.spawn-entity]
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
             [clojure.utils :as utils]))
@@ -261,7 +262,7 @@
                                         (utils/safe-merge components))]])
 
    :tx/spawn-entity             (fn [{:keys [ctx/world]} entity]
-                                  (world/spawn-entity! world entity))
+                                  (cdq.world.tx.spawn-entity/do! world entity))
 
    :tx/sound                    (fn [{:keys [ctx/audio]} sound-name]
                                   (audio/play! audio sound-name)
