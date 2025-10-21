@@ -1,4 +1,5 @@
 [
+ [clojure.core/require cdq.ui.build.editor-window]
  [clojure.core/require cdq.ui.editor.window]
  [clojure.core/require cdq.ui.dev-menu]
  [clojure.core/require cdq.ui.editor.overview-window]
