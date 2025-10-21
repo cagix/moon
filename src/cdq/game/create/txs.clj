@@ -28,6 +28,16 @@
                                   (audio/play! audio sound-name)
                                   nil)
 
+   :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
+                                  (ui/toggle-inventory-visible! stage)
+                                  nil)
+   :tx/show-message             (fn [{:keys [ctx/stage]} message]
+                                  (ui/show-text-message! stage message)
+                                  nil)
+   :tx/show-modal               (fn [{:keys [ctx/stage]} opts]
+                                  (ui/show-modal-window! stage (stage/viewport stage) opts)
+                                  nil)
+
    :tx/set-item    (fn
                      [{:keys [ctx/graphics
                               ctx/stage]}
@@ -270,15 +280,11 @@
 
    :tx/sound                    (fn [_ctx sound-name]
                                   nil)
-
-   :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
-                                  (ui/toggle-inventory-visible! stage)
+   :tx/toggle-inventory-visible (fn [_ctx]
                                   nil)
-   :tx/show-message             (fn [{:keys [ctx/stage]} message]
-                                  (ui/show-text-message! stage message)
+   :tx/show-message             (fn [_ctx message]
                                   nil)
-   :tx/show-modal               (fn [{:keys [ctx/stage]} opts]
-                                  (ui/show-modal-window! stage (stage/viewport stage) opts)
+   :tx/show-modal               (fn [_ctx opts]
                                   nil)
    }
   )
