@@ -1,4 +1,4 @@
-(ns cdq.application
+(ns cdq.start
   (:require [clojure.core-ext :refer [call]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
