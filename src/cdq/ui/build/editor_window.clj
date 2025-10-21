@@ -12,33 +12,35 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.throwable :as throwable]))
 
-(defn- with-window-close [f]
-  (fn [actor {:keys [ctx/stage]
-              :as ctx}]
-    (try
-     (let [new-ctx (update ctx :ctx/db f)
-           stage (actor/stage actor)]
-       (stage/set-ctx! stage new-ctx))
-     (actor/remove! (window/find-ancestor actor))
-     (catch Throwable t
-       (throwable/pretty-pst t)
-       (ui/show-error-window! stage t)))))
-
-(defn- update-property-fn [get-widget-value]
-  (fn [db]
-    (db/update! db (get-widget-value))))
-
-(defn- delete-property-fn [property-id]
-  (fn [db]
-    (db/delete! db property-id)))
-
-(defn- create*
-  [{:keys [scroll-pane-height
-           widget
-           get-widget-value
-           property-id]}]
-  (let [clicked-delete-fn (with-window-close (delete-property-fn property-id))
-        clicked-save-fn   (with-window-close (update-property-fn get-widget-value))
+(defmethod stage/build :actor/editor-window
+  [{:keys [ctx
+           property]}]
+  (let [{:keys [ctx/db
+                ctx/stage]} ctx
+        schemas (:db/schemas db)
+        schema (get schemas (property/type property))
+        ; build for get-widget-value
+        ; or find a way to find the widget from the context @ save button
+        ; should be possible
+        widget (schema/create schema property ctx)
+        scroll-pane-height (ui/viewport-height stage)
+        get-widget-value #(schema/value schema widget schemas)
+        property-id (:property/id property)
+        with-window-close (fn [f]
+                            (fn [actor {:keys [ctx/stage]
+                                        :as ctx}]
+                              (try
+                               (let [new-ctx (update ctx :ctx/db f)
+                                     stage (actor/stage actor)]
+                                 (stage/set-ctx! stage new-ctx))
+                               (actor/remove! (window/find-ancestor actor))
+                               (catch Throwable t
+                                 (throwable/pretty-pst t)
+                                 (ui/show-error-window! stage t)))))
+        clicked-delete-fn (with-window-close (fn [db]
+                                               (db/delete! db property-id)))
+        clicked-save-fn (with-window-close (fn [db]
+                                             (db/update! db (get-widget-value))))
         actors [(actor/create
                  {:act (fn [this delta]
                          (when-let [stage (actor/stage this)]
@@ -58,30 +60,14 @@
                            {:actor delete-button :center? true}]]
         rows [[(widget/scroll-pane-cell scroll-pane-height
                                         scroll-pane-rows)]]]
-    {:title "[SKY]Property[]"
-     :actor/name "cdq.ui.editor.window"
-     :modal? true
-     :close-button? true
-     :center? true
-     :close-on-escape? true
-     :group/actors actors
-     :rows rows
-     :cell-defaults {:pad 5}
-     :pack? true}))
-
-(defmethod stage/build :actor/editor-window
-  [{:keys [ctx
-           property]}]
-  (let [{:keys [ctx/db
-                ctx/stage]} ctx
-        schemas (:db/schemas db)
-        schema (get schemas (property/type property))
-        ; build for get-widget-value
-        ; or find a way to find the widget from the context @ save button
-        ; should be possible
-        widget (schema/create schema property ctx)]
     (window/create
-     (create* {:scroll-pane-height (ui/viewport-height stage)
-               :widget widget
-               :get-widget-value #(schema/value schema widget schemas)
-               :property-id (:property/id property)}))))
+     {:title "[SKY]Property[]"
+      :actor/name "cdq.ui.editor.window"
+      :modal? true
+      :close-button? true
+      :center? true
+      :close-on-escape? true
+      :group/actors actors
+      :rows rows
+      :cell-defaults {:pad 5}
+      :pack? true})))
