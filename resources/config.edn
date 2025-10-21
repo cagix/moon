@@ -29,5 +29,5 @@
                :dispose cdq.game.dispose/do!
                :resize cdq.game.resize/do!
                }]
-   :config [cdq.application.config/create #edn/resource "lwjgl_application.edn"]}]
+   :config [clojure.gdx.backends.lwjgl.application.config/create #edn/resource "lwjgl_application.edn"]}]
  ]
