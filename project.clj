@@ -1,3 +1,7 @@
+; Ich versteh gar nichts mehr.
+; Warum 'clojure.gdx' ?
+; => Also mach vielleicht tests fuer deine components um sie zu verstehen.
+
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [

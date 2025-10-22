@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.ui.stage :as stage]))
 
+; is this not same like a :tx/ ?
 (defn do!
   [{:keys [ctx/db
            ctx/graphics
@@ -13,6 +14,9 @@
                      :graphics graphics
                      :property-type property-type
                      :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
+                                      ; why not a 'ctx' function
+                                      ; or transaction
+                                      ; why do I need {:type} which is then a fn ?
                                       (stage/add-actor! stage
                                                         {:type :actor/editor-window
                                                          :ctx ctx

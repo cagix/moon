@@ -20,7 +20,10 @@
                        :items (for [property-type (sort (db/property-types db))]
                                 {:label (str/capitalize (name property-type))
                                  :on-click (fn [_actor ctx]
+                                             ; why not pass vector of txs in ui  ?
                                              (open-editor! ctx property-type))})})
+
+
         ctx-data-viewer {:label "Ctx Data"
                          :items [{:label "Show data"
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]

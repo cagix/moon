@@ -4,6 +4,8 @@
 
 (q/defrecord Context [])
 
+; what a mess
+; => use pipeline ?
 (defn do!
   [{:keys [clojure.gdx/audio
            clojure.gdx/files

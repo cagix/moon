@@ -4,6 +4,7 @@
             [cdq.entity.skills.skill :as skill]
             [clojure.timer :as timer]))
 
+; this is my game/world logic !
 (extend-type clojure.lang.PersistentHashMap
   skill/Skill
   (usable-state [{:keys [skill/cooling-down? skill/effects] :as skill}
