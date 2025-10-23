@@ -1,50 +1,48 @@
 (ns cdq.application
   (:require [cdq.audio :as audio]
+            [cdq.db.impl]
+            [cdq.game.create.add-actors]
+            [cdq.game.create.dev-menu-config]
+            [cdq.game.create.txs]
+            [cdq.game.create.world]
+            [cdq.game.render.assoc-active-entities]
+            [cdq.game.render.assoc-interaction-state]
+            [cdq.game.render.assoc-paused]
+            [cdq.game.render.check-open-debug]
+            [cdq.game.render.clear-screen]
+            [cdq.game.render.dissoc-interaction-state]
+            [cdq.game.render.draw-on-world-viewport]
+            [cdq.game.render.draw-world-map]
+            [cdq.game.render.get-stage-ctx]
+            [cdq.game.render.player-state-handle-input]
+            [cdq.game.render.remove-destroyed-entities]
+            [cdq.game.render.render-stage]
+            [cdq.game.render.set-camera-on-player]
+            [cdq.game.render.set-cursor]
+            [cdq.game.render.tick-entities]
+            [cdq.game.render.update-mouse]
+            [cdq.game.render.update-mouseover-eid]
+            [cdq.game.render.update-potential-fields]
+            [cdq.game.render.update-world-time]
+            [cdq.game.render.validate]
+            [cdq.game.render.validate]
+            [cdq.game.render.window-camera-controls]
             [cdq.graphics :as graphics]
-            [cdq.input :as input]
+            [cdq.graphics.impl]
             [cdq.ui :as ui]
-            cdq.db.impl
-            cdq.graphics.impl
-            cdq.ui.impl
-            cdq.game.create.txs
-            cdq.game.render.get-stage-ctx
-            cdq.game.render.validate
-            cdq.game.render.update-mouse
-            cdq.game.render.update-mouseover-eid
-            cdq.game.render.check-open-debug
-            cdq.game.render.assoc-active-entities
-            cdq.game.render.set-camera-on-player
-            cdq.game.render.clear-screen
-            cdq.game.render.draw-world-map
-            cdq.game.render.draw-on-world-viewport
-            cdq.game.render.assoc-interaction-state
-            cdq.game.render.set-cursor
-            cdq.game.render.player-state-handle-input
-            cdq.game.render.dissoc-interaction-state
-            cdq.game.render.assoc-paused
-            cdq.game.render.update-world-time
-            cdq.game.render.update-potential-fields
-            cdq.game.render.tick-entities
-            cdq.game.render.remove-destroyed-entities
-            cdq.game.render.window-camera-controls
-            cdq.game.render.render-stage
-            cdq.game.render.validate
-            cdq.world.impl
-            cdq.game.create.add-actors
-            cdq.game.create.world
-            cdq.game.create.dev-menu-config
-            cdq.ui.build.editor-window
-            cdq.ui.editor.window
-            cdq.ui.dev-menu
-            cdq.ui.editor.overview-window
+            [cdq.ui.build.editor-window]
+            [cdq.ui.dev-menu]
+            [cdq.ui.editor.overview-window]
+            [cdq.ui.editor.window]
+            [cdq.ui.impl]
             [cdq.world :as world]
+            [cdq.world.impl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Application
                              ApplicationListener
-                             Gdx
-                             Input)
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration))
