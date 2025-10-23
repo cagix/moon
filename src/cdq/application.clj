@@ -3,6 +3,14 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            cdq.db.impl
+            cdq.graphics.impl
+            cdq.ui.impl
+            cdq.game.create.txs
+            cdq.world.impl
+            cdq.game.create.add-actors
+            cdq.game.create.world
+            cdq.game.create.dev-menu-config
             cdq.ui.build.editor-window
             cdq.ui.editor.window
             cdq.ui.dev-menu
@@ -23,25 +31,25 @@
 
 (q/defrecord Context [])
 
-(defn create!
+(defn- create!
   [^Application app config]
   (let [audio    (.getAudio    app)
         files    (.getFiles    app)
         graphics (.getGraphics app)
         input    (.getInput    app)
-        graphics ((:graphics-impl config) graphics files (:graphics config))
-        stage ((:ui-impl config) graphics (:ui-config config))
+        graphics (cdq.graphics.impl/create! graphics files (:graphics config))
+        stage (cdq.ui.impl/create! graphics {:dev-menu cdq.game.create.dev-menu-config/create})
         ctx (-> (map->Context {})
                 (assoc :ctx/graphics graphics)
                 (assoc :ctx/stage stage)
-                ((:handle-txs config))
-                (assoc :ctx/audio ((:audio-impl config) audio files (:audio config)))
-                (assoc :ctx/db ((:db-impl config)))
+                cdq.game.create.txs/do!
+                (assoc :ctx/audio (cdq.audio/create audio files (:audio config)))
+                (assoc :ctx/db (cdq.db.impl/create))
                 (assoc :ctx/input input)
-                (assoc :ctx/config {:world-impl (:world-impl config)}))]
+                (assoc :ctx/config {:world-impl cdq.world.impl/create}))]
     (.setInputProcessor input stage)
-    ((:add-actors config) stage ctx)
-    ((:create-world config) ctx (:world config))))
+    (cdq.game.create.add-actors/step stage ctx)
+    (cdq.game.create.world/step ctx (:world config))))
 
 (defn- dispose!
   [{:keys [ctx/audio
@@ -52,6 +60,12 @@
   (graphics/dispose! graphics)
   (ui/dispose! stage)
   (world/dispose! world))
+
+(defn- render! [ctx steps]
+  (reduce (fn [ctx f]
+            (f ctx))
+          ctx
+          steps))
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
   (graphics/update-ui-viewport! graphics width height)
@@ -83,11 +97,7 @@
                             (dispose! @state))
 
                           (render [_]
-                            (swap! state (fn [ctx]
-                                           (reduce (fn [ctx f]
-                                                     (f ctx))
-                                                   ctx
-                                                   (:render! config)))))
+                            (swap! state render! (:render! config)))
 
                           (resize [_ width height]
                             (resize! @state width height))
