@@ -86,7 +86,7 @@ Levels can be created with [tiled](https://www.mapeditor.org/) or procedurally o
 You need to have [leiningen](https://leiningen.org/) installed.
 
 ```
-./dev
+lein dev
 ```
 
 <details>
