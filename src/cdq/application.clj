@@ -7,6 +7,28 @@
             cdq.graphics.impl
             cdq.ui.impl
             cdq.game.create.txs
+            cdq.game.render.get-stage-ctx
+            cdq.game.render.validate
+            cdq.game.render.update-mouse
+            cdq.game.render.update-mouseover-eid
+            cdq.game.render.check-open-debug
+            cdq.game.render.assoc-active-entities
+            cdq.game.render.set-camera-on-player
+            cdq.game.render.clear-screen
+            cdq.game.render.draw-world-map
+            cdq.game.render.draw-on-world-viewport
+            cdq.game.render.assoc-interaction-state
+            cdq.game.render.set-cursor
+            cdq.game.render.player-state-handle-input
+            cdq.game.render.dissoc-interaction-state
+            cdq.game.render.assoc-paused
+            cdq.game.render.update-world-time
+            cdq.game.render.update-potential-fields
+            cdq.game.render.tick-entities
+            cdq.game.render.remove-destroyed-entities
+            cdq.game.render.window-camera-controls
+            cdq.game.render.render-stage
+            cdq.game.render.validate
             cdq.world.impl
             cdq.game.create.add-actors
             cdq.game.create.world
@@ -18,7 +40,6 @@
             [cdq.world :as world]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.walk :as walk]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Application
                              ApplicationListener
@@ -61,11 +82,30 @@
   (ui/dispose! stage)
   (world/dispose! world))
 
-(defn- render! [ctx steps]
-  (reduce (fn [ctx f]
-            (f ctx))
-          ctx
-          steps))
+(defn- render! [ctx]
+  (-> ctx
+      cdq.game.render.get-stage-ctx/step
+      cdq.game.render.validate/step
+      cdq.game.render.update-mouse/step
+      cdq.game.render.update-mouseover-eid/step
+      cdq.game.render.check-open-debug/step
+      cdq.game.render.assoc-active-entities/step
+      cdq.game.render.set-camera-on-player/step
+      cdq.game.render.clear-screen/step
+      cdq.game.render.draw-world-map/step
+      cdq.game.render.draw-on-world-viewport/step
+      cdq.game.render.assoc-interaction-state/step
+      cdq.game.render.set-cursor/step
+      cdq.game.render.player-state-handle-input/step
+      cdq.game.render.dissoc-interaction-state/step
+      cdq.game.render.assoc-paused/step
+      cdq.game.render.update-world-time/step
+      cdq.game.render.update-potential-fields/step
+      cdq.game.render.tick-entities/step
+      cdq.game.render.remove-destroyed-entities/step
+      cdq.game.render.window-camera-controls/step
+      cdq.game.render.render-stage/step
+      cdq.game.render.validate/step))
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
   (graphics/update-ui-viewport! graphics width height)
@@ -75,14 +115,7 @@
   (->> path
        io/resource
        slurp
-       (edn/read-string {:readers {'edn/resource edn-resource}})
-       (walk/postwalk (fn [form]
-                        (if (and (symbol? form)
-                                 (namespace form))
-                          (let [avar (requiring-resolve form)]
-                            (assert avar form)
-                            avar)
-                          form)))))
+       (edn/read-string {:readers {'edn/resource edn-resource}})))
 
 (def state (atom nil))
 
@@ -97,7 +130,7 @@
                             (dispose! @state))
 
                           (render [_]
-                            (swap! state render! (:render! config)))
+                            (swap! state render!))
 
                           (resize [_ width height]
                             (resize! @state width height))
