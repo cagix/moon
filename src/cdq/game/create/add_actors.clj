@@ -1,17 +1,15 @@
 (ns cdq.game.create.add-actors
-  (:require [cdq.game.create.hp-mana-bar-config :as hp-mana-bar-config]
+  (:require [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.game.create.entity-info-window-config :as entity-info-window-config]
+            [cdq.game.create.hp-mana-bar-config :as hp-mana-bar-config]
             [cdq.game.create.inventory-window :as inventory-window]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            [cdq.ui.info-window :as info-window]
             [cdq.ui.message :as message]
             [cdq.ui.stage :as stage]
-            [cdq.world.info :as info]
-            [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
-            [clojure.gdx.scene2d.actor :as actor]
-            [cdq.ui.info-window :as info-window]
-            [cdq.ui.window :as window]))
+            [clojure.gdx.scene2d.actor :as actor]))
 
 (defn- create-hp-mana-bar* [create-draws]
   {:type :actor/actor
@@ -70,6 +68,6 @@
                    {:type :actor/actor
                     :draw (fn [this _batch _parent-alpha]
                             (player-state-handle-draws (stage/ctx (actor/stage this))))
-                    :act (fn [this _delta])}
+                    :act (fn [_ _delta])}
                    (message/create message-duration-seconds)]]
       (stage/add-actor! stage actor))))
