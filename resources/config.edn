@@ -5,7 +5,6 @@
  [clojure.core/require cdq.ui.dev-menu]
  [clojure.core/require cdq.ui.editor.overview-window]
  ;;
- [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
  [clojure.gdx.application.lwjgl/start!
   {:listener [cdq.application.listener/create
               {
@@ -32,5 +31,5 @@
                :dispose cdq.game.dispose/do!
                :resize cdq.game.resize/do!
                }]
-   :config [clojure.gdx.backends.lwjgl.application.config/create #edn/resource "lwjgl_application.edn"]}]
+   :config #edn/resource "lwjgl_application.edn"}]
  ]

@@ -4,16 +4,13 @@
 
 (q/defrecord Context [])
 
-; what a mess
-; => use pipeline ?
 (defn do!
-  [{:keys [clojure.gdx/audio
-           clojure.gdx/files
-           clojure.gdx/graphics
-           clojure.gdx/input]
-    :as ctx}
-   config]
-  (let [graphics ((:graphics-impl config) graphics files (:graphics config))
+  [app config]
+  (let [audio (.getAudio app)
+        files (.getFiles app)
+        graphics (.getGraphics app)
+        input (.getInput app)
+        graphics ((:graphics-impl config) graphics files (:graphics config))
         stage ((:ui-impl config) graphics (:ui-config config))
         ctx (-> (map->Context {})
                 (assoc :ctx/graphics graphics)
