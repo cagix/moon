@@ -1,10 +1,4 @@
-{:requires [
-            cdq.ui.build.editor-window
-            cdq.ui.editor.window
-            cdq.ui.dev-menu
-            cdq.ui.editor.overview-window
-            ]
- :create! cdq.game.create/do!
+{
  :render! #edn/resource "render_pipeline.edn"
  :dispose! cdq.game.dispose/do!
  :resize! cdq.game.resize/do!
@@ -12,21 +6,21 @@
  :window {:width 1440
           :height 900}
  :fps 60
- :create-config {
-                 :handle-txs cdq.game.create.txs/do!
-                 :audio-impl cdq.audio/create
-                 :audio #edn/resource "audio.edn"
+ :config {
+          :handle-txs cdq.game.create.txs/do!
+          :audio-impl cdq.audio/create
+          :audio #edn/resource "audio.edn"
 
-                 :db-impl cdq.db.impl/create
+          :db-impl cdq.db.impl/create
 
-                 :graphics-impl cdq.graphics.impl/create!
-                 :graphics #edn/resource "graphics.edn"
+          :graphics-impl cdq.graphics.impl/create!
+          :graphics #edn/resource "graphics.edn"
 
-                 :ui-impl cdq.ui.impl/create!
-                 :ui-config {:dev-menu cdq.game.create.dev-menu-config/create}
-                 :add-actors cdq.game.create.add-actors/step
+          :ui-impl cdq.ui.impl/create!
+          :ui-config {:dev-menu cdq.game.create.dev-menu-config/create}
+          :add-actors cdq.game.create.add-actors/step
 
-                 :create-world cdq.game.create.world/step
-                 :world #edn/resource "world.edn"
-                 :world-impl cdq.world.impl/create
-                 }}
+          :create-world cdq.game.create.world/step
+          :world #edn/resource "world.edn"
+          :world-impl cdq.world.impl/create
+          }}

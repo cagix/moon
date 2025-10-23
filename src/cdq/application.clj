@@ -1,13 +1,43 @@
 (ns cdq.application
-  (:require [clojure.edn :as edn]
+  (:require cdq.ui.build.editor-window
+            cdq.ui.editor.window
+            cdq.ui.dev-menu
+            cdq.ui.editor.overview-window
+            [cdq.input :as input]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.walk :as walk])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+            [clojure.walk :as walk]
+            [qrecord.core :as q])
+  (:import (com.badlogic.gdx Application
+                             ApplicationListener
+                             Gdx
+                             Input)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration))
   (:gen-class))
+
+(q/defrecord Context [])
+
+(defn create!
+  [^Application app config]
+  (let [audio    (.getAudio    app)
+        files    (.getFiles    app)
+        graphics (.getGraphics app)
+        input    (.getInput    app)
+        graphics ((:graphics-impl config) graphics files (:graphics config))
+        stage ((:ui-impl config) graphics (:ui-config config))
+        ctx (-> (map->Context {})
+                (assoc :ctx/graphics graphics)
+                (assoc :ctx/stage stage)
+                ((:handle-txs config))
+                (assoc :ctx/audio ((:audio-impl config) audio files (:audio config)))
+                (assoc :ctx/db ((:db-impl config)))
+                (assoc :ctx/input input)
+                (assoc :ctx/config {:world-impl (:world-impl config)}))]
+    (.setInputProcessor input stage)
+    ((:add-actors config) stage ctx)
+    ((:create-world config) ctx (:world config))))
 
 (def state (atom nil))
 
@@ -25,31 +55,33 @@
                           form)))))
 
 (defn -main []
-  (let [{:keys [requires
-                create!
-                create-config
+  (let [{:keys [config
                 dispose!
                 render!
                 resize!
                 title
                 window
                 fps]} (edn-resource "config.edn")]
-    (run! require requires)
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (Lwjgl3Application. (reify ApplicationListener
                           (create [_]
-                            (reset! state (create! Gdx/app create-config)))
+                            (reset! state (create! Gdx/app config)))
+
                           (dispose [_]
                             (dispose! @state))
+
                           (render [_]
                             (swap! state (fn [ctx]
                                            (reduce (fn [ctx f]
                                                      (f ctx))
                                                    ctx
                                                    render!))))
+
                           (resize [_ width height]
                             (resize! @state width height))
+
                           (pause [_])
+
                           (resume [_]))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle title)
