@@ -1,47 +1,3 @@
-# Commands
-
-## Sort files by lines of code
-
-```
-sh tasks/count_locs.sh
-```
-
-~result here~
-
-## Show namespace graph
-
-```
-lein hiera :layout :horizontal
-```
-
-~ reslt here
-
-## Show package graph
-
-~~~
-...
-~~~
-
-## Show dependency tree
-
-## Open Structural Code Browser (instead of docs)
-
-# TODO
-
-* Liste dependencies with __javadoc io__ (!!!) & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
-    => hidden in my browser.
-    => my bookmarks.
-
-        -> lwjgl javadoc not needed as we use libgdx
-        -> libgdx javadoc not needed as we use 'core' ?
-        -> ... ?
-
-* greppable click where used searching right files/folders ?
-
-* show also import dependencies in dependency graph & assets/edn files
-
-* count locs
- find clj/ -name '*.clj' | xargs wc -l | sort -n
 
 # Moon Engine
 
@@ -109,5 +65,51 @@ lein dev
     * Tilesets by https://winlu.itch.io/
     * Creatures, Items, Skill-Icons,FX and other assets by https://www.oryxdesignlab.com
     * Cursors from Leonid Deburger https://deburger.itch.io/
+ 
+# Commands
+
+## Sort files by lines of code
+
+```
+sh tasks/count_locs.sh
+```
+
+~result here~
+
+## Show namespace graph
+
+```
+lein hiera :layout :horizontal
+```
+
+~ reslt here
+
+## Show package graph
+
+~~~
+...
+~~~
+
+## Show dependency tree
+
+## Open Structural Code Browser (instead of docs)
+
+# TODO
+
+* Liste dependencies with __javadoc io__ (!!!) & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
+    => hidden in my browser.
+    => my bookmarks.
+
+        -> lwjgl javadoc not needed as we use libgdx
+        -> libgdx javadoc not needed as we use 'core' ?
+        -> ... ?
+
+* greppable click where used searching right files/folders ?
+
+* show also import dependencies in dependency graph & assets/edn files
+
+* count locs
+ find clj/ -name '*.clj' | xargs wc -l | sort -n
+
     * The font exocet is open source
 
