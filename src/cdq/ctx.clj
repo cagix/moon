@@ -50,6 +50,8 @@
                  :tx/remove-destroyed-entities cdq.game.render.remove-destroyed-entities/step
                  :tx/window-camera-controls cdq.game.render.window-camera-controls/step
                  :tx/render-stage cdq.game.render.render-stage/step
+                 :tx/update-viewports cdq.tx.update-viewports/do!
+                 :tx/dispose cdq.tx.dispose/do!
                  }
                requiring-resolve))
 
@@ -143,14 +145,10 @@
     (cdq.game.create.world/step ctx (:world config))))
 
 (defn dispose!
-  [{:keys [ctx/audio
-           ctx/graphics
-           ctx/stage
-           ctx/world]}]
-  (audio/dispose! audio)
-  (graphics/dispose! graphics)
-  (ui/dispose! stage)
-  (world/dispose! world))
+  [ctx]
+  (reduce-actions! reaction-txs-fn-map
+                   ctx
+                   [[:tx/dispose]]))
 
 (defn render! [ctx]
   (reduce-actions! reaction-txs-fn-map
@@ -181,6 +179,7 @@
                     ]
                    ))
 
-(defn resize! [{:keys [ctx/graphics]} width height]
-  (graphics/update-ui-viewport! graphics width height)
-  (graphics/update-world-vp! graphics width height))
+(defn resize! [ctx width height]
+  (reduce-actions! reaction-txs-fn-map
+                   ctx
+                   [[:tx/update-viewports width height]]))
