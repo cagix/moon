@@ -39,8 +39,6 @@
     ((:add-actors config) stage ctx)
     ((:create-world config) ctx (:world config))))
 
-(def state (atom nil))
-
 (defn edn-resource [path]
   (->> path
        io/resource
@@ -54,37 +52,33 @@
                             avar)
                           form)))))
 
+(def state (atom nil))
+
 (defn -main []
-  (let [{:keys [config
-                dispose!
-                render!
-                resize!
-                title
-                window
-                fps]} (edn-resource "config.edn")]
+  (let [config (edn-resource "config.edn")]
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (Lwjgl3Application. (reify ApplicationListener
                           (create [_]
                             (reset! state (create! Gdx/app config)))
 
                           (dispose [_]
-                            (dispose! @state))
+                            ((:dispose! config) @state))
 
                           (render [_]
                             (swap! state (fn [ctx]
                                            (reduce (fn [ctx f]
                                                      (f ctx))
                                                    ctx
-                                                   render!))))
+                                                   (:render! config)))))
 
                           (resize [_ width height]
-                            (resize! @state width height))
+                            ((:resize! config) @state width height))
 
                           (pause [_])
 
                           (resume [_]))
                         (doto (Lwjgl3ApplicationConfiguration.)
-                          (.setTitle title)
-                          (.setWindowedMode (:width window)
-                                            (:height window))
-                          (.setForegroundFPS fps)))))
+                          (.setTitle (:title config))
+                          (.setWindowedMode (:width (:window config))
+                                            (:height (:window config)))
+                          (.setForegroundFPS (:fps config))))))
