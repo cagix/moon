@@ -64,7 +64,18 @@
                                           :entity/click-distance-tiles 1.5}}
    :world/effect-body-props {:width 0.5
                              :height 0.5
-                             :z-order :z-order/effect}})
+                             :z-order :z-order/effect}
+   :world/create-fns (update-vals '{:entity/animation             cdq.entity.animation/create
+                                    :entity/body                  cdq.entity.body/create
+                                    :entity/delete-after-duration cdq.entity.delete-after-duration/create
+                                    :entity/projectile-collision  cdq.entity.projectile-collision/create
+                                    :entity/stats                 cdq.entity.stats/create}
+                                  requiring-resolve)
+   :world/after-create-fns (update-vals '{:entity/fsm                             cdq.entity.fsm/create!
+                                          :entity/inventory                       cdq.entity.inventory/create!
+                                          :entity/skills                          cdq.entity.skills/create!}
+                                        requiring-resolve)
+   })
 
 (defn step
   [{:keys [ctx/config

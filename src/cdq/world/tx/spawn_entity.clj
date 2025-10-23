@@ -1,36 +1,16 @@
 (ns cdq.world.tx.spawn-entity
-  (:require cdq.entity.animation
-            cdq.entity.body
-            cdq.entity.delete-after-duration
-            cdq.entity.projectile-collision
-            cdq.entity.stats
-            cdq.entity.fsm
-            cdq.entity.inventory
-            cdq.entity.skills
-            [cdq.world.content-grid :as content-grid]
+  (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [malli.utils :as mu]
             [qrecord.core :as q]))
 
-(def ^:private create-fns
-  {:entity/animation             cdq.entity.animation/create
-   :entity/body                  cdq.entity.body/create
-   :entity/delete-after-duration cdq.entity.delete-after-duration/create
-   :entity/projectile-collision  cdq.entity.projectile-collision/create
-   :entity/stats                 cdq.entity.stats/create})
-
-(defn- create-component [[k v] world]
+(defn- create-component [[k v] {:keys [world/create-fns] :as world}]
   (if-let [f (create-fns k)]
     (f v world)
     v))
 
-(def ^:private create!-fns
-  {:entity/fsm                             cdq.entity.fsm/create!
-   :entity/inventory                       cdq.entity.inventory/create!
-   :entity/skills                          cdq.entity.skills/create!})
-
-(defn- after-create-component [[k v] eid world]
-  (when-let [f (create!-fns k)]
+(defn- after-create-component [[k v] eid {:keys [world/after-create-fns] :as world}]
+  (when-let [f (after-create-fns k)]
     (f v eid world)))
 
 (q/defrecord Entity [entity/body])
