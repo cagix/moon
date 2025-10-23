@@ -3,6 +3,6 @@
             [cdq.ui.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/stage]} opts]
+  [{:keys [ctx/stage] :as ctx} opts]
   (ui/show-modal-window! stage (stage/viewport stage) opts)
-  nil)
+  ctx)

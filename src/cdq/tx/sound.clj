@@ -2,6 +2,6 @@
   (:require [cdq.audio :as audio]))
 
 (defn do!
-  [{:keys [ctx/audio]} sound-name]
+  [{:keys [ctx/audio] :as ctx} sound-name]
   (audio/play! audio sound-name)
-  nil)
+  ctx)

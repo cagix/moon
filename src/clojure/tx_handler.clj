@@ -1,7 +1,7 @@
 (ns clojure.tx-handler)
 
 (defn actions!
-  [txs-fn-map ctx txs & {:keys [strict?]}]
+  [txs-fn-map ctx txs]
   (loop [ctx ctx
          txs txs
          handled-txs []]
@@ -11,14 +11,9 @@
         (if tx
           (let [_ (assert (vector? tx))
                 f (get txs-fn-map k)
-                _ (if strict?
-                    (assert f (str "Cannot find function for tx: " k))
-                    nil)
+                _ (assert f (str "Cannot find function for tx: " k))
                 new-txs (try
-                         (if (and (not strict?)
-                                  (nil? f))
-                           nil
-                           (apply f ctx params))
+                         (apply f ctx params)
                          (catch Throwable t
                            (throw (ex-info "Error handling tx"
                                            {:tx tx}

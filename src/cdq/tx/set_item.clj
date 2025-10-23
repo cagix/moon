@@ -5,10 +5,11 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/stage]}
+           ctx/stage]
+    :as ctx}
    eid cell item]
   (when (:entity/player? @eid)
     (ui/set-item! stage cell
                   {:texture-region (graphics/texture-region graphics (:entity/image item))
-                   :tooltip-text (info/text item nil)})
-    nil))
+                   :tooltip-text (info/text item nil)}))
+  ctx)
