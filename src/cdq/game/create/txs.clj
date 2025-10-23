@@ -1,11 +1,6 @@
 (ns cdq.game.create.txs
-  (:require [cdq.audio :as audio]
-            [cdq.db :as db]
-            [cdq.graphics :as graphics]
-            [cdq.ui :as ui]
-            [cdq.ui.stage :as stage]
+  (:require [cdq.db :as db]
             [cdq.world :as world]
-            [cdq.world.info :as info]
             [cdq.world.tx.spawn-entity]
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
@@ -23,51 +18,16 @@
          '[clojure.math.vector2 :as v])
 
 (def reaction-txs-fn-map
-  {
-   :tx/sound                    (fn [{:keys [ctx/audio]} sound-name]
-                                  (audio/play! audio sound-name)
-                                  nil)
-
-   :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
-                                  (ui/toggle-inventory-visible! stage)
-                                  nil)
-   :tx/show-message             (fn [{:keys [ctx/stage]} message]
-                                  (ui/show-text-message! stage message)
-                                  nil)
-   :tx/show-modal               (fn [{:keys [ctx/stage]} opts]
-                                  (ui/show-modal-window! stage (stage/viewport stage) opts)
-                                  nil)
-
-   :tx/set-item    (fn
-                     [{:keys [ctx/graphics
-                              ctx/stage]}
-                      eid cell item]
-                     (when (:entity/player? @eid)
-                       (ui/set-item! stage cell
-                                     {:texture-region (graphics/texture-region graphics (:entity/image item))
-                                      :tooltip-text (info/text item nil)})
-                       nil))
-
-   :tx/remove-item (fn
-                     [{:keys [ctx/stage]}
-                      eid cell]
-                     (when (:entity/player? @eid)
-                       (ui/remove-item! stage cell)
-                       nil))
-
-   :tx/add-skill   (fn
-                     [{:keys [ctx/graphics
-                              ctx/stage]}
-                      eid skill]
-                     (when (:entity/player? @eid)
-                       (ui/add-skill! stage
-                                      {:skill-id (:property/id skill)
-                                       :texture-region (graphics/texture-region graphics (:entity/image skill))
-                                       :tooltip-text (fn [{:keys [ctx/world]}]
-                                                       (info/text skill world))})
-                       nil))
-   }
-  )
+  (update-vals '{
+                 :tx/sound                    cdq.tx.sound/do!
+                 :tx/toggle-inventory-visible cdq.tx.toggle-inventory-visible/do!
+                 :tx/show-message             cdq.tx.show-message/do!
+                 :tx/show-modal               cdq.tx.show-modal/do!
+                 :tx/set-item                 cdq.tx.set-item/do!
+                 :tx/remove-item              cdq.tx.remove-item/do!
+                 :tx/add-skill                cdq.tx.add-skill/do!
+                 }
+               requiring-resolve))
 
 (defn world-move-entity
   [{:keys [world/content-grid
