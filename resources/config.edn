@@ -4,8 +4,6 @@
           :height 900}
  :fps 60
  :render! #edn/resource "render_pipeline.edn"
- :dispose! cdq.game.dispose/do!
- :resize! cdq.game.resize/do!
  :handle-txs cdq.game.create.txs/do!
  :audio-impl cdq.audio/create
  :audio #edn/resource "audio.edn"

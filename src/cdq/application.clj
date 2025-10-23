@@ -1,9 +1,13 @@
 (ns cdq.application
-  (:require cdq.ui.build.editor-window
+  (:require [cdq.audio :as audio]
+            [cdq.graphics :as graphics]
+            [cdq.input :as input]
+            [cdq.ui :as ui]
+            cdq.ui.build.editor-window
             cdq.ui.editor.window
             cdq.ui.dev-menu
             cdq.ui.editor.overview-window
-            [cdq.input :as input]
+            [cdq.world :as world]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
@@ -39,6 +43,20 @@
     ((:add-actors config) stage ctx)
     ((:create-world config) ctx (:world config))))
 
+(defn- dispose!
+  [{:keys [ctx/audio
+           ctx/graphics
+           ctx/stage
+           ctx/world]}]
+  (audio/dispose! audio)
+  (graphics/dispose! graphics)
+  (ui/dispose! stage)
+  (world/dispose! world))
+
+(defn- resize! [{:keys [ctx/graphics]} width height]
+  (graphics/update-ui-viewport! graphics width height)
+  (graphics/update-world-vp! graphics width height))
+
 (defn edn-resource [path]
   (->> path
        io/resource
@@ -62,7 +80,7 @@
                             (reset! state (create! Gdx/app config)))
 
                           (dispose [_]
-                            ((:dispose! config) @state))
+                            (dispose! @state))
 
                           (render [_]
                             (swap! state (fn [ctx]
@@ -72,7 +90,7 @@
                                                    (:render! config)))))
 
                           (resize [_ width height]
-                            ((:resize! config) @state width height))
+                            (resize! @state width height))
 
                           (pause [_])
 
